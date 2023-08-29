@@ -6,7 +6,7 @@ Nutritional Calculations, Food Matching, Food Dataset Management, and Output
 Summaries, although further functions are still in development and are set to be
 added at a later time. 
 
-![](reference/figures/MAPS_logo_cropped.SVG){width="150"
+![](reference/figures/MAPS_logo_cropped.JPG){width="150"
 style="float:right"} **NutritionTools** has been developed through work at the [Micronutrient Action Policy Support (MAPS)](https://www.micronutrient.support/) Project, although the
 use of these tools is widely encouraged by all who might find them useful and
 use is not exclusive to the MAPS project.
