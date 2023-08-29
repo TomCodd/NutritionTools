@@ -1,0 +1,24 @@
+Package: NutritionTools
+Type: Package
+Title: Tools for the Organisation, Matching, Calculation, and Summarisation of Nutrition Data
+Version: 1.0.0
+Authors@R: c(person("Thomas", "Codd", role = c("aut", "cre"), email = "tbc5@protonmail.com"),
+             person("Lucia", "Segovia de la Revilla", role = c("aut", "ctb")))
+Maintainer: Thomas Codd <tbc5@protonmail.com>
+Description: A set of functions useful for the organisation, matching, 
+    calculation, and summarising of Nutrition Data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: dplyr,
+    fuzzyjoin,
+    rhandsontable,
+    shiny,
+    stats,
+    stringr,
+    tibble
+RoxygenNote: 7.2.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
