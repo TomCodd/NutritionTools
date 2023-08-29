@@ -88,4 +88,6 @@ test_df_WAFCT2019$ENERCKcal_stnd <- ENERCKcal_standardised(
          test_df_WAFCT2019$fb,
          test_df_WAFCT2019$alcohol)
 
+print(test_df_WAFCT2019)
+
 }
