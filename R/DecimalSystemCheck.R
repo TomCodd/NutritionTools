@@ -1,7 +1,9 @@
 #---
-#title: Decimal System Checker
-#author: Thomas Codd
-#Github: https://github.com/TomCodd/Nutrition_Functions
+#Title: Decimal_System_Checker
+#Author: Thomas Codd
+#Version: V1.0.0
+#Changelog:
+#Github: https://github.com/TomCodd/NutritionTools
 #---
 
 #' A tool to test the integrity of a decimal system in a dataframe.

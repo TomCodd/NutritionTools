@@ -22,6 +22,7 @@ devtools::install_github("TomCodd/NutritionTools")
 ### Resources
 
 -   [Open an issue](https://github.com/TomCodd/NutritionTools/issues/new) (GitHub issues for bug reports, feature requests, and function requests)
+-   [NutritionTools R files](https://github.com/TomCodd/NutritionTools/tree/master/R) (Github folder with the R files for the functions - if you would like to copy and modify these functions for your own use, please do so, but please retain the original citation)
 
 ### Examples
 

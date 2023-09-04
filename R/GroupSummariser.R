@@ -1,6 +1,5 @@
-
 #---
-#Title: Group Summariser
+#Title: Group_Summariser
 #Author: Thomas Codd
 #Version: V1.2.4
 #Changelog:
@@ -11,7 +10,7 @@
 #V1.1.1 -> V1.2.0; New Feature - Added the ability to set columns that should be empty in the average rows (for metadata etc)
 #V1.1.0 -> V1.1.1; Bug Fix - Fixed NaN appearing in character columns, replaced with ""
 #V1.0.0 -> V1.1.0; New Feature - Added the ability to take preset weights into account
-#Github: https://github.com/TomCodd/Nutrition_Functions
+#Github: https://github.com/TomCodd/NutritionTools
 #---
 
 #' Insert summary rows between groups of rows in a data frame

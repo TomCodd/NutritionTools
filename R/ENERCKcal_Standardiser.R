@@ -1,3 +1,11 @@
+#---
+#Title: ENERCKcal_standardised
+#Author: Thomas Codd
+#Version: V1.0.0
+#Changelog:
+#Github: https://github.com/TomCodd/NutritionTools
+#---
+
 #' A function used to calculate standardized Energy values in kcal.
 #'
 #' @description This function works as a basic calculator - The values for Total

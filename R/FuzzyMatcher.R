@@ -1,10 +1,9 @@
-
 #---
-#Title: Fuzzy Matcher
+#Title: Fuzzy_Matcher
 #Author: Thomas Codd
 #Version: 1.0.1
 #Changelog: V1.0.0 -> V1.0.1; Sped up the process considerably by removing some conditional formatting on output table
-#Github: https://github.com/TomCodd/Nutrition_Functions
+#Github: https://github.com/TomCodd/NutritionTools
 #---
 
 

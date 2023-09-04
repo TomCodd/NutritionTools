@@ -3,7 +3,7 @@
 #Author: Thomas Codd
 #Version: V1.0.0
 #Changelog:
-#Github: https://github.com/TomCodd/Nutrition_Functions
+#Github: https://github.com/TomCodd/NutritionTools
 #---
 
 #' Calculate a standardised CARTBEQ value from various inputs
