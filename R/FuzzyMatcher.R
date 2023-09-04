@@ -1,6 +1,7 @@
 #---
 #Title: Fuzzy_Matcher
-#Author: Thomas Codd
+#Author: Thomas Codd - https://github.com/TomCodd
+#Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
 #Version: 1.0.1
 #Changelog: V1.0.0 -> V1.0.1; Sped up the process considerably by removing some conditional formatting on output table
 #Github: https://github.com/TomCodd/NutritionTools

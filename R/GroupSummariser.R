@@ -1,6 +1,7 @@
 #---
 #Title: Group_Summariser
-#Author: Thomas Codd
+#Author: Thomas Codd - https://github.com/TomCodd
+#Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
 #Version: V1.2.4
 #Changelog:
 #v1.2.3 -> v1.2.4; Bug Fix - issue where Summary Row label appeared as "SUMMARY ROW - NA" fixed

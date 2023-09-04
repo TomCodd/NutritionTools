@@ -1,6 +1,7 @@
 #---
 #Title: CARTBEQ_standardised
-#Author: Thomas Codd
+#Author: Thomas Codd - https://github.com/TomCodd
+#Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
 #Version: V1.0.0
 #Changelog:
 #Github: https://github.com/TomCodd/NutritionTools
