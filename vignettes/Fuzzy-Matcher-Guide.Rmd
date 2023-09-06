@@ -1,6 +1,8 @@
 ---
 title: "Fuzzy-Matcher-Guide"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{Fuzzy-Matcher-Guide}
   %\VignetteEngine{knitr::rmarkdown}
