@@ -30,6 +30,7 @@ suggestions and human confirmation using the GUI interface."><!-- mathjax --><sc
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Fuzzy-Matcher-Guide.html">Fuzzy-Matcher-Guide</a>
     <a class="dropdown-item" href="../articles/my-vignette.html">my-vignette</a>
   </div>
 </li>
@@ -69,14 +70,16 @@ suggestions and human confirmation using the GUI interface.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>df1</dt>
-<dd><p>Required - The primary data frame, with items that need matches.
-The first column must be the ID column, the second must be the item names.</p></dd>
+<dd><p>Required - The primary dataframe, with items that need matches.
+The dataframe must be two columns in size; the first column must be the ID
+column, the second must be the item names.</p></dd>
 
 
 <dt>df2</dt>
-<dd><p>Required - The secondary data frame, with a list of potential
-items to match the contents of df1 against. The first column must be the ID
-column, the second must be the item names.</p></dd>
+<dd><p>Required - The secondary dataframe, with a list of potential items
+to match the contents of df1 against. The dataframe must be two columns in
+size; the first column must be the ID column, the second must be the item
+names.</p></dd>
 
 
 <dt>focus_term</dt>
@@ -91,6 +94,13 @@ matches to that item.</p></dd>
 
 <p>An R object of csv that contains items from <code>df1</code> and their
 counterparts from <code>df2</code> in the same row.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Because of the GUI nature of the Fuzzy Matcher, an R-based
+  description or example is not able to help guide using this function as
+  it might with a more standard R function. Because of this a quick guide has
+  been created which I encourage you to examine, which can be found at</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
