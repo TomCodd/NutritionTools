@@ -168,7 +168,8 @@ Using the square brackets, we can tell R that we only want two columns, which we
 This methods make use of the select function in the dplyr package.
 
 ```
-breakfast_df_2col <- breakfast_df %>% select("ID", "food_name") extensive_food_db_2col <- extensive_food_db %>% select("item_ID", "food_item_name")
+breakfast_df_2col <- breakfast_df %>% select("ID", "food_name")
+extensive_food_db_2col <- extensive_food_db %>% select("item_ID", "food_item_name")
 ```
 
 Using the dplyr select tool, instead of picking the columns we want by the column numbers, we are instead selecting them by the column names - once again selecting the ID column name first, and then the food name column.
@@ -178,6 +179,10 @@ Both these methods have identical outputs.
 ## Calling the Fuzzy Matcher
 
 In order to call the Fuzzy Matcher we simply use the following command:
+
+```
+Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col)
+```
 
 Deciding which data frame is df1 and which is df2 is important in certain applications. As a general rule the larger dataset should be df2 - the list which items from df1 search through for matches.
 
@@ -189,9 +194,28 @@ Once called the Fuzzy Matcher will look at the similarity between each of the fo
 
 If we were to use the focus term in this example, the command would be:
 
+```
+Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col, focus_term = "raw")
+```
+
 ## Matching using the Fuzzy Matcher
 
 Once the potential matches are found, the Fuzzy Matcher will open a pop-up window, with an interactive table in it.
+
+
+
+![](docs/reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+
+![](reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+![](man/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+
+```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+knitr::include_graphics("docs/reference/figures/breakfast_FM_table.png")
+```
+
 
 ### Selecting Matches
 
