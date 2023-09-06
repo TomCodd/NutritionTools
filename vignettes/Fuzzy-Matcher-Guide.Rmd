@@ -147,11 +147,3 @@ extensive_food_db <- data.frame(
     ), check.names = F
   )
 ```
-
-### Data preparation
-
-The Fuzzy Matcher, as mentioned in its description, has certain data frame input requirements - namely that the data frames are both 2 columns in size, with the first column being an ID column, and the second being the food item name. In order to create an ideal data frame, we will subset the 2 original input columns.
-
-#### Subsetting with base R
-
-This first method only use base R functions.
