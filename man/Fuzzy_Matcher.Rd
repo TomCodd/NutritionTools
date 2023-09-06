@@ -8,12 +8,14 @@ string search}
 Fuzzy_Matcher(df1, df2, focus_term)
 }
 \arguments{
-\item{df1}{Required - The primary data frame, with items that need matches.
-The first column must be the ID column, the second must be the item names.}
-
-\item{df2}{Required - The secondary data frame, with a list of potential
-items to match the contents of df1 against. The first column must be the ID
+\item{df1}{Required - The primary dataframe, with items that need matches.
+The dataframe must be two columns in size; the first column must be the ID
 column, the second must be the item names.}
+
+\item{df2}{Required - The secondary dataframe, with a list of potential items
+to match the contents of df1 against. The dataframe must be two columns in
+size; the first column must be the ID column, the second must be the item
+names.}
 
 \item{focus_term}{Optional - Specify a string. If the string is contained
 in the item name, then the fuzzy matcher opens a wider potential list of
@@ -27,4 +29,10 @@ counterparts from \code{df2} in the same row.
 This function reads in two dataframes, both comprised of an ID
 row and a name row. The name rows are matched based on fuzzy search
 suggestions and human confirmation using the GUI interface.
+}
+\details{
+Because of the GUI nature of the Fuzzy Matcher, an R-based
+  description or example is not able to help guide using this function as
+  it might with a more standard R function. Because of this a quick guide has
+  been created which I encourage you to examine, which can be found at
 }

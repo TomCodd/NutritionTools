@@ -138,22 +138,21 @@ The Standardiser can use 6 different ways of calculating
 #to be able to be used with patchy data - if certain columns are incomplete
 #then then the best calculation will be used on a row-by-row basis.
 
-test_df <- data.frame( c( "test_01", "test_02", "test_03", "test_04",
-"test_05", "test_06", "test_07", "test_08", "test_09", "test_10" ), c(
-"Merlot", "pinot grigio", "Chateauneuf-du-Pape", "Tokaji", "Champagne",
-"Sauvignon Blanc", "Chardonnay", "Malbec", "Cabernet Sauvignon", "Pinot Noir"
-), c(NA, 105, "", 130, NA, "", 111, NA, 112, 101), c(0, 35, 23, 27, 6, 34, NA,
-18, "", 40), c(110, 67, 72, NA, 160, 102, 98, 37, 28, 60), c("", 107, 102, NA,
-"", NA, 72, "", "", 143), c(159, 103, 132, NA, "", "", "", 78, NA, 92), c(13,
-8, NA, 15, 13, NA, NA, NA, 7, 10), c(12, 11, 8, 13, 3, 1, 10, 15, 3, 6), c(0,
-7, 12, NA, 5, 2, 10, 6, "", 1), c( "Real values, but for Maize, not Merlot",
-"Completely fictional values", "Fictional values #2", "More fictional values",
-"Fictional #4", "Fictional no. 5", "fictional 6", "more fiction", "again,
-fiction", "Fictional number 9" ) )
-
-colnames(test_df) <- c( "ID", "food_name", "CART B (mcg)", "CART A (mcg)",
-"CRYPXB (mcg)", "CART B eq (std) (mcg)", "CART B eq (mcg)", "Vit A RAE (mcg)",
-"Vit A (mcg)", "Retinol (mcg)", "comments" )
+test_df <- data.frame( ID = c("test_01", "test_02", "test_03", "test_04",
+"test_05", "test_06", "test_07", "test_08", "test_09", "test_10" ), food_name
+= c("Bread (wholemeal)", "Pepper, ground, black", "Milk, cow, whole, fresh,
+raw", "Orange Juice", "Butter (cow milk), salted", "Salt, Iodized", "Egg,
+chicken, whole, raw", "Tomato, red, ripe, raw", "Mushroom, fresh, raw",
+"Parsley, fresh, raw"), "CART B (mcg)" = c(NA, 105, "", 130, NA, "", 111, NA,
+112, 101), "CART A (mcg)" = c(0, 35, 23, 27, 6, 34, NA, 18, "", 40), "CRYPXB
+(mcg)" = c(110, 67, 72, NA, 160, 102, 98, 37, 28, 60), "CART B eq (std) (mcg)"
+= c("", 107, 102, NA, "", NA, 72, "", "", 143), "CART B eq (mcg)" = c(159,
+103, 132, NA, "", "", "", 78, NA, 92), "Vit A RAE (mcg)" = c(13, 8, NA, 15,
+13, NA, NA, NA, 7, 10), "Vit A (mcg)" = c(12, 11, 8, 13, 3, 1, 10, 15, 3, 6),
+"Retinol (mcg)" = c(0, 7, 12, NA, 5, 2, 10, 6, "", 1), "comments" = c(
+"Imaginary values", "Completely fictional values", "Fictional values #2",
+"More fictional values", "Fictional #4", "Fictional no. 5", "fictional 6",
+"more fiction", "again, fiction", "Fictional number 9" ), check.names = F)
 
 #In this case the data.frame we want to run through is called test_df.
 #However the standard INFOODS names haven't been used, so the assumed nutrient

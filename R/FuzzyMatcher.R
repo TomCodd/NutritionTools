@@ -2,7 +2,8 @@
 #Title: Fuzzy_Matcher
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: 1.0.1
+#Version: 1.0.2
+#Changelog: V1.0.1 -> V1.0.2; Applied extra conversions (encoding to latin1) on input to prevent function crashes, and fixed csv save name (removed invalid characters)
 #Changelog: V1.0.0 -> V1.0.1; Sped up the process considerably by removing some conditional formatting on output table
 #Github: https://github.com/TomCodd/NutritionTools
 #---
@@ -14,11 +15,13 @@
 #' @description This function reads in two dataframes, both comprised of an ID
 #' row and a name row. The name rows are matched based on fuzzy search
 #' suggestions and human confirmation using the GUI interface.
-#' @param df1 Required - The primary data frame, with items that need matches.
-#' The first column must be the ID column, the second must be the item names.
-#' @param df2 Required - The secondary data frame, with a list of potential
-#' items to match the contents of df1 against. The first column must be the ID
-#' column, the second must be the item names.
+#' @param df1 Required - The primary dataframe, with items that need matches.
+#'   The dataframe must be two columns in size; the first column must be the ID
+#'   column, the second must be the item names.
+#' @param df2 Required - The secondary dataframe, with a list of potential items
+#'   to match the contents of df1 against. The dataframe must be two columns in
+#'   size; the first column must be the ID column, the second must be the item
+#'   names.
 #' @param focus_term Optional - Specify a string. If the string is contained
 #' in the item name, then the fuzzy matcher opens a wider potential list of
 #' matches to that item.
@@ -35,6 +38,11 @@
 #' @importFrom tibble rowid_to_column
 #'
 #' @export
+#'
+#' @details Because of the GUI nature of the Fuzzy Matcher, an R-based
+#'   description or example is not able to help guide using this function as
+#'   it might with a more standard R function. Because of this a quick guide has
+#'   been created which I encourage you to examine, which can be found at
 
 
 
@@ -84,6 +92,9 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
   colnames(df1)[2] <- "item_name"
   colnames(df2)[2] <- "item_name"
 
+  #Encoding is reqired - if not in latin1 then stringdist_join either runs endlessly or causes errors enough to abort the R session
+  Encoding(df1$item_name) <- "latin1"
+  Encoding(df2$item_name) <- "latin1"
 
 
   # Fuzzy Matching ----
@@ -99,7 +110,6 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
                                   distance_col = "dist") #This lists the distances and sets the column name they should be listed under - a perfect match should be 0
 
 
-
   # Fuzzy Results processing ----
 
   #Results are grouped and sorted
@@ -108,13 +118,11 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
     dplyr::group_by(item_name.x) |> #output formatting - this makes it so that the output is organised by the item_name.x, (x being the first list item at the start of the tool)
     dplyr::slice_min(dist, n = 5) #This means only the closest 5 matches are listed per item on the second dataframe
 
-
   if(!missing(focus_term)){
     fuzzy_output_selection <- fuzzy_output_selection |>
       dplyr::filter(grepl(focus_term, item_name.x) | dist<=0.225) #This introduces a filter. By combining this with the max_dist in the fuzzy search,  the end
   }# result is that any items with the focus term in their name are listed if their distance is under 0.3,
   # along with anything with a distance of 0.225 or lower. This makes the distance more forgiving for items with that focus term in them.
-
 
 
   # Prep work for match confirmations ----
@@ -144,6 +152,7 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
   fuzzy_output_selection <- fuzzy_output_selection[,-c(7,10)] #This removes certain rows no longer needed - dist and item_min_dist
 
   colnames(fuzzy_output_selection) <- new_column_names
+
 
 
 
@@ -259,7 +268,8 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
             easyClose = TRUE
           ))
         } else { #With different outcomes if the R object or CSV outputs have been selected.
-          utils::write.csv(output_matches, file = paste0(input$FileName, ".csv"), row.names = FALSE)
+          savefilename <-
+          utils::write.csv(output_matches, file = paste0(gsub("[^[:alnum:]\\-\\_]", "", input$FileName, perl = T), ".csv"), row.names = FALSE)
           shiny::showModal(shiny::modalDialog(
             title = stringr::str_c("You have matched ", nrow(true_matches), " items!"),
             stringr::str_c("Thats ", percent_completed, "% of the dataframe (", df1_item_number, " items), and took ",  time_taken, " ", units(time_taken)),
