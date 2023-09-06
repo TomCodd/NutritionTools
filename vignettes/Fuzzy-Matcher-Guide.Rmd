@@ -152,7 +152,7 @@ extensive_food_db <- data.frame(
 
 The Fuzzy Matcher, as mentioned in its description, has certain data frame input requirements - namely that the data frames are both 2 columns in size, with the first column being an ID column, and the second being the food item name. In order to create an ideal data frame, we will subset the 2 original input columns.
 
-#### Subsetting with base R
+### Subsetting with base R
 
 This first method only use base R functions.
 
@@ -163,7 +163,7 @@ extensive_food_db_2col <- extensive_food_db[,c(1,2)]
 
 Using the square brackets, we can tell R that we only want two columns, which we have selected to be columns 1 and 2, in that order - because column 1 is the ID column we want, and column 2 is the item name we want. The order of selection is important - if the data frame was set up differently, and the ID column was, for example, in column 4, and the item names in column 1, the command would instead be [,c(4,1)] - the first column in our list is 4 where the ID is, and then the item name column (1).
 
-#### Subsetting with dplyr
+### Subsetting with dplyr
 
 This methods make use of the select function in the dplyr package.
 
