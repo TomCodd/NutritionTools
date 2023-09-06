@@ -230,11 +230,12 @@ frame input requirements - namely that the data frames are both 2
 columns in size, with the first column being an ID column, and the
 second being the food item name. In order to create an ideal data frame,
 we will subset the 2 original input columns.</p>
-</div>
-<div class="section level4">
-<h4 id="subsetting-with-base-r">Subsetting with base R<a class="anchor" aria-label="anchor" href="#subsetting-with-base-r"></a>
-</h4>
+<div class="section level5">
+<h5 id="subsetting-with-base-r">Subsetting with base R<a class="anchor" aria-label="anchor" href="#subsetting-with-base-r"></a>
+</h5>
 <p>This first method only use base R functions.</p>
+<pre><code><span><span class="va">breakfast_df_2col</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">extensive_food_db_2col</span> <span class="op">&lt;-</span> <span class="va">extensive_food_db</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code></pre>
 <p>Using the square brackets, we can tell R that we only want two
 columns, which we have selected to be columns 1 and 2, in that order -
 because column 1 is the ID column we want, and column 2 is the item name
@@ -244,16 +245,18 @@ item names in column 1, the command would instead be [,c(4,1)] - the
 first column in our list is 4 where the ID is, and then the item name
 column (1).</p>
 </div>
-<div class="section level4">
-<h4 id="subsetting-with-dplyr">Subsetting with dplyr<a class="anchor" aria-label="anchor" href="#subsetting-with-dplyr"></a>
-</h4>
+<div class="section level5">
+<h5 id="subsetting-with-dplyr">Subsetting with dplyr<a class="anchor" aria-label="anchor" href="#subsetting-with-dplyr"></a>
+</h5>
 <p>This methods make use of the select function in the dplyr
 package.</p>
+<pre><code>breakfast_df_2col &lt;- breakfast_df %&gt;% select("ID", "food_name") extensive_food_db_2col &lt;- extensive_food_db %&gt;% select("item_ID", "food_item_name")</code></pre>
 <p>Using the dplyr select tool, instead of picking the columns we want
 by the column numbers, we are instead selecting them by the column names
 - once again selecting the ID column name first, and then the food name
 column.</p>
 <p>Both these methods have identical outputs.</p>
+</div>
 </div>
 </div>
 <div class="section level3">
