@@ -37,7 +37,7 @@ library(dplyr)
 
 Then, we will create two example data frames - breakfast_df and extensive_food_db. These will be the data frames we are matching against.
 
-```{r, eval = FALSE, data generation}
+```{r, data generation}
 breakfast_df <-
   data.frame(
     "ID" = c(
