@@ -34,3 +34,118 @@ library(NutritionTools)
 library(dplyr)
 ```
 
+
+Then, we will create two example data frames - breakfast_df and extensive_food_db. These will be the data frames we are matching against.
+
+```{r, eval = FALSE, data generation}
+breakfast_df <-
+  data.frame(
+    "ID" = c(
+      "test_01",
+      "test_02",
+      "test_03",
+      "test_04",
+      "test_05",
+      "test_06",
+      "test_07"
+    ),
+    "food_name" = c(
+      "Wholemeal Bread",
+      "Ground Pepper",
+      "whole milk",
+      "Orange Juice",
+      "Butter, salted",
+      "Salt",
+      "Eggs"
+    ),
+    "CART B (mcg)" = c(NA, 105, "", 130, NA, "", 111),
+    "CART A (mcg)" = c(0, 35, 23, 27, 6, 34, NA),
+    "CRYPXB (mcg)" = c(110, 67, 72, NA, 160, 102, 98),
+    "CART B eq (std) (mcg)" = c("", 107, 102, NA, "", NA, 72),
+    "CART B eq (mcg)" = c(159, 103, 132, NA, "", "", ""),
+    "Vit A RAE (mcg)" = c(13, 8, NA, 15, 13, NA, NA),
+    "Vit A (mcg)" = c(12, 11, 8, 13, 3, 1, 10),
+    "Retinol (mcg)" = c(0, 7, 12, NA, 5, 2, 10),
+    "comments" = c(
+      "Imaginary values",
+      "Completely fictional values",
+      "Fictional values #2",
+      "More fictional values",
+      "Fictional #4",
+      "Fictional no. 5",
+      "fictional 6"
+    ), check.names = F
+  )
+
+extensive_food_db <- data.frame(
+    "item_ID" = c(
+      "01_01",
+      "01_02",
+      "01_03",
+      "01_04",
+      "01_05",
+      "01_06",
+      "01_07",
+      "01_08",
+      "01_09",
+      "01_10",
+      "01_11",
+      "01_12",
+      "01_13",
+      "01_14",
+      "01_15",
+      "01_16",
+      "01_17",
+      "01_18",
+      "01_19",
+      "01_20"
+    ),
+    "food_item_name" = c(
+      "Bread (wholemeal)",
+      "Pepper, ground, black",
+      "Milk, cow, whole, fresh, raw",
+      "Orange Juice",
+      "Butter, with salt",
+      "Salt",
+      "Egg, chicken, whole, raw",
+      "Bacon",
+      "Sausage",
+      "Milk, skimmed",
+      "Butter, unsalted",
+      "Bread (white)",
+      "Bread (Brown), wheat flour",
+      "Tomato",
+      "Mushroom",
+      "Parsley",
+      "Tomato, tinned",
+      "Apple Juice",
+      "Pineapple Juice",
+      "Mango Juice"
+      ),
+    "Iron (Fe)" = c(12, 11, 8, 13, 3, 1, 10, 15, 3, 80, 14, 27, 54, 12, 7, 3, 7, 15, 10, 45),
+    "Selenium (Se)" = c(0, 35, 23, 27, 6, 34, NA, 23, 10, 8, 6, 15, NA, "", 20, 12, 18, 20, 12, 20),
+    "Zinc (Zn)" = c(13, 8, NA, 15, 13, NA, NA, 10, 8, 9, 4, 3, 2, 10, 8, 6, 14, 13, 21, 6),
+    "comments" = c(
+      "These are imaginary",
+      "Really fictional values",
+      "Fictional values again",
+      "More fictions",
+      "imaginary #4",
+      "imaginary no. 5",
+      "imaginary 6",
+      "More fiction",
+      "complete fiction",
+      "again, fantasy",
+      "Fantasy again",
+      "once again, imaginary",
+      "complete fiction",
+      "and again, imaginary",
+      "this ones real (only joking)",
+      "knock knock",
+      "who's there?",
+      "cow says",
+      "cow says who?",
+      "no, cow says moo!"
+    ), check.names = F
+  )
+```
