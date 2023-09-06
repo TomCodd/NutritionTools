@@ -1,5 +1,7 @@
 ---
 title: "Fuzzy-Matcher-Guide"
+author: "Thomas Codd"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Fuzzy-Matcher-Guide}
@@ -14,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-### Fuzzy Matcher Guide
+# Fuzzy Matcher Guide
 
 ## Introduction
 
@@ -24,18 +26,18 @@ Because of the Fuzzy Matchers GUI interface, the standard R function documentati
 
 The first step of using the Fuzzy Matcher is to prepare the datasets you would like to match. The Fuzzy Matcher requires two different data frames as its input, with an optional key word. In this example, we will create two data frames and then match items between them.
 
-# R setup
+### R setup
 
 First we load the required packages. NutritionTools is this package, which contains Fuzzy Matcher, which we need. dplyr is a package which is widely used and contains many useful tools. It is also a dependency of NutritionTools, so should already be installed on your system. Because some of the data prep methods can be done with dplyr instead of base R, both methods will be shown - requiring it to be called now.
 
-```{r setup}
+```{r eval = FALSE, setup}
 library(NutritionTools)
 library(dplyr)
 ```
 
 Then, we will create two example data frames - breakfast_df and extensive_food_db. These will be the data frames we are matching against.
 
-```{r data import}
+```{r, eval = FALSE, data generation}
 breakfast_df <-
   data.frame(
     "ID" = c(
@@ -76,7 +78,7 @@ breakfast_df <-
   )
 
 extensive_food_db <- data.frame(
-    "ID" = c(
+    "item_ID" = c(
       "01_01",
       "01_02",
       "01_03",
@@ -98,7 +100,7 @@ extensive_food_db <- data.frame(
       "01_19",
       "01_20"
     ),
-    "food_name" = c(
+    "food_item_name" = c(
       "Bread (wholemeal)",
       "Pepper, ground, black",
       "Milk, cow, whole, fresh, raw",
@@ -147,3 +149,79 @@ extensive_food_db <- data.frame(
     ), check.names = F
   )
 ```
+
+### Data preparation
+
+The Fuzzy Matcher, as mentioned in its description, has certain data frame input requirements - namely that the data frames are both 2 columns in size, with the first column being an ID column, and the second being the food item name. In order to create an ideal data frame, we will subset the 2 original input columns.
+
+#### Subsetting with base R
+
+This first method only use base R functions.
+
+```{r, eval = FALSE, data subsetting}
+breakfast_df_2col <- breakfast_df[,c(1,2)]
+extensive_food_db_2col <- extensive_food_db[,c(1,2)]
+```
+
+Using the square brackets, we can tell R that we only want two columns, which we have selected to be columns 1 and 2, in that order - because column 1 is the ID column we want, and column 2 is the item name we want. The order of selection is important - if the data frame was set up differently, and the ID column was, for example, in column 4, and the item names in column 1, the command would instead be [,c(4,1)] - the first column in our list is 4 where the ID is, and then the item name column (1).
+
+#### Subsetting with dplyr
+
+This methods make use of the select function in the dplyr package.
+
+```{r, eval = FALSE, data subsetting}
+breakfast_df_2col <- breakfast_df %>% select("ID", "food_name")
+extensive_food_db_2col <- extensive_food_db %>% select("item_ID", "food_item_name")
+```
+
+Using the dplyr select tool, instead of picking the columns we want by the column numbers, we are instead selecting them by the column names - once again selecting the ID column name first, and then the food name column.
+
+Both these methods have identical outputs.
+
+## Calling the Fuzzy Matcher
+
+In order to call the Fuzzy Matcher we simply use the following command:
+
+```{r, eval = FALSE, Fuzzy Matcher call}
+Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col)
+```
+
+Deciding which data frame is df1 and which is df2 is important in certain applications. As a general rule the larger dataset should be df2 - the list which items from df1 search through for matches.
+
+Please note: when matching between larger datasets this step can take a few seconds to process before moving on.
+
+### Optional command: focus_term
+
+Once called the Fuzzy Matcher will look at the similarity between each of the food item names and, if potential matches are close enough, will rank the top 5 for you to pick through. There is an additional input command we can use, the focus_term. This is a word you can specify. If specified, if the word appears in a potential match, then the selection requirements for showing that match are reduced. This means that you should have the option to pick from a wider range of items if a food item name contains the focus_term. This is useful if, for example, you need to prioritise matching food items which contain the 'raw' term - more potential matches will be shown. These extra matches are technically ones that the fuzzy matcher doesn't think are as good a match, but they still might give you more options for you to decide between.
+
+If we were to use the focus term in this example, the command would be:
+
+```{r, eval = FALSE, Fuzzy Matcher call}
+Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col, focus_term = "raw")
+```
+
+## Matching using the Fuzzy Matcher
+
+Once the potential matches are found, the Fuzzy Matcher will open a pop-up window, with an interactive table in it.
+
+![](docs/reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+
+![](reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+![](man/figures/breakfast_FM_table.png){width="150" style="float:right"}
+
+
+```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+knitr::include_graphics("docs/reference/figures/breakfast_FM_table.png")
+```
+
+### Selecting Matches
+
+The table contains 7 columns - the ID and item name column of df1, the ID and item name column of df2, a 'Correct Match' tickbox column for you to select the correct potential match from, and a 'Confidence' column for you to select the match confidence from.
+
+Each item from df1 can have up to 5 potential matches from df2 - as we can see in the above image, as
+
+### Match confidences
+
+For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low. For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* might be marked as high confidence - we are sure that all factors of this match are correct. Matching *'whole cows milk'* to *'whole, raw cows milk'* might be a medium confidence match, depending on how important you think it being raw is. Matching *'milk'* to *'whole, raw cows milk'* might be low confidence - we are assuming its cows milk, we're assuming that its whole milk, and we're assuming that its not pasturised. An individual's or organisations definition of what constitutes a high, medium or low match are subjective and potentially use-dependent, but these values should give a good range of potential inputs to pick from.
