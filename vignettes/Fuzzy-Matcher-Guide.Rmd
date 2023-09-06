@@ -156,21 +156,12 @@ The Fuzzy Matcher, as mentioned in its description, has certain data frame input
 
 This first method only use base R functions.
 
-```{r, data subsetting}
-breakfast_df_2col <- breakfast_df[,c(1,2)]
-extensive_food_db_2col <- extensive_food_db[,c(1,2)]
-```
 
 Using the square brackets, we can tell R that we only want two columns, which we have selected to be columns 1 and 2, in that order - because column 1 is the ID column we want, and column 2 is the item name we want. The order of selection is important - if the data frame was set up differently, and the ID column was, for example, in column 4, and the item names in column 1, the command would instead be [,c(4,1)] - the first column in our list is 4 where the ID is, and then the item name column (1).
 
 ### Subsetting with dplyr
 
 This methods make use of the select function in the dplyr package.
-
-```{r, data subsetting}
-breakfast_df_2col <- breakfast_df %>% select("ID", "food_name")
-extensive_food_db_2col <- extensive_food_db %>% select("item_ID", "food_item_name")
-```
 
 Using the dplyr select tool, instead of picking the columns we want by the column numbers, we are instead selecting them by the column names - once again selecting the ID column name first, and then the food name column.
 
@@ -179,10 +170,6 @@ Both these methods have identical outputs.
 ## Calling the Fuzzy Matcher
 
 In order to call the Fuzzy Matcher we simply use the following command:
-
-```{r, Fuzzy Matcher call}
-Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col)
-```
 
 Deciding which data frame is df1 and which is df2 is important in certain applications. As a general rule the larger dataset should be df2 - the list which items from df1 search through for matches.
 
@@ -193,10 +180,6 @@ Please note: when matching between larger datasets this step can take a few seco
 Once called the Fuzzy Matcher will look at the similarity between each of the food item names and, if potential matches are close enough, will rank the top 5 for you to pick through. There is an additional input command we can use, the focus_term. This is a word you can specify. If specified, if the word appears in a potential match, then the selection requirements for showing that match are reduced. This means that you should have the option to pick from a wider range of items if a food item name contains the focus_term. This is useful if, for example, you need to prioritise matching food items which contain the 'raw' term - more potential matches will be shown. These extra matches are technically ones that the fuzzy matcher doesn't think are as good a match, but they still might give you more options for you to decide between.
 
 If we were to use the focus term in this example, the command would be:
-
-```{r, Fuzzy Matcher call}
-Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col, focus_term = "raw")
-```
 
 ## Matching using the Fuzzy Matcher
 
