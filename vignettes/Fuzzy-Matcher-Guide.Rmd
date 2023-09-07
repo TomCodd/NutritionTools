@@ -156,7 +156,7 @@ The Fuzzy Matcher, as mentioned in its description, has certain data frame input
 
 This first method only use base R functions.
 
-``` r        
+``` r
 breakfast_df_2col <- breakfast_df[,c(1,2)]
 extensive_food_db_2col <- extensive_food_db[,c(1,2)]
 ```
@@ -202,10 +202,7 @@ Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col, focus_term 
 
 Once the potential matches are found, the Fuzzy Matcher will open a pop-up window, with an interactive table in it.
 
-
-
 ![](html-figures/breakfast_FM_table.PNG)
-
 
 ### Selecting Matches
 
@@ -219,7 +216,7 @@ Each item from df1 can have up to 5 potential matches from df2 - as we can see i
 
 ### Match confidences
 
-For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low. 
+For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low.
 
 ![](html-figures/breakfast_FM_table_OJ_confidence.PNG)
 
@@ -227,10 +224,36 @@ For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* m
 
 We believe that the Orange Juice match is a high confidence match, and so that is the option we will pick.
 
-
 ##Finishing the Matching
 
 Once all the correct matches are completed, the table should look something like this:
 
 ![](html-figures/breakfast_FM_table_fully_matched.PNG)
 
+Once done select the "All matches identified" button on the top-left of the page. This will open another pop-up window, giving you a few options for saving your matches.
+
+![](html-figures/FM_Save_Options.PNG)
+
+The first option is a checkbox, asking whether you want to strip the match data back to the bare bones required to relink it to other data - if this is selected then the output will only contain the item ID from df1, the item ID from df2, and the match confidence, in a table. If it isn't selected then the output will contain the food item names as well.
+
+Then there is the option to save it as an R object, or save the matches as a csv. If R object is selected then a data frame output with the variable name specified in the save options will appear for you to continue to work on. If the csv option is selected, then a csv will be created in your R projects root location, with a tidied version of the save file name you have selected.
+
+Once the options you want have been selected, you have finished using the Fuzzy Matcher - a new pop-up window will appear with some stats about the session (number of matches and how long they took), and once you click the close option, the Fuzzy Matcher will close.
+
+![](html-figures/FM_close_screen.PNG)
+
+## After the Fuzzy Matcher
+
+Once the matches have been outputted, it is easy to re-link the output to the original files.
+
+The merge tool links items from multiple datasets provided they have matching ID's and matching ID column names. The stripped version of the Fuzzy matcher output automatically restores the ID column names to the originals for each respective data frame (ID and item_ID), and so this merging can be done easily. 
+
+This code chunk comprises two merges - the first one merging the fuzzy matcher outputs with the breakfast_df data frame, and then the output of this merge is merged with the extensive_food_db data frame. 
+
+In this example the Fuzzy Matcher Output was called 'fuzzy_match_outputs'.
+
+``` r
+fm_outputs_merged <- merge(fuzzy_match_outputs, breakfast_df, "ID")
+
+fm_outputs_merged <- merge(fm_outputs_merged, extensive_food_db, "item_ID")
+```
