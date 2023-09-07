@@ -212,11 +212,6 @@ Once the potential matches are found, the Fuzzy Matcher will open a pop-up windo
 ![](man/figures/breakfast_FM_table.png){width="150" style="float:right"}
 
 
-```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
-knitr::include_graphics("docs/reference/figures/breakfast_FM_table.png")
-```
-
-
 ### Selecting Matches
 
 The table contains 7 columns - the ID and item name column of df1, the ID and item name column of df2, a 'Correct Match' tickbox column for you to select the correct potential match from, and a 'Confidence' column for you to select the match confidence from.
