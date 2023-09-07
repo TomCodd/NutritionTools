@@ -301,7 +301,7 @@ be:</p>
 </h3>
 <p>Once the potential matches are found, the Fuzzy Matcher will open a
 pop-up window, with an interactive table in it.</p>
-<p><img src="reference/figures/breakfast_FM_table.PNG" style="float:right" width="150"></p>
+<p><img src="html-figures/breakfast_FM_table.PNG"></p>
 <div class="section level4">
 <h4 id="selecting-matches">Selecting Matches<a class="anchor" aria-label="anchor" href="#selecting-matches"></a>
 </h4>
@@ -309,6 +309,7 @@ pop-up window, with an interactive table in it.</p>
 the ID and item name column of df2, a ‘Correct Match’ tickbox column for
 you to select the correct potential match from, and a ‘Confidence’
 column for you to select the match confidence from.</p>
+<p><img src="html-figures/breakfast_FM_table_OJ_confidence.PNG"></p>
 <p>Each item from df1 can have up to 5 potential matches from df2 - as
 we can see in the above image, as Orange Juice has 3 potential matches;
 Orange Juice, Apple Juice, and Mango Juice. In this case we believe
@@ -317,13 +318,16 @@ tickbox in the row which contains this match. As soon as we do this the
 other potential matches for Orange Juice get dropped to the bottom of
 the table, and are no longer selectable - this is to prevent accidental
 multimatching to a single item.</p>
+<p><img src="html-figures/breakfast_FM_table_OJ_selected.PNG"></p>
 </div>
 <div class="section level4">
 <h4 id="match-confidences">Match confidences<a class="anchor" aria-label="anchor" href="#match-confidences"></a>
 </h4>
 <p>For each match, a confidence value must be selected. There are 3
 potential confidence values for you to pick from - High, Medium, and
-Low. For example, matching <em>‘milk, whole, (cows), raw’</em> to
+Low.</p>
+<p><img src="html-figures/breakfast_FM_table_OJ_confidence.PNG"></p>
+<p>For example, matching <em>‘milk, whole, (cows), raw’</em> to
 <em>‘whole, raw cows milk’</em> might be marked as high confidence - we
 are sure that all factors of this match are correct. Matching <em>‘whole
 cows milk’</em> to <em>‘whole, raw cows milk’</em> might be a medium
@@ -334,6 +338,12 @@ whole milk, and we’re assuming that its not pasturised. An individual’s
 or organisations definition of what constitutes a high, medium or low
 match are subjective and potentially use-dependent, but these values
 should give a good range of potential inputs to pick from.</p>
+<p>We believe that the Orange Juice match is a high confidence match,
+and so that is the option we will pick.</p>
+<p>##Finishing the Matching</p>
+<p>Once all the correct matches are completed, the table should look
+something like this:</p>
+<p><img src="html-figures/breakfast_FM_table_fully_matched.PNG"></p>
 </div>
 </div>
 </div>
