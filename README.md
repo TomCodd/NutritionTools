@@ -32,7 +32,7 @@ Some quick examples of various function interfaces or outputs. First is the main
 Fuzzy_Output <- Fuzzy_Matcher(TZ_FM, DJ_FM)
 ```
 
-![](reference/figures/FM_example.PNG){width="1000"} Next is an output from the Group Summariser. This is less specific to nutrition and so it is possible to give an example of its functionality using some of R's built-in datasets, to summarise car data, grouped by the number of cylinders.
+![](reference/figures/breakfast_FM_table_fully_matched.PNG){width="1000"} Next is an output from the Group Summariser. This is less specific to nutrition and so it is possible to give an example of its functionality using some of R's built-in datasets, to summarise car data, grouped by the number of cylinders.
 
 ``` r
 mtcars_grouped_averages <- Group_Summariser(df = mtcars, group_ID_col = 'cyl', sep_row = T, round_weighting = T)
