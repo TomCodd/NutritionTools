@@ -156,7 +156,7 @@ The Fuzzy Matcher, as mentioned in its description, has certain data frame input
 
 This first method only use base R functions.
 
-```         
+``` r        
 breakfast_df_2col <- breakfast_df[,c(1,2)]
 extensive_food_db_2col <- extensive_food_db[,c(1,2)]
 ```
@@ -167,7 +167,7 @@ Using the square brackets, we can tell R that we only want two columns, which we
 
 This methods make use of the select function in the dplyr package.
 
-```
+``` r
 breakfast_df_2col <- breakfast_df %>% select("ID", "food_name")
 extensive_food_db_2col <- extensive_food_db %>% select("item_ID", "food_item_name")
 ```
@@ -180,7 +180,7 @@ Both these methods have identical outputs.
 
 In order to call the Fuzzy Matcher we simply use the following command:
 
-```
+``` r
 Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col)
 ```
 
@@ -194,7 +194,7 @@ Once called the Fuzzy Matcher will look at the similarity between each of the fo
 
 If we were to use the focus term in this example, the command would be:
 
-```
+``` r
 Fuzzy_Matcher(df1 = breakfast_df_2col, df2 = extensive_food_db_2col, focus_term = "raw")
 ```
 
@@ -204,20 +204,17 @@ Once the potential matches are found, the Fuzzy Matcher will open a pop-up windo
 
 
 
-![](docs/reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
-
-
-![](reference/figures/breakfast_FM_table.png){width="150" style="float:right"}
-
-![](man/figures/breakfast_FM_table.png){width="150" style="float:right"}
+![](reference/figures/breakfast_FM_table.PNG){width="150" style="float:right"}
 
 
 ### Selecting Matches
 
 The table contains 7 columns - the ID and item name column of df1, the ID and item name column of df2, a 'Correct Match' tickbox column for you to select the correct potential match from, and a 'Confidence' column for you to select the match confidence from.
 
-Each item from df1 can have up to 5 potential matches from df2 - as we can see in the above image, as
+Each item from df1 can have up to 5 potential matches from df2 - as we can see in the above image, as Orange Juice has 3 potential matches; Orange Juice, Apple Juice, and Mango Juice. In this case we believe Orange Juice should be matched with Orange Juice, so we select the tickbox in the row which contains this match. As soon as we do this the other potential matches for Orange Juice get dropped to the bottom of the table, and are no longer selectable - this is to prevent accidental multimatching to a single item.
 
 ### Match confidences
 
 For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low. For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* might be marked as high confidence - we are sure that all factors of this match are correct. Matching *'whole cows milk'* to *'whole, raw cows milk'* might be a medium confidence match, depending on how important you think it being raw is. Matching *'milk'* to *'whole, raw cows milk'* might be low confidence - we are assuming its cows milk, we're assuming that its whole milk, and we're assuming that its not pasturised. An individual's or organisations definition of what constitutes a high, medium or low match are subjective and potentially use-dependent, but these values should give a good range of potential inputs to pick from.
+
+
