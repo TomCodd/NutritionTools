@@ -234,8 +234,9 @@ we will subset the 2 original input columns.</p>
 <h5 id="subsetting-with-base-r">Subsetting with base R<a class="anchor" aria-label="anchor" href="#subsetting-with-base-r"></a>
 </h5>
 <p>This first method only use base R functions.</p>
-<pre><code><span><span class="va">breakfast_df_2col</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">extensive_food_db_2col</span> <span class="op">&lt;-</span> <span class="va">extensive_food_db</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">breakfast_df_2col</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">extensive_food_db_2col</span> <span class="op">&lt;-</span> <span class="va">extensive_food_db</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Using the square brackets, we can tell R that we only want two
 columns, which we have selected to be columns 1 and 2, in that order -
 because column 1 is the ID column we want, and column 2 is the item name
@@ -250,8 +251,9 @@ column (1).</p>
 </h5>
 <p>This methods make use of the select function in the dplyr
 package.</p>
-<pre><code><span><span class="va">breakfast_df_2col</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"food_name"</span><span class="op">)</span></span>
-<span><span class="va">extensive_food_db_2col</span> <span class="op">&lt;-</span> <span class="va">extensive_food_db</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"item_ID"</span>, <span class="st">"food_item_name"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">breakfast_df_2col</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"food_name"</span><span class="op">)</span></span>
+<span><span class="va">extensive_food_db_2col</span> <span class="op">&lt;-</span> <span class="va">extensive_food_db</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"item_ID"</span>, <span class="st">"food_item_name"</span><span class="op">)</span></span></code></pre></div>
 <p>Using the dplyr select tool, instead of picking the columns we want
 by the column numbers, we are instead selecting them by the column names
 - once again selecting the ID column name first, and then the food name
@@ -265,7 +267,8 @@ column.</p>
 </h3>
 <p>In order to call the Fuzzy Matcher we simply use the following
 command:</p>
-<pre><code><span><span class="fu"><a href="../reference/Fuzzy_Matcher.html">Fuzzy_Matcher</a></span><span class="op">(</span>df1 <span class="op">=</span> <span class="va">breakfast_df_2col</span>, df2 <span class="op">=</span> <span class="va">extensive_food_db_2col</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/Fuzzy_Matcher.html">Fuzzy_Matcher</a></span><span class="op">(</span>df1 <span class="op">=</span> <span class="va">breakfast_df_2col</span>, df2 <span class="op">=</span> <span class="va">extensive_food_db_2col</span><span class="op">)</span></span></code></pre></div>
 <p>Deciding which data frame is df1 and which is df2 is important in
 certain applications. As a general rule the larger dataset should be df2
 - the list which items from df1 search through for matches.</p>
@@ -289,7 +292,8 @@ good a match, but they still might give you more options for you to
 decide between.</p>
 <p>If we were to use the focus term in this example, the command would
 be:</p>
-<pre><code><span><span class="fu"><a href="../reference/Fuzzy_Matcher.html">Fuzzy_Matcher</a></span><span class="op">(</span>df1 <span class="op">=</span> <span class="va">breakfast_df_2col</span>, df2 <span class="op">=</span> <span class="va">extensive_food_db_2col</span>, focus_term <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/Fuzzy_Matcher.html">Fuzzy_Matcher</a></span><span class="op">(</span>df1 <span class="op">=</span> <span class="va">breakfast_df_2col</span>, df2 <span class="op">=</span> <span class="va">extensive_food_db_2col</span>, focus_term <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -297,9 +301,7 @@ be:</p>
 </h3>
 <p>Once the potential matches are found, the Fuzzy Matcher will open a
 pop-up window, with an interactive table in it.</p>
-<p><img src="docs/reference/figures/breakfast_FM_table.png" style="float:right" width="150"></p>
-<p><img src="reference/figures/breakfast_FM_table.png" style="float:right" width="150"></p>
-<p><img src="reference/figures/breakfast_FM_table.png" style="float:right" width="150"></p>
+<p><img src="reference/figures/breakfast_FM_table.PNG" style="float:right" width="150"></p>
 <div class="section level4">
 <h4 id="selecting-matches">Selecting Matches<a class="anchor" aria-label="anchor" href="#selecting-matches"></a>
 </h4>
@@ -308,7 +310,13 @@ the ID and item name column of df2, a ‘Correct Match’ tickbox column for
 you to select the correct potential match from, and a ‘Confidence’
 column for you to select the match confidence from.</p>
 <p>Each item from df1 can have up to 5 potential matches from df2 - as
-we can see in the above image, as</p>
+we can see in the above image, as Orange Juice has 3 potential matches;
+Orange Juice, Apple Juice, and Mango Juice. In this case we believe
+Orange Juice should be matched with Orange Juice, so we select the
+tickbox in the row which contains this match. As soon as we do this the
+other potential matches for Orange Juice get dropped to the bottom of
+the table, and are no longer selectable - this is to prevent accidental
+multimatching to a single item.</p>
 </div>
 <div class="section level4">
 <h4 id="match-confidences">Match confidences<a class="anchor" aria-label="anchor" href="#match-confidences"></a>
