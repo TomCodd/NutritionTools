@@ -204,17 +204,33 @@ Once the potential matches are found, the Fuzzy Matcher will open a pop-up windo
 
 
 
-![](reference/figures/breakfast_FM_table.PNG){width="150" style="float:right"}
+![](html-figures/breakfast_FM_table.PNG)
 
 
 ### Selecting Matches
 
 The table contains 7 columns - the ID and item name column of df1, the ID and item name column of df2, a 'Correct Match' tickbox column for you to select the correct potential match from, and a 'Confidence' column for you to select the match confidence from.
 
+![](html-figures/breakfast_FM_table_OJ_confidence.PNG)
+
 Each item from df1 can have up to 5 potential matches from df2 - as we can see in the above image, as Orange Juice has 3 potential matches; Orange Juice, Apple Juice, and Mango Juice. In this case we believe Orange Juice should be matched with Orange Juice, so we select the tickbox in the row which contains this match. As soon as we do this the other potential matches for Orange Juice get dropped to the bottom of the table, and are no longer selectable - this is to prevent accidental multimatching to a single item.
+
+![](html-figures/breakfast_FM_table_OJ_selected.PNG)
 
 ### Match confidences
 
-For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low. For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* might be marked as high confidence - we are sure that all factors of this match are correct. Matching *'whole cows milk'* to *'whole, raw cows milk'* might be a medium confidence match, depending on how important you think it being raw is. Matching *'milk'* to *'whole, raw cows milk'* might be low confidence - we are assuming its cows milk, we're assuming that its whole milk, and we're assuming that its not pasturised. An individual's or organisations definition of what constitutes a high, medium or low match are subjective and potentially use-dependent, but these values should give a good range of potential inputs to pick from.
+For each match, a confidence value must be selected. There are 3 potential confidence values for you to pick from - High, Medium, and Low. 
 
+![](html-figures/breakfast_FM_table_OJ_confidence.PNG)
+
+For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* might be marked as high confidence - we are sure that all factors of this match are correct. Matching *'whole cows milk'* to *'whole, raw cows milk'* might be a medium confidence match, depending on how important you think it being raw is. Matching *'milk'* to *'whole, raw cows milk'* might be low confidence - we are assuming its cows milk, we're assuming that its whole milk, and we're assuming that its not pasturised. An individual's or organisations definition of what constitutes a high, medium or low match are subjective and potentially use-dependent, but these values should give a good range of potential inputs to pick from.
+
+We believe that the Orange Juice match is a high confidence match, and so that is the option we will pick.
+
+
+##Finishing the Matching
+
+Once all the correct matches are completed, the table should look something like this:
+
+![](html-figures/breakfast_FM_table_fully_matched.PNG)
 
