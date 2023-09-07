@@ -224,7 +224,7 @@ For example, matching *'milk, whole, (cows), raw'* to *'whole, raw cows milk'* m
 
 We believe that the Orange Juice match is a high confidence match, and so that is the option we will pick.
 
-##Finishing the Matching
+## Finishing the Matching
 
 Once all the correct matches are completed, the table should look something like this:
 
