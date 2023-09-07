@@ -42,7 +42,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Fuzzy-Matcher-Guide.html">Fuzzy-Matcher-Guide</a>
-    <a class="dropdown-item" href="../articles/my-vignette.html">my-vignette</a>
   </div>
 </li>
       </ul>
@@ -344,7 +343,49 @@ and so that is the option we will pick.</p>
 <p>Once all the correct matches are completed, the table should look
 something like this:</p>
 <p><img src="html-figures/breakfast_FM_table_fully_matched.PNG"></p>
+<p>Once done select the “All matches identified” button on the top-left
+of the page. This will open another pop-up window, giving you a few
+options for saving your matches.</p>
+<p><img src="html-figures/FM_Save_Options.PNG"></p>
+<p>The first option is a checkbox, asking whether you want to strip the
+match data back to the bare bones required to relink it to other data -
+if this is selected then the output will only contain the item ID from
+df1, the item ID from df2, and the match confidence, in a table. If it
+isn’t selected then the output will contain the food item names as
+well.</p>
+<p>Then there is the option to save it as an R object, or save the
+matches as a csv. If R object is selected then a data frame output with
+the variable name specified in the save options will appear for you to
+continue to work on. If the csv option is selected, then a csv will be
+created in your R projects root location, with a tidied version of the
+save file name you have selected.</p>
+<p>Once the options you want have been selected, you have finished using
+the Fuzzy Matcher - a new pop-up window will appear with some stats
+about the session (number of matches and how long they took), and once
+you click the close option, the Fuzzy Matcher will close.</p>
+<p><img src="html-figures/FM_close_screen.PNG"></p>
 </div>
+</div>
+<div class="section level3">
+<h3 id="after-the-fuzzy-matcher">After the Fuzzy Matcher<a class="anchor" aria-label="anchor" href="#after-the-fuzzy-matcher"></a>
+</h3>
+<p>Once the matches have been outputted, it is easy to re-link the
+output to the original files.</p>
+<p>The merge tool links items from multiple datasets provided they have
+matching ID’s and matching ID column names. The stripped version of the
+Fuzzy matcher output automatically restores the ID column names to the
+originals for each respective data frame (ID and item_ID), and so this
+merging can be done easily.</p>
+<p>This code chunk comprises two merges - the first one merging the
+fuzzy matcher outputs with the breakfast_df data frame, and then the
+output of this merge is merged with the extensive_food_db data
+frame.</p>
+<p>In this example the Fuzzy Matcher Output was called
+‘fuzzy_match_outputs’.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fm_outputs_merged</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">fuzzy_match_outputs</span>, <span class="va">breakfast_df</span>, <span class="st">"ID"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fm_outputs_merged</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">fm_outputs_merged</span>, <span class="va">extensive_food_db</span>, <span class="st">"item_ID"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
