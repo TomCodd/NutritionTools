@@ -2,7 +2,7 @@
 % Please edit documentation in R/DecimalSystemCheck.R
 \name{Decimal_System_Checker}
 \alias{Decimal_System_Checker}
-\title{A tool to test the integrity of a decimal system in a dataframe.}
+\title{A tool to test the integrity of a decimal system in a dataframe}
 \usage{
 Decimal_System_Checker(df, first, second, third, fourth)
 }

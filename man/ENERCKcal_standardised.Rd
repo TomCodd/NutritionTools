@@ -2,7 +2,7 @@
 % Please edit documentation in R/ENERCKcal_Standardiser.R
 \name{ENERCKcal_standardised}
 \alias{ENERCKcal_standardised}
-\title{A function used to calculate standardized Energy values in kcal.}
+\title{A function used to calculate standardized Energy values in kcal}
 \usage{
 ENERCKcal_standardised(PROTg, FATg_standardised, CHOAVLDFg, FIBTGg, ALCg)
 }

@@ -7,7 +7,7 @@
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' A tool to test the integrity of a decimal system in a dataframe.
+#' A tool to test the integrity of a decimal system in a dataframe
 #'
 #' @description This function reads in a dataframe, as well as the names of 2-4
 #'   columns which comprise the decimal system within that dataframe. It then

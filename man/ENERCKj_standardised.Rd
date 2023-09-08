@@ -2,7 +2,7 @@
 % Please edit documentation in R/ENERCKj_Standardiser.R
 \name{ENERCKj_standardised}
 \alias{ENERCKj_standardised}
-\title{A function used to calculate standardized Energy values in kJ.}
+\title{A function used to calculate standardized Energy values in kJ}
 \usage{
 ENERCKj_standardised(PROTg, FATg_standardised, CHOAVLDFg, FIBTGg, ALCg)
 }

@@ -7,7 +7,7 @@
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' A function used to calculate standardized Energy values in kJ.
+#' A function used to calculate standardized Energy values in kJ
 #'
 #' @description This function works as a basic calculator - The values for Total
 #'   Protein in grams \code{'PROTg'}, Total Fat in grams (ideally standardised)

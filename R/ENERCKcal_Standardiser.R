@@ -7,7 +7,7 @@
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' A function used to calculate standardized Energy values in kcal.
+#' A function used to calculate standardized Energy values in kcal
 #'
 #' @description This function works as a basic calculator - The values for Total
 #'   Protein in grams \code{'PROTg'}, Total Fat in grams (ideally standardised)
