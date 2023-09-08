@@ -10,7 +10,7 @@
 
 
 #' A GUI interface to match rows in two dataframes to each other via a fuzzy
-#' string search
+#' string search.
 #'
 #' @description This function reads in two dataframes, both comprised of an ID
 #' row and a name row. The name rows are matched based on fuzzy search

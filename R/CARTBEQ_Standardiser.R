@@ -7,7 +7,7 @@
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' Calculate a standardised CARTBEQ value from various inputs
+#' Calculate a standardised CARTBEQ value from various inputs.
 #'
 #' @description This function includes various ways of calculating a
 #'   standardised beta-carotene equivalents (CARTBEQ) value. The most

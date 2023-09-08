@@ -14,7 +14,7 @@
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' Insert summary rows between groups of rows in a data frame
+#' Insert summary rows between groups of rows in a data frame.
 #'
 #' @description This function analyses a data frame, sorting it based on the groups detailed in the group_ID_col,
 #' and inserts summary/mean rows in between each group.
