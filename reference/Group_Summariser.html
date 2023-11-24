@@ -18,7 +18,7 @@ A secondary option is for the sorting of items within their groups, using the se
     
     <a class="navbar-brand me-2" href="../index.html">NutritionTools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,7 @@ of each item is listed. All the data columns that need to be averaged need to be
 <span>  <span class="va">group_ID_col</span>,</span>
 <span>  <span class="va">secondary_sort_col</span>,</span>
 <span>  <span class="va">input_weighting_column</span>,</span>
+<span>  weighting_leniency <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  blank_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  sep_row <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  seq_col <span class="op">=</span> <span class="cn">F</span>,</span>
@@ -97,8 +98,12 @@ of each item is listed. All the data columns that need to be averaged need to be
 <dd><p>Optional - Specify a column which contains set weightings. If selected, these weightings will be used in the summariser instead of a set average. Where partial weightings are given for an item, the remaining matches will have their weightings split evenly between them.</p></dd>
 
 
+<dt>weighting_leniency</dt>
+<dd><p>Optional - default: <code>0</code> - Introduces some forgiveness in the 'group weightings must equal 1' rule. In some cases using existing weightings can lead to a total weighting value that is not equal to 1 (particularly if the weightings have been rounded in some way before using the Group Summariser). The inputted value is sets the range around 1 which the tool will accept - e.g. an input value of 0.03 will mean that the weighting total can be from 0.97 to 1.03.</p></dd>
+
+
 <dt>blank_cols</dt>
-<dd><p>Optional - Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.</p></dd>
+<dd><p>Optional -  Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.</p></dd>
 
 
 <dt>sep_row</dt>
