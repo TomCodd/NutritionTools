@@ -1,7 +1,7 @@
 Package: NutritionTools
 Type: Package
 Title: Tools for the Organisation, Matching, Calculation, and Summarisation of Nutrition Data
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("Thomas", "Codd", role = c("aut", "cre"), email = "tbc5@protonmail.com", comment = "https://github.com/TomCodd"),
              person("Lucia", "Segovia de la Revilla", role = c("aut", "ctb"), comment = "https://github.com/LuciaSegovia"))
 Maintainer: Thomas Codd <tbc5@protonmail.com>
@@ -17,7 +17,7 @@ Imports: dplyr,
     stats,
     stringr,
     tibble
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown
