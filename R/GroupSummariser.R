@@ -2,8 +2,9 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.2.4
+#Version: V1.3.0
 #Changelog:
+#v1.2.4 -> v1.3.0; New Feature - Added the ability to introduce leniency to the 'weightings must equal 1' rule when pre-existing weightings are used.
 #v1.2.3 -> v1.2.4; Bug Fix - issue where Summary Row label appeared as "SUMMARY ROW - NA" fixed
 #V1.2.2 -> V1.2.3; Bug Fix - Issue where weighting column for summary rows !=1 when pre-existing weighting columns aren't used fixed
 #V1.2.1 -> V1.2.2; Bug Fix - issue where averages row didn't appear fixed. Issue where weighting column for summary rows !=1 fixed
@@ -28,7 +29,8 @@
 #' @param group_ID_col Required - The column name specifying the groups that summary rows are created for.
 #' @param secondary_sort_col Optional - Specify the column that the results should be sorted by after they're sorted into groups.
 #' @param input_weighting_column Optional - Specify a column which contains set weightings. If selected, these weightings will be used in the summariser instead of a set average. Where partial weightings are given for an item, the remaining matches will have their weightings split evenly between them.
-#' @param blank_cols Optional - Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.
+#' @param weighting_leniency Optional - default: \code{0} - Introduces some forgiveness in the 'group weightings must equal 1' rule. In some cases using existing weightings can lead to a total weighting value that is not equal to 1 (particularly if the weightings have been rounded in some way before using the Group Summariser). The inputted value is sets the range around 1 which the tool will accept - e.g. an input value of 0.03 will mean that the weighting total can be from 0.97 to 1.03.
+#' @param blank_cols Optional -  Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.
 #' @param sep_row Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. \code{c("FCT Food Item Code", "FCT Food Name")} for the columns \code{FCT Food Item Code} and \code{FCT Food Name}.
 #' @param seq_col Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert a sequence column, numbering each item that goes into a summary row.
 #' @param weighting_col Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert a weighting factor for each item that goes into a summary row.
@@ -41,7 +43,7 @@
 #' @export
 
 
-Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighting_column, blank_cols = c(), sep_row = F, seq_col = F, weighting_col = F, round_weighting = T){
+Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighting_column, weighting_leniency = 0, blank_cols = c(), sep_row = F, seq_col = F, weighting_col = F, round_weighting = T){
 
   # Data input checking ----
 
@@ -49,26 +51,28 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
 
   numeric_cols <- dplyr::select_if(df, is.numeric) #identifies the numeric columns
 
-  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df)) #Checks to see if the df item is a data frame
-  stopifnot("df contains no numeric columns. Please ensure data columns are numeric" = length(numeric_cols) != 0) #checks to see that it has numeric columns
-  stopifnot("The group_ID_col is not a character or string - please input a character or string that is a column name in df, e.g. 'column one'" = is.character(group_ID_col)) #checks to see if the group_ID_col is a character string
-  stopifnot("The group_ID_col is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = group_ID_col %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df), #Checks to see if the df item is a data frame
+            "The group_ID_col is not a character or string - please input a character or string that is a column name in df, e.g. 'column one'" = is.character(group_ID_col), #checks to see if the group_ID_col is a character string
+            "The group_ID_col is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = group_ID_col %in% colnames(df), #Checks to see if the group_ID_col is in the list of column names for the df
+            "weighting_leniency is not a number. Please input a number between 0 and 1 for the weighting_leniency - e.g. weighting_leniency = 0.03" = is.numeric(weighting_leniency), #checks that the weighting_leniency is numeric.
+            "weighting_leniency is not between 0 and 1. Please input a number between 0 and 1 for the weighting_leniency - e.g. weighting_leniency = 0.03" = 0 <= weighting_leniency, #checks that the weighting_leniency is greater or equal to 0.
+            "weighting_leniency is not between 0 and 1. Please input a number between 0 and 1 for the weighting_leniency - e.g. weighting_leniency = 0.03" = 1 > weighting_leniency #checks that the weighting_leniency is less than 1.
+  )
 
   if(!missing(secondary_sort_col)){
-    stopifnot("The secondary_sort_col is not a character or string - please input a character or string that is a column name in df, e.g. 'column one'" = is.character(secondary_sort_col)) #checks to see if the secondary_sort_col is a character string
-    stopifnot("The secondary_sort_col is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = secondary_sort_col %in% colnames(df)) #Checks to see if the secondary_sort_col is in the list of column names for the df
+    stopifnot("The secondary_sort_col is not a character or string - please input a character or string that is a column name in df, e.g. 'column one'" = is.character(secondary_sort_col), #checks to see if the secondary_sort_col is a character string
+              "The secondary_sort_col is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = secondary_sort_col %in% colnames(df)) #Checks to see if the secondary_sort_col is in the list of column names for the df
   }
 
   if(!missing(input_weighting_column)){
-    stopifnot("The input_weighting_column is not a character or string - please input a character or string that is a column name in df, e.g. 'column two - weightings'" = is.character(input_weighting_column)) #checks to see if the input_weighting_column is a character string
-    stopifnot("The input_weighting_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two - weightings'" = input_weighting_column %in% colnames(df)) #Checks to see if the input_weighting_column is in the list of column names for the df
+    stopifnot("The input_weighting_column is not a character or string - please input a character or string that is a column name in df, e.g. 'column two - weightings'" = is.character(input_weighting_column), #checks to see if the input_weighting_column is a character string
+              "The input_weighting_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two - weightings'" = input_weighting_column %in% colnames(df)) #Checks to see if the input_weighting_column is in the list of column names for the df
   }
 
 
   # Table sorting ----
 
   #This makes sure the group ID column is a character string, finds the unique ID's and sorts by them
-
 
   df[[group_ID_col]] <- as.character(df[[group_ID_col]]) #Ensures the group_ID_col column is a character column
   group_IDs <- df[[group_ID_col]] #Creates a character string list of group ID's
@@ -84,17 +88,17 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
     weighting_col <- T #sets the weighting_col value to T
     weightings_column <- sorted_table[[input_weighting_column]] #identifies the weightings_column and creates a character list item from it
     weightings_column[weightings_column == ""] <- NA #replaces blank items in that list with NA
-    sorted_weights <- sum(as.numeric(weightings_column), na.rm = T) #adds up all the weights in that weightings column for this first group
     number_of_NA <- sum(is.na(weightings_column)) #finds the number of NA values in the weightings-column
+    sorted_weights <- sum(as.numeric(weightings_column), na.rm = T) #adds up all the weights in that weightings column for this first group
     remaining_total <- 1-sorted_weights #finds the total share of the weightings left over - i.e. 1 minus the weightings it can see and are already set
-    if(remaining_total < 0){ #checks to see if the remaining total is less than zero - i.e. the set weightings are greater than 1. stops if this is the case.
-      message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " are greater than 1. Weighting cannot be completed."))
+    if(remaining_total < 0-weighting_leniency){ #checks to see if the remaining total is less than zero- weighting_leniency - i.e. the set weightings are greater than 1, even accounting for the weighting_leniency. Stops if this is the case.
+      message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
       stop()
     }
     weightings_column[is.na(weightings_column)] <- remaining_total/number_of_NA #sets the NA columns to be an equal proportion of the unaccounted for weighting remainder
     sorted_table[[input_weighting_column]] <- as.numeric(weightings_column) #reassigns the input_weighting_column in the sorted_table (the start of the results table) to be the same as the weightings_column numeric values, with the filled-in missing weightings.
     weighting_total <- sum(sorted_table[[input_weighting_column]]) #finds the weightings total
-    if(weighting_total != 1){ #checks if the weightings_total is equal to 1 or not
+    if(weighting_total > 1+weighting_leniency | weighting_total < 1-weighting_leniency){ #checks if the weightings_total is close enough to 1 to count.
       message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " do not total 1. Weighting cannot be completed."))
       stop()
     }
@@ -183,15 +187,15 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
       sorted_weights <- sum(as.numeric(weightings_column), na.rm = T) #adds up all the weights in that weightings column for this first group
       number_of_NA <- sum(is.na(weightings_column)) #finds the number of NA values in the weightings-column
       remaining_total <- 1-sorted_weights #finds the total share of the weightings left over - i.e. 1 minus the weightings it can see and are already set
-      if(remaining_total < 0){ #checks to see if the remaining total is less than zero - i.e. the set weightings are greater than 1. stops if this is the case.
-        message(paste0("Error - weighting values for item ID ", unique(secondary_table[[group_ID_col]]), " are greater than 1. Weighting cannot be completed."))
+      if(remaining_total < 0-weighting_leniency){ #checks to see if the remaining total is less than zero- weighting_leniency - i.e. the set weightings are greater than 1, even accounting for the weighting_leniency. Stops if this is the case.
+        message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
         stop()
       }
       weightings_column[is.na(weightings_column)] <- remaining_total/number_of_NA #sets the NA columns to be an equal proportion of the unaccounted for weighting remainder
       secondary_table[[input_weighting_column]] <- as.numeric(weightings_column) #reassigns the input_weighting_column in the secondary_table (the start of the results table) to be the same as the weightings_column numeric values, with the filled-in missing weightings.
       weighting_total <- sum(secondary_table[[input_weighting_column]]) #finds the weightings total
-      if(weighting_total != 1){ #checks if the weightings_total is equal to 1 or not
-        message(paste0("Error - weighting values for item ID ", unique(secondary_table[[group_ID_col]]), " do not total 1. Weighting cannot be completed."))
+      if(weighting_total > 1+weighting_leniency | weighting_total < 1-weighting_leniency){ #checks if the weightings_total is close enough to 1 to count.
+        message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " do not total 1. Weighting cannot be completed."))
         stop()
       }
     }
