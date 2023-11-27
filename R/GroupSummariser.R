@@ -92,14 +92,14 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
     sorted_weights <- sum(as.numeric(weightings_column), na.rm = T) #adds up all the weights in that weightings column for this first group
     remaining_total <- 1-sorted_weights #finds the total share of the weightings left over - i.e. 1 minus the weightings it can see and are already set
     if(remaining_total < 0-weighting_leniency){ #checks to see if the remaining total is less than zero- weighting_leniency - i.e. the set weightings are greater than 1, even accounting for the weighting_leniency. Stops if this is the case.
-      message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
+      message(paste0("Error - weighting values for item ID ", group_ID_list[1], " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
       stop()
     }
     weightings_column[is.na(weightings_column)] <- remaining_total/number_of_NA #sets the NA columns to be an equal proportion of the unaccounted for weighting remainder
     sorted_table[[input_weighting_column]] <- as.numeric(weightings_column) #reassigns the input_weighting_column in the sorted_table (the start of the results table) to be the same as the weightings_column numeric values, with the filled-in missing weightings.
     weighting_total <- sum(sorted_table[[input_weighting_column]]) #finds the weightings total
     if(weighting_total > 1+weighting_leniency | weighting_total < 1-weighting_leniency){ #checks if the weightings_total is close enough to 1 to count.
-      message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " do not total 1. Weighting cannot be completed."))
+      message(paste0("Error - weighting values for item ID ", group_ID_list[1], " do not total 1. Weighting cannot be completed."))
       stop()
     }
   }
@@ -188,14 +188,14 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
       number_of_NA <- sum(is.na(weightings_column)) #finds the number of NA values in the weightings-column
       remaining_total <- 1-sorted_weights #finds the total share of the weightings left over - i.e. 1 minus the weightings it can see and are already set
       if(remaining_total < 0-weighting_leniency){ #checks to see if the remaining total is less than zero- weighting_leniency - i.e. the set weightings are greater than 1, even accounting for the weighting_leniency. Stops if this is the case.
-        message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
+        message(paste0("Error - weighting values for item ID ", group_ID_list[i], " are greater than 1 + weighting_leniency. Weighting cannot be completed."))
         stop()
       }
       weightings_column[is.na(weightings_column)] <- remaining_total/number_of_NA #sets the NA columns to be an equal proportion of the unaccounted for weighting remainder
       secondary_table[[input_weighting_column]] <- as.numeric(weightings_column) #reassigns the input_weighting_column in the secondary_table (the start of the results table) to be the same as the weightings_column numeric values, with the filled-in missing weightings.
       weighting_total <- sum(secondary_table[[input_weighting_column]]) #finds the weightings total
       if(weighting_total > 1+weighting_leniency | weighting_total < 1-weighting_leniency){ #checks if the weightings_total is close enough to 1 to count.
-        message(paste0("Error - weighting values for item ID ", unique(sorted_table[[group_ID_col]]), " do not total 1. Weighting cannot be completed."))
+        message(paste0("Error - weighting values for item ID ", group_ID_list[i], " do not total 1. Weighting cannot be completed."))
         stop()
       }
     }
