@@ -2,8 +2,9 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.3.1
+#Version: V1.3.2
 #Changelog:
+#v1.3.1 -> v1.3.2; Bug Fix - error where, after the first item, the Summary rows couldn't find the correct group ID and so outputted 'SUMMARY ROW - NA' fixed
 #v1.3.0 -> v1.3.1; Bug Fix - error messages were only outputting the first group ID as the group with the issue, even if that group was fine. Fixed.
 #v1.2.4 -> v1.3.0; New Feature - Added the ability to introduce leniency to the 'weightings must equal 1' rule when pre-existing weightings are used.
 #v1.2.3 -> v1.2.4; Bug Fix - issue where Summary Row label appeared as "SUMMARY ROW - NA" fixed
@@ -221,9 +222,9 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
             if(!missing(input_weighting_column)){
               if(colnames(secondary_table)[j] == input_weighting_column){ #and this column in the loop is the input weighting column
                 new_row_entry <- 1 #then the total value is set to 1, which will be the total value of the weights, after the checks in the previous section
-              }
-            } else {
+              } else {
               new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+              }
             }
           }
         } else { #If there is more than one unique value the 'else' statement gets used, and the following happens
