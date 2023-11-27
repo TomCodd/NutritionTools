@@ -2,8 +2,9 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.3.0
+#Version: V1.3.1
 #Changelog:
+#v1.3.0 -> v1.3.1; Bug Fix - error messages were only outputting the first group ID as the group with the issue, even if that group was fine. Fixed.
 #v1.2.4 -> v1.3.0; New Feature - Added the ability to introduce leniency to the 'weightings must equal 1' rule when pre-existing weightings are used.
 #v1.2.3 -> v1.2.4; Bug Fix - issue where Summary Row label appeared as "SUMMARY ROW - NA" fixed
 #V1.2.2 -> V1.2.3; Bug Fix - Issue where weighting column for summary rows !=1 when pre-existing weighting columns aren't used fixed
