@@ -2,8 +2,8 @@ Package: NutritionTools
 Type: Package
 Title: Tools for the Organisation, Matching, Calculation, and Summarisation of Nutrition Data
 Version: 1.0.1
-Authors@R: c(person("Thomas", "Codd", role = c("aut", "cre"), email = "tbc5@protonmail.com", comment = "https://github.com/TomCodd"),
-             person("Lucia", "Segovia de la Revilla", role = c("aut", "ctb"), comment = "https://github.com/LuciaSegovia"))
+Authors@R: c(person("Thomas", "Codd", role = c("aut", "cre"), email = "tbc5@protonmail.com", comment = c(ORCID = "0000-0002-4992-0591", "https://github.com/TomCodd")),
+             person("Lucia", "Segovia de la Revilla", role = c("aut", "ctb"), comment = c(ORCID = "0000-0001-7712-2020", "https://github.com/LuciaSegovia")))
 Maintainer: Thomas Codd <tbc5@protonmail.com>
 Description: A set of functions useful for the organisation, matching, 
     calculation, and summarising of Nutrition Data.
