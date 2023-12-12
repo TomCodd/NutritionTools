@@ -1,5 +1,9 @@
-# NutritionTools <a href="https://tomcodd.github.io/NutritionTools/"><img src="man/figures/logo.png" align="right" height="300" alt="NutritionTools website" /></a>
+# NutritionTools <a href="https://tomcodd.github.io/NutritionTools/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/TomCodd/NutritionTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TomCodd/NutritionTools/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+  
 ### Overview
 
 **NutritionTools** is an R package of functions to help with a wide range of calculations and processes that commonly occur when working with nutrition datasets. The goal behind the development was not to automatically do the work, but rather to help nutritionists and data scientists to complete these tasks more quickly while remaining in full control of the decisions being made, with clear notation of the decisions made at every step.
