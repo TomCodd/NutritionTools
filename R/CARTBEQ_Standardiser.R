@@ -121,7 +121,7 @@
 #'"Retinol (mcg)" = c(0, 7, 12, NA, 5, 2, 10, 6, "", 1), "comments" = c(
 #'"Imaginary values", "Completely fictional values", "Fictional values #2",
 #'"More fictional values", "Fictional #4", "Fictional no. 5", "fictional 6",
-#'"more fiction", "again, fiction", "Fictional number 9" ), check.names = F)
+#'"more fiction", "again, fiction", "Fictional number 9" ), check.names = FALSE)
 #'
 #'#In this case the data.frame we want to run through is called test_df.
 #'#However the standard INFOODS names haven't been used, so the assumed nutrient
