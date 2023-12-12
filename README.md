@@ -1,3 +1,5 @@
+# NutritionTools <a href="https://tomcodd.github.io/NutritionTools/"><img src="man/figures/logo.png" align="right" height="300" alt="NutritionTools website" /></a>
+
 ### Overview
 
 **NutritionTools** is an R package of functions to help with a wide range of calculations and processes that commonly occur when working with nutrition datasets. The goal behind the development was not to automatically do the work, but rather to help nutritionists and data scientists to complete these tasks more quickly while remaining in full control of the decisions being made, with clear notation of the decisions made at every step.
