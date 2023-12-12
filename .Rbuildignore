@@ -4,3 +4,4 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^vignettes/Fuzzy-Matcher-Guide\.Rmd\.orig$
