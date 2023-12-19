@@ -9,6 +9,7 @@ Group_Summariser(
   group_ID_col,
   secondary_sort_col,
   input_weighting_column,
+  weighting_leniency = 0,
   blank_cols = c(),
   sep_row = F,
   seq_col = F,
@@ -25,7 +26,9 @@ Group_Summariser(
 
 \item{input_weighting_column}{Optional - Specify a column which contains set weightings. If selected, these weightings will be used in the summariser instead of a set average. Where partial weightings are given for an item, the remaining matches will have their weightings split evenly between them.}
 
-\item{blank_cols}{Optional - Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.}
+\item{weighting_leniency}{Optional - default: \code{0} - Introduces some forgiveness in the 'group weightings must equal 1' rule. In some cases using existing weightings can lead to a total weighting value that is not equal to 1 (particularly if the weightings have been rounded in some way before using the Group Summariser). The inputted value is sets the range around 1 which the tool will accept - e.g. an input value of 0.03 will mean that the weighting total can be from 0.97 to 1.03.}
+
+\item{blank_cols}{Optional -  Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.}
 
 \item{sep_row}{Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. \code{c("FCT Food Item Code", "FCT Food Name")} for the columns \code{FCT Food Item Code} and \code{FCT Food Name}.}
 
