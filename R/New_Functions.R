@@ -455,24 +455,55 @@ CHOAVLDFg_std_creator_New <- function(df,
                                 ALCg_column = "ALCg",
                                 ASHg_column = "ASHg",
                                 comment = T,
-                                comment_col = "comments") {
+                                comment_col = "comments",
+                                NegativeToZero = T,
+                                NegativeValueDF = F) {
 
   #' @title Carbohydrates (calculated by difference) Calculator
-  #' @description Calculates CHOAVLDFg_std = (100 - (WATERg + PROTg + FATg_standardised + FBGTg + ASHg + ALCg)).
-  #' Column names are case sensitive and an error is returned if not found.
+  #' @description Calculates CHOAVLDFg_std = (100 - (WATERg + PROTg +
+  #'   FATg_standardised + FBGTg + ASHg + ALCg)). Column names are case
+  #'   sensitive and an error is returned if not found.
   #' @param df Required - the data.frame the data is currently stored in.
-  #' @param WATERg_column Required - default: \code{'WATERg'} - The name of the column containing Water/moisture content in grams per 100g of Edible Portion (EP).
-  #' @param PROCNTg_column Required - default: \code{'PROCNTg'} - Protein in grams per 100g of Edible Portion (EP), as reported in the original FCT and assumed to be calculated from nitrogen (NTg) content.
-  #' @param FAT_g_standardised_column Required - default: \code{'FAT_g_standardised'} - Fat content, unknown method of calculation, in grams per 100g of Edible Portion (EP).
-  #' @param FIBTGg_standardised_column Required - default: \code{'FIBTGg_standardised'} - Fibre content from combined Tagnames, with preference of Total dietary fibre by AOAC Prosky method, expressed in grams per 100g of Edible Portion (EP).
-  #' @param ALCg_column Required - default: \code{'ALCg'} - Alcohol in grams per 100g of Edible Portion (EP).
-  #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per 100g of Edible Portion (EP).
-  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.If comment is set to \code{TRUE} (as it is by default), when the function is
-  #'   run a comment describing the source of the \code{CHOAVLDFg_standardised} column is added to the comment_col. If no comment_col is selected, and \code{comment
-  #'   = T}, one is created, called \code{comments}.
-  #' @param comment_col Optional - default: \code{'comments'} - A potential input
-  #'   variable; the column which contains the metadata comments for the food item
-  #'   in question. Not required if the comment parameter is set to \code{FALSE}.
+  #' @param WATERg_column Required - default: \code{'WATERg'} - The name of the
+  #'   column containing Water/moisture content in grams per 100g of Edible
+  #'   Portion (EP).
+  #' @param PROCNTg_column Required - default: \code{'PROCNTg'} - Protein in
+  #'   grams per 100g of Edible Portion (EP), as reported in the original FCT
+  #'   and assumed to be calculated from nitrogen (NTg) content.
+  #' @param FAT_g_standardised_column Required - default:
+  #'   \code{'FAT_g_standardised'} - Fat content, unknown method of calculation,
+  #'   in grams per 100g of Edible Portion (EP).
+  #' @param FIBTGg_standardised_column Required - default:
+  #'   \code{'FIBTGg_standardised'} - Fibre content from combined Tagnames, with
+  #'   preference of Total dietary fibre by AOAC Prosky method, expressed in
+  #'   grams per 100g of Edible Portion (EP).
+  #' @param ALCg_column Required - default: \code{'ALCg'} - Alcohol in grams per
+  #'   100g of Edible Portion (EP).
+  #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
+  #'   100g of Edible Portion (EP).
+  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #'   If comment is set to \code{TRUE} (as it is by default), when the function
+  #'   is run a comment describing the source of the
+  #'   \code{CHOAVLDFg_standardised} column is added to the comment_col. If no
+  #'   comment_col is selected, and \code{comment = T}, one is created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if the comment parameter is set to
+  #'   \code{FALSE}. If set to true, and the comment_col entry is not found in
+  #'   the df, it will create a column with the name of the entry.
+  #' @param NegativeToZero Optional - default: \code{T} - \code{TRUE} or
+  #'   \code{FALSE}. If NegativeToZero is set to \code{TRUE} (as it is by
+  #'   default), when the function is run, if a CHOAVLDFg_standardised value is
+  #'   calculated to be below 0, then the value is set to 0. If the value is
+  #'   less than -5, a message is posted for visibility and flagging. If comment
+  #'   is also set to \code{TRUE} This change is logged in the Comments Column.
+  #' @param NegativeValueDF Optional - default: \code{F} - \code{TRUE} or
+  #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
+  #'   a copy of the input df with the the CHOAVLDFg_standardised column to a
+  #'   subset of that dataframe only showing CHOAVLDFg_standardised values that
+  #'   are less than 0, for manual inspection.
+  #'
+  #'
   #' @return Original FCT dataset with a new CHOAVLDFg_standardised column.
   #'
   #'
@@ -500,6 +531,15 @@ CHOAVLDFg_std_creator_New <- function(df,
   stopifnot("The FIBTGg_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FIBTGg_standardised_column]]))
   stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
+
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
+  stopifnot("The NegativeToZero parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeToZero))
+  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeValueDF))
+
+  if(NegativeValueDF == T){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
+    comment <- F
+  }
 
   df$CHOAVLDFg_standardised <- NA #This row creates the CHOAVLDFg_standardised column, and fills it with NA values
 
@@ -530,22 +570,85 @@ CHOAVLDFg_std_creator_New <- function(df,
       df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
-    #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
-    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+    if (NegativeToZero == T){ #If NegativeToZero is set to True, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
 
-    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
-    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+      # This is for rows with existing comments, and negative values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to 0")
+
+      # This is for rows without existing comments, and negative values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to 0")
+
+      # This is for rows with existing comments, and positive values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col], "; ", comment_message)
+
+      #This is for rows without existing comments, and positive values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(comment_message)
+
+
+    } else { #If NegativeToZero is not set to True, then the normal message appears.
+
+      #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+      #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+      df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+
+    }
+
   }
 
-  return(df)
+  BelowZeroNumber <- length(df[df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"]) #Sees how many values are less than 0.
+
+  if(BelowZeroNumber > 0){ #Triggers a warning if they are present.
+
+    Min_Number <- min(df$CHOAVLDFg_standardised) #Finds the lowest value.
+    Number_Below_Minus5 <- length(df[df$CHOAVLDFg_standardised < -5, "CHOAVLDFg_standardised"]) #Finds the nuimber of values less than -5.
+
+    message("---------------------------") #Prints a warning message.
+    message()
+    message(BelowZeroNumber, " CHOAVLDFg_standardised values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = T if you wish to inspect these values.")
+    message()
+    message("---------------------------")
+  }
+
+  if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
+    result_df <- df[df$CHOAVLDFg_standardised < 0,]
+  } else { #Otherwise does the normal process of setting negative values to 0.
+    result_df <- df
+    result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- 0
+  }
+
+  return(result_df)
 
 }
+
+#Test df for new comments on negative values.
+
+test_df_negative_values <- new_method_output[1:10,]
+
+#Row 1 is to test the no comments present bit
+test_df_negative_values[1, "CHOAVLDFg_standardised"] <- -6
+test_df_negative_values[1, "comments"] <- NA
+
+# Row 3 for the comments present bit
+test_df_negative_values[3, "CHOAVLDFg_standardised"] <- -5
+test_df_negative_values[3, "comments"] <- "example_comment"
+
+# Row 5 to test the no comments, 0 value bit
+test_df_negative_values[5, "CHOAVLDFg_standardised"] <- 0
+test_df_negative_values[5, "comments"] <- NA
+
+comment <- TRUE
+NegativeToZero <- TRUE
+comment_col = "comments"
+
+#df <- test_df_negative_values #Run this line, then line 559 to 584
 
 # ¬ Testing ----
 
 test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
 
-colnames(test_df)[colnames(test_df) == 'FATg'] <- 'FAT_g_standardised'
+colnames(test_df)[colnames(test_df) == 'FAT_g_std'] <- 'FAT_g_standardised'
 colnames(test_df)[colnames(test_df) == 'FIBTGg_standardised'] <- 'FIBTGg_std'
 
 library(dplyr)
@@ -572,6 +675,7 @@ parity_test <- signif(old_method_output$CHOAVLDFg_standardised, 10) == signif(ne
 print(table(parity_test))
 
 results_comparison <- old_method_output[, c(
+  "fdc_id.x",
   "WATERg",
   "PROCNTg",
   "FAT_g_standardised",
@@ -584,6 +688,12 @@ results_comparison <- old_method_output[, c(
 results_comparison$CHOAVLDFg_standardised_New <- new_method_output$CHOAVLDFg_standardised
 
 results_comparison$difference <- results_comparison$CHOAVLDFg_standardised - results_comparison$CHOAVLDFg_standardised_New
+
+calc_lessthanminusfive <- results_comparison[results_comparison$CHOAVLDFg_standardised_New < -5,]
+
+problematic_Carb_foods <- new_method_output[new_method_output$fdc_id.x %in% calc_lessthanminusfive$fdc_id.x, ]
+
+#write.csv(problematic_Carb_foods, "problematic_Carb_foods.csv")
 
 different_results <- results_comparison[!(signif(results_comparison$CHOAVLDFg_standardised, 10) == signif(results_comparison$CHOAVLDFg_standardised_New, 10)),]
 
