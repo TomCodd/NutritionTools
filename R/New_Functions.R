@@ -178,7 +178,9 @@ SOP_std_creator_New <- function(df,
                                 ALCg_column = "ALCg",
                                 ASHg_column = "ASHg",
                                 comment = T,
-                                comment_col = "comments") {
+                                comment_col = "comments",
+                                NegativeToZero = T,
+                                NegativeValueDF = F) {
 
   #' @title Sum of Proximate Calculator
   #' @description Calculates SOPg_standardised = (WATERg + PROCNTg + FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column + ALCg +ASHg).
@@ -198,6 +200,17 @@ SOP_std_creator_New <- function(df,
   #'   variable; the column which contains the metadata comments for the food item
   #'   in question. Not required if the comment parameter is set to \code{FALSE}.
   #' @return Original FCT dataset with a new SOPg_standardised column.
+  #' @param NegativeToZero Optional - default: \code{T} - \code{TRUE} or
+  #'   \code{FALSE}. If NegativeToZero is set to \code{TRUE} (as it is by
+  #'   default), when the function is run, if a SOPg_standardised value is
+  #'   calculated to be below 0, then the value is set to 0. If the value is
+  #'   less than -5, a message is posted for visibility and flagging. If comment
+  #'   is also set to \code{TRUE} This change is logged in the Comments Column.
+  #' @param NegativeValueDF Optional - default: \code{F} - \code{TRUE} or
+  #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
+  #'   a copy of the input df with the the SOPg_standardised column to a
+  #'   subset of that dataframe only showing SOPg_standardised values that
+  #'   are less than 0, for manual inspection.
   #' @examples
   #'
 
@@ -228,6 +241,15 @@ SOP_std_creator_New <- function(df,
   stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
+  stopifnot("The NegativeToZero parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeToZero))
+  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeValueDF))
+
+  if(NegativeValueDF == T){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
+    comment <- F
+  }
+
   df$SOPg_standardised <- NA #This row creates the SOPg_standardised column, and fills it with NA values
 
   #This adds all the columns together, ignoring NA results
@@ -252,21 +274,69 @@ SOP_std_creator_New <- function(df,
 
   # Inserting comment here
 
-  comment_message <- "SOPg_standardised calculated from constituents"
+  # Inserting comment here
+
+  comment_message <- "SOPg_standardised calculated from adding constituents"
 
   if (comment == T) {
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
-    #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
-    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+    if (NegativeToZero == T){ #If NegativeToZero is set to True, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
 
-    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
-    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+      # This is for rows with existing comments, and negative values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, "SOPg_standardised"], " reset to 0")
+
+      # This is for rows without existing comments, and negative values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, "SOPg_standardised"], " reset to 0")
+
+      # This is for rows with existing comments, and positive values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col], "; ", comment_message)
+
+      #This is for rows without existing comments, and positive values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col] <- paste0(comment_message)
+
+
+    } else { #If NegativeToZero is not set to True, then the normal message appears.
+
+      #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+      #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+      df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+
+    }
+
   }
 
-  return(df)
+  BelowZeroNumber <- length(df[df$SOPg_standardised < 0, "SOPg_standardised"]) #Sees how many values are less than 0.
+
+  if(BelowZeroNumber > 0){ #Triggers a warning if they are present.
+
+    Min_Number <- min(df$SOPg_standardised) #Finds the lowest value.
+    Number_Below_Minus5 <- length(df[df$SOPg_standardised < -5, "SOPg_standardised"]) #Finds the nuimber of values less than -5.
+
+    message("---------------------------") #Prints a warning message.
+    message()
+    message(BelowZeroNumber, " SOPg_standardised values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = T if you wish to inspect these values.")
+    message()
+    message("---------------------------")
+  }
+
+  if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
+    result_df <- df[df$SOPg_standardised < 0,]
+  } else { #Otherwise does the normal process of setting negative values to 0, if NegativeToZero is set to TRUE.
+    if (NegativeToZero == T){
+      result_df <- df
+      result_df[result_df$SOPg_standardised < 0, "SOPg_standardised"] <- 0
+    } else {
+      result_df <- df #If NegativeValueDF and NegativeToZero are set to F, then it just outputs the negative values.
+    }
+
+  }
+
+  return(result_df)
 
 }
 
@@ -346,9 +416,9 @@ nutri_combiner <-  function(data.df, var1, var2, var3, new_var){
 
   # Loop that prioritise in the other of the variables defined above (1->3)
   for(i in 1:nrow(data.df)){
-    print(i)
+    #print(i)
     if (!is.na(data.df[i, var1])) {
-      print(!is.na(data.df[i, var1]))
+      #print(!is.na(data.df[i, var1]))
       data.df[i, new_var] <- data.df[i, var1]
       data.df[i, "comments"] <- ifelse(!is.na(data.df[i, "comments"]),
                                        paste0(data.df[i, "comments"], ";", text, var1),
@@ -372,12 +442,188 @@ nutri_combiner <-  function(data.df, var1, var2, var3, new_var){
     if (is.na(data.df[i, var1]) & is.na(data.df[i, var2]) & is.na(data.df[i, var3])) {
       data.df[i, new_var] <- NA
     }
-    print(data.df[i, new_var])
+    #print(data.df[i, new_var])
   }
 
   return(data.df)
 
 }
+
+
+# ¬ New Version ----
+
+nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_column, var5_column, var6_column, new_var, comment = T, comment_col = "comments"){
+
+  #' @title Multi-column Nutrient Combiner
+  #' @description Combines nutrients or variables that are spread out over multiple columns into a single new column \code{new_var}, depending on a user-set hierarchy. The hierarchy is set so that \code{var1_column} is the main
+  #' variable, and the priority. If no values for \code{var1_column} are available (i.e. the \code{var1_column} has blanks, or NA values), then values from \code{var2_column} are used instead. If there are still blanks,
+  #' then values from \code{var3_column} are used, then \code{var4_column}, then \code{var5_column} and finally \code{var6_column}. Please note - the use of \code{var3_column} - \code{var6_column} are optional, however
+  #' \code{var1_column} and \code{var2_column} must be present. Comments can also be used to record the origin of these values.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param var1_column Required - The column name of the primary variable to pull values from. This should be the variable you most want to use.
+  #' @param var2_column Required - The column name of the secondary variable to pull values from. This should be the variable you most want to use, if you can't use \code{var1_column}.
+  #' @param var3_column Optional - The column name of the tertiary variable to pull values from. This should be the variable you most want to use, if you can't use \code{var1_column} or \code{var2_column}.
+  #' @param var4_column Optional - The column name of the fourth most appropriate variable to pull values from. This should be the next most appropriate variable after the ones selected for \code{var1_column}, \code{var2_column}, and \code{var3_column}.
+  #' @param var5_column Optional - The column name of the fifth most appropriate variable to pull values from, after the columns selected for \code{var1_column} to \code{var4_column}.
+  #' @param var6_column Optional - The column name of the sixth variable. This should be the least appropriate variable to use, as it will only be used if a value cannot be found using \code{var1_column} to \code{var5_column}.
+  #' @param new_var Required - The name of the new column that will be created by combining the variable columns.
+
+  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #'   If comment is set to \code{TRUE} (as it is by default), when the function
+  #'   is run a comment describing the source of the
+  #'   \code{CHOAVLDFg_standardised} column is added to the comment_col. If no
+  #'   comment_col is selected, and \code{comment = T}, one is created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if the comment parameter is set to
+  #'   \code{FALSE}. If set to true, and the comment_col entry is not found in
+  #'   the df, it will create a column with the name of the entry.
+  #' @return Original FCT dataset with a new column.
+
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The var1_column is not a column name in df - please input a string that is a column name in df, e.g. 'FATg'" = var1_column %in% colnames(df))
+  stopifnot("The var2_column is not a column name in df - please input a string that is a column name in df, e.g. 'FATCEg'" = var2_column %in% colnames(df))
+
+  #This checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
+
+  #This makes sure the new variable isn't missing.
+  stopifnot("The new_var variable is not set. Please use it, inputting the name of the new column you would like to combine the values into; e.g. 'FAT_g_standardised'" = !missing(new_var))
+
+  df[[new_var]] <- NA #Creates the new column, and sets the value to equal to NA
+
+  if (comment == T){
+    df$nutri_combiner_comment_col_temp <- NA
+  }
+
+  if(!missing(var6_column)){ #Starts with Var 6, if present
+    stopifnot("The var6_column is in use, but the input is not a column name in df - please input a string that is a column name in df, e.g. 'FATRNPg'" = var6_column %in% colnames(df)) #Checks to see if the column name is in the df
+    stopifnot("var6_column is in use, but var3_column is missing. Please use var3_column first." = !missing(var3_column)) #Checks to make sure all previous variables are filled
+    stopifnot("var6_column is in use, but var4_column is missing. Please use var4_column first." = !missing(var4_column))
+    stopifnot("var6_column is in use, but var5_column is missing. Please use var5_column first." = !missing(var5_column))
+
+
+    df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), new_var] <- df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), var6_column] #Where var 6 is not NA or blank, sets new_variable to be that value.
+
+    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 6
+      df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var6_column)
+    }
+  }
+
+  if(!missing(var5_column)){ #Then does Var 5, if present
+    stopifnot("The var5_column is in use, but the input is not a column name in df - please input a string that is a column name in df, e.g. 'FATRNg'" = var5_column %in% colnames(df)) #Checks to see if the column name is in the df
+    stopifnot("var5_column is in use, but var3_column is missing. Please use var3_column first." = !missing(var3_column)) #Checks to make sure all previous variables are filled
+    stopifnot("var5_column is in use, but var4_column is missing. Please use var4_column first." = !missing(var4_column))
+
+
+    df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), new_var] <- df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), var5_column] #Where var 5 is not NA or blank, sets new_variable to be that value.
+
+    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 5
+      df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var5_column)
+    }
+  }
+
+  if(!missing(var4_column)){ #Then does Var 4, if present
+    stopifnot("The var4_column is in use, but the input is not a column name in df - please input a string that is a column name in df, e.g. 'FASATg'" = var4_column %in% colnames(df)) #Checks to see if the column name is in the df
+    stopifnot("var4_column is in use, but var3_column is missing. Please use var3_column first." = !missing(var3_column)) #Checks to make sure the previous variable is filled
+
+
+    df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), new_var] <- df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), var4_column] #Where var 4 is not NA or blank, sets new_variable to be that value.
+
+    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 4
+      df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var4_column)
+    }
+  }
+
+  if(!missing(var3_column)){ #Then does Var 3, if present
+    stopifnot("The var3_column is in use, but the input is not a column name in df - please input a string that is a column name in df, e.g. 'FAT_g'" = var3_column %in% colnames(df)) #Checks to see if the column name is in the df
+
+    df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), new_var] <- df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), var3_column] #Where var 3 is not NA or blank, sets new_variable to be that value.
+
+    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 3
+      df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var3_column)
+    }
+  }
+
+  #Then does Var 2 - which must be there.
+
+  df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), new_var] <- df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), var2_column] #Where var 2 is not NA or blank, sets new_variable to be that value.
+
+  if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 2
+    df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var2_column)
+  }
+
+
+  #Then does Var 1 - which must be there.
+
+  df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), new_var] <- df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), var1_column] #Where var 1 is not NA or blank, sets new_variable to be that value.
+
+  if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 1
+    df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var1_column)
+  }
+
+
+
+  #Then sorts out the comments - depending on whether there is already an existing column or not.
+
+  if (comment == T) {
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
+    }
+
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), "nutri_combiner_comment_col_temp"])
+
+    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), "nutri_combiner_comment_col_temp"]
+
+    df$nutri_combiner_comment_col_temp <- NULL # Remove the temp column
+  }
+
+
+
+
+  return(df)
+
+}
+
+# ¬ nutri-combiner testing ----
+
+# ¬¬ Parity and speed testing ----
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+time_1 <- Sys.time()
+
+old_method_output <- nutri_combiner(test_df, "FATg", "FAT_g", "FATCEg", "old_FAT_standardisation")
+
+time_2 <- Sys.time()
+
+new_method_output <- nutri_combiner_new(test_df, "FATg", "FAT_g", "FATCEg", new_var = "new_FAT_standardisation")
+
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+parity_test <- signif(old_method_output$old_FAT_standardisation, 10) == signif(new_method_output$new_FAT_standardisation, 10)
+
+print(table(parity_test))
+
+# RESULTS
+
+# All good on the parity. All the same.
+# Speed dramatically improved. Old method: 1.61-1.79 seconds, New method: 0.0320 - 0.0339 seconds. 51 times faster.
+
+# ¬¬ Comment and heirachy testing ----
+
+
+
+
 
 
 # CHOAVLDFg_std_creator ----
@@ -613,36 +859,19 @@ CHOAVLDFg_std_creator_New <- function(df,
 
   if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
     result_df <- df[df$CHOAVLDFg_standardised < 0,]
-  } else { #Otherwise does the normal process of setting negative values to 0.
-    result_df <- df
-    result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- 0
+  } else { #Otherwise does the normal process of setting negative values to 0, if NegativeToZero is set to TRUE.
+    if (NegativeToZero == T){
+      result_df <- df
+      result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- 0
+    } else {
+      result_df <- df #If NegativeValueDF and NegativeToZero are set to F, then it just outputs the negative values.
+    }
+
   }
 
   return(result_df)
 
 }
-
-#Test df for new comments on negative values.
-
-test_df_negative_values <- new_method_output[1:10,]
-
-#Row 1 is to test the no comments present bit
-test_df_negative_values[1, "CHOAVLDFg_standardised"] <- -6
-test_df_negative_values[1, "comments"] <- NA
-
-# Row 3 for the comments present bit
-test_df_negative_values[3, "CHOAVLDFg_standardised"] <- -5
-test_df_negative_values[3, "comments"] <- "example_comment"
-
-# Row 5 to test the no comments, 0 value bit
-test_df_negative_values[5, "CHOAVLDFg_standardised"] <- 0
-test_df_negative_values[5, "comments"] <- NA
-
-comment <- TRUE
-NegativeToZero <- TRUE
-comment_col = "comments"
-
-#df <- test_df_negative_values #Run this line, then line 559 to 584
 
 # ¬ Testing ----
 
@@ -658,7 +887,7 @@ old_method_output <- CHOAVLDFg_std_creator(test_df)
 
 time_2 <- Sys.time()
 
-new_method_output <- CHOAVLDFg_std_creator_New(test_df, FIBTGg_standardised_column = "FIBTGg_std")
+new_method_output <- CHOAVLDFg_std_creator_New(test_df, FIBTGg_standardised_column = "FIBTGg_std", NegativeToZero = F)
 
 time_3 <- Sys.time()
 
@@ -699,8 +928,55 @@ different_results <- results_comparison[!(signif(results_comparison$CHOAVLDFg_st
 
 print(paste0("Largest difference is ", max(results_comparison$difference)))
 
+#Problematic Carbs testing ----
+
+
+
+Average_F0875_CPC <- test_df[test_df$Grouping_CPC %in% "Average_F0875",]
+Average_F0875_CPC_stdCHO <- CHOAVLDFg_std_creator_New(Average_F0875_CPC, FAT_g_standardised_column = "FAT_g_std", NegativeToZero = F)
+Average_F0875_CPC_stdCHO[Average_F0875_CPC_stdCHO$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"] <- mean(Average_F0875_CPC_stdCHO[!(Average_F0875_CPC_stdCHO$Grouping_FAO_Code %in% "SUMMARY ROW - 0875"), "CHOAVLDFg_standardised"])
+Average_F0875_CPC_stdCHO_set0 <- CHOAVLDFg_std_creator_New(Average_F0875_CPC, FAT_g_standardised_column = "FAT_g_std")
+Average_F0875_CPC_stdCHO_set0[Average_F0875_CPC_stdCHO_set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"] <- mean(Average_F0875_CPC_stdCHO_set0[!(Average_F0875_CPC_stdCHO_set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875"), "CHOAVLDFg_standardised"])
+Average_F0875_CPC_stdCHO_selectiveset0 <- CHOAVLDFg_std_creator_New(Average_F0875_CPC, FAT_g_standardised_column = "FAT_g_std", NegativeToZero = F)
+Average_F0875_CPC_stdCHO_selectiveset0[Average_F0875_CPC_stdCHO_selectiveset0$CHOAVLDFg_standardised < 0 & Average_F0875_CPC_stdCHO_selectiveset0$CHOAVLDFg_standardised > -5, "CHOAVLDFg_standardised"] <- 0
+Average_F0875_CPC_stdCHO_selectiveset0[Average_F0875_CPC_stdCHO_selectiveset0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"] <- mean(Average_F0875_CPC_stdCHO_selectiveset0[!(Average_F0875_CPC_stdCHO_selectiveset0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875"), "CHOAVLDFg_standardised"])
+Average_F0875_CPC_stdCHO_Nobelowminus5set0 <- Average_F0875_CPC_stdCHO_selectiveset0[Average_F0875_CPC_stdCHO_selectiveset0$CHOAVLDFg_standardised >= 0,]
+Average_F0875_CPC_stdCHO_Nobelowminus5set0[Average_F0875_CPC_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"] <- mean(Average_F0875_CPC_stdCHO_Nobelowminus5set0[!(Average_F0875_CPC_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875"), "CHOAVLDFg_standardised"])
+
+
+print(paste0("Average with 0 to -5 set to 0: ", Average_F0875_CPC_stdCHO_selectiveset0[Average_F0875_CPC_stdCHO_selectiveset0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"], ", Average values with < -5 removed: ", Average_F0875_CPC_stdCHO_Nobelowminus5set0[Average_F0875_CPC_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"], ". Average value with values < -5 set to 0: ", Average_F0875_CPC_stdCHO_set0[Average_F0875_CPC_stdCHO_set0$Grouping_FAO_Code %in% "SUMMARY ROW - 0875", "CHOAVLDFg_standardised"]))
+
+
+unique_problematic_entries <- unique(problematic_Carb_foods$Grouping_CPC)
+
+for (i in 1:length(unique_problematic_entries)){
+  problematic_CPC_Code <- unique_problematic_entries[i]
+  problematic_item <- test_df[test_df$Grouping_CPC %in% problematic_CPC_Code,]
+  problematic_item_stdCHO <- CHOAVLDFg_std_creator_New(problematic_item, NegativeToZero = F)
+  sumrow_text <- tail(problematic_item$Grouping_FAO_Code, 1)
+  FAO_Code <- head(problematic_item$Grouping_FAO_Code, 1)
+  problematic_item_stdCHO[problematic_item_stdCHO$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"] <- mean(problematic_item_stdCHO[!(problematic_item_stdCHO$Grouping_FAO_Code %in% sumrow_text), "CHOAVLDFg_standardised"])
+
+  problematic_item_stdCHO_set0 <- CHOAVLDFg_std_creator_New(problematic_item)
+  problematic_item_stdCHO_set0[problematic_item_stdCHO_set0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"] <- mean(problematic_item_stdCHO_set0[!(problematic_item_stdCHO_set0$Grouping_FAO_Code %in% sumrow_text), "CHOAVLDFg_standardised"])
+  problematic_item_stdCHO_selectiveset0 <- CHOAVLDFg_std_creator_New(problematic_item, NegativeToZero = F)
+  problematic_item_stdCHO_selectiveset0[problematic_item_stdCHO_selectiveset0$CHOAVLDFg_standardised < 0 & problematic_item_stdCHO_selectiveset0$CHOAVLDFg_standardised > -5, "CHOAVLDFg_standardised"] <- 0
+  problematic_item_stdCHO_selectiveset0[problematic_item_stdCHO_selectiveset0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"] <- mean(problematic_item_stdCHO_selectiveset0[!(problematic_item_stdCHO_selectiveset0$Grouping_FAO_Code %in% sumrow_text), "CHOAVLDFg_standardised"])
+  problematic_item_stdCHO_Nobelowminus5set0 <- problematic_item_stdCHO_selectiveset0[problematic_item_stdCHO_selectiveset0$CHOAVLDFg_standardised >= 0,]
+  problematic_item_stdCHO_Nobelowminus5set0[problematic_item_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"] <- mean(problematic_item_stdCHO_Nobelowminus5set0[!(problematic_item_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% sumrow_text), "CHOAVLDFg_standardised"])
+
+  print(paste0("FAO Code: ", FAO_Code, ". Average with 0 to -5 set to 0: ", problematic_item_stdCHO_selectiveset0[problematic_item_stdCHO_selectiveset0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"], ", Average values with < -5 removed: ", problematic_item_stdCHO_Nobelowminus5set0[problematic_item_stdCHO_Nobelowminus5set0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"], ". Average value with values < 0 set to 0: ", problematic_item_stdCHO_set0[problematic_item_stdCHO_set0$Grouping_FAO_Code %in% sumrow_text, "CHOAVLDFg_standardised"]))
+
+
+}
+
+
 # ¬¬ Results ----
 # Differences are in the order of 10^-14 out. So insignificant.
+# Speed tests: Old method: 0.120, 0.128, 0.124, 0.171
+# Speed tests: New method: 0.00520, 0.00485, 0.00520, 0.00498
+
+# Speed improvement of ~23x
 
 
 
