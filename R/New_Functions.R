@@ -208,7 +208,7 @@ SOP_std_creator_2 <- function(df,
 # ¬ New Version ----
 
 
-SOP_std_creator_New <- function(df,
+SOPg_calculator <- function(df,
                                 WATERg_column = "WATERg",
                                 PROCNTg_column = "PROCNTg",
                                 FAT_g_standardised_column = "FAT_g_standardised",
@@ -218,11 +218,13 @@ SOP_std_creator_New <- function(df,
                                 ASHg_column = "ASHg",
                                 comment = T,
                                 comment_col = "comments",
-                                OutsideBoundsReplacement = "nothing",
+                                OutsideBoundsReplacement = "none",
+                                LowerBound = 93,
+                                UpperBound = 107,
                                 OutsideBoundsDF = F) {
 
   #' @title Sum of Proximate Calculator
-  #' @description Calculates SOPg_standardised = (WATERg + PROCNTg +
+  #' @description Calculates SOPg_calculated = (WATERg + PROCNTg +
   #'   FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column
   #'   + ALCg +ASHg). Column names are case sensitive and an error is returned
   #'   if not found.
@@ -248,33 +250,109 @@ SOP_std_creator_New <- function(df,
   #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
   #'   100g of Edible Portion (EP).
   #' @param comment Optional - default: \code{T} - \code{TRUE} or
-  #'   \code{FALSE}.If comment is set to \code{TRUE} (as it is by default), when
+  #'   \code{FALSE}. If comment is set to \code{TRUE} (as it is by default), when
   #'   the function is run a comment describing the source of the
-  #'   \code{SOPg_standardised} column is added to the comment_col. If no
+  #'   \code{SOPg_calculated} column is added to the comment_col. If no
   #'   comment_col is selected, and \code{comment  T}, one is created, called
   #'   \code{comments}.
   #' @param comment_col Optional - default: \code{'comments'} - A potential
   #'   input variable; the column which contains the metadata comments for the
   #'   food item in question. Not required if the comment parameter is set to
   #'   \code{FALSE}.
-  #' @return Original FCT dataset with a new SOPg_standardised column.
-  #' @param OutsideBoundsReplacement Optional - default: \code{'nothing'} -
+  #' @return Original FCT dataset with a new SOPg_calculated column.
+  #' @param OutsideBoundsReplacement Optional - default: \code{'none'} -
   #'   Options are \code{'round'}, \code{NA}, \code{'remove'}, or
-  #'   \code{'nothing'}. Choose what happens to values that are outside of the
+  #'   \code{'none'}. Choose what happens to values that are outside of the
   #'   bounds. The ranges are set to FAO standards: 93-107 is considered
   #'   acceptable. This parameter decides what happens to those values less than
   #'   93, or over 107. If set to \code{round}, then outside of bound values are
   #'   set to the closest acceptable value (e.g. 90 -> 93, 111 -> 107. If set to
   #'   \code{NA}, they are replaced with NA. if set to \code{'remove'}, then
-  #'   those rows the \code{df} are removed. if set to \code{'nothing'},
+  #'   those rows are removed (including NA results). if set to \code{'none'},
   #'   then they are left as the out of bound values.
+  #' @param LowerBound Optional - default: \code{93} - Integer value. Sets the
+  #'   lower boundary for acceptable SOPg_calculated values, and therefore
+  #'   determines the values affected by \code{OutsideBoundsReplacement} and
+  #'   \code{OutsideBoundsDF}. FAO standards list 93 as the lower boundary for
+  #'   acceptable values, and 95 as the lower boundary for preferred values.
+  #' @param UpperBound Optional - default: \code{107} - Integer value. Sets the
+  #'   upper boundary for acceptable SOPg_calculated values, and therefore
+  #'   determines the values affected by \code{OutsideBoundsReplacement} and
+  #'   \code{OutsideBoundsDF}. FAO standards list 107 as the upper boundary for
+  #'   acceptable values, and 105 as the upper boundary for preferred values.
   #' @param OutsideBoundsDF Optional - default: \code{F} - \code{TRUE} or
   #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
-  #'   a copy of the input df with the the SOPg_standardised column to a subset
-  #'   of that dataframe only showing SOPg_standardised values that are out of
+  #'   a copy of the input df with the the SOPg_calculated column to a subset
+  #'   of that dataframe only showing SOPg_calculated values that are out of
   #'   bounds, for manual inspection.
   #' @examples
+  #' # Two example data.frames have been prepared to illustrate the
+  #' # SOPg_calculator. The first is a dataset of fictional food values to
+  #' # illustrate the various options in the function, and the second is a dataset
+  #' # with non-standard column names, to show how to specify columns.
   #'
+  #' # This is the first data.frame - before the SOPg_calculator has been used on it.
+  #' View(SOP_example_df)
+  #'
+  #' # First, an example of the standard usecase - calculate the SOPg_calculated
+  #' # value, without modifying out of bounds values.
+  #' nothing_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "none")
+  #' View(nothing_results)
+  #' # See the changes - the addition of the SOPg_calculated column, and the
+  #' # additions to the comments column.
+  #' #
+  #' #
+  #' # The second example shows the results when the Replacement option is set to NA
+  #' NA_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = NA)
+  #' View(NA_results)
+  #' # Check the SOP column and comments column again - see how values outside of
+  #' # bounds have been replaced with NA, and a note of this change logged in the
+  #' # comments column.
+  #' #
+  #' #
+  #' # The third example shows the results when the Replacement option is set to 'remove'
+  #' remove_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "remove")
+  #' View(remove_results)
+  #' # See how the out of bounds values have been removed.
+  #' #
+  #' #
+  #' # The fourth example is of the rounding results.
+  #' rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "round")
+  #' View(rounding_results)
+  #' # Look at the SOP_standardised values - and see how they've been capped to the bounds
+  #' # if they would have been out fo bounds, with a note of the change in the comments.
+  #' #
+  #' #
+  #' # The fifth example is of the out of bounds dataframe - an option useful for identifying
+  #' # and examining out of bounds results.
+  #' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = T)
+  #' View(OoB_DF_results)
+  #' # Only the out of bounds results are present, in their original form, for inspection.
+  #' #
+  #' #
+  #' # The sixth example is of the SOPg_calculator working on a dataframe with non-standard
+  #' # column names. It uses a modified example data frame, shown below.
+  #' View(SOP_example_df_nonstandard)
+  #' # Notice how the column names are different, and differ from the assumed names.
+  #' #
+  #' #
+  #' # Because of the different names, the column names for each input must be specified.
+  #' nothing_results_NonStandardInput <- SOPg_calculator(
+  #' SOP_example_df_nonstandard,
+  #' WATERg_column = "Water_values_g",
+  #' PROCNTg_column = "PROCNT_values_g",
+  #' FAT_g_standardised_column = "FAT_values_g_standardised",
+  #' CHOAVLDFg_standardised_column = "CHOAVLDF_values_g_standardised",
+  #' FIBTGg_standardised_column = "FIBTG_values_g_standardised",
+  #' ALCg_column = "ALC_values_g",
+  #' ASHg_column = "ASH_values_g",
+  #' comment_col = "comments_column",
+  #' LowerBound = 97,
+  #' UpperBound = 103,
+  #' OutsideBoundsReplacement = "nothing")
+  #' View(nothing_results_NonStandardInput)
+  #' # The resulting SOPg_calculated column is the same as in the first example, despite the
+  #' # different names - although, due to the shift in the bounds, the warning message is not.
 
 
 
@@ -303,6 +381,10 @@ SOP_std_creator_New <- function(df,
   stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
+  #This block of checks makes sure the parameters that are meant to be numeric are numeric.
+  stopifnot("The LowerBound parameter is not numeric. Please ensure it is numeric." = is.numeric(LowerBound))
+  stopifnot("The UpperBound parameter is not numeric. Please ensure it is numeric." = is.numeric(UpperBound))
+
   #This block checks to make sure logical entries are True or False.
   stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(comment))
   stopifnot("The OutsideBoundsDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(OutsideBoundsDF))
@@ -316,10 +398,10 @@ SOP_std_creator_New <- function(df,
     comment <- F
   }
 
-  df$SOPg_standardised <- NA #This row creates the SOPg_standardised column, and fills it with NA values
+  df$SOPg_calculated <- NA #This row creates the SOPg_calculated column, and fills it with NA values
 
   #This adds all the columns together, ignoring NA results
-  df$SOPg_standardised <- rowSums(df[, c(
+  df$SOPg_calculated <- rowSums(df[, c(
     WATERg_column,
     PROCNTg_column,
     FAT_g_standardised_column,
@@ -329,18 +411,18 @@ SOP_std_creator_New <- function(df,
     ASHg_column
   )], na.rm = T)
 
-  # This checks if any rows were entirely NA values, and sets the SOPg_standardised to NA if so.
+  # This checks if any rows were entirely NA values, and sets the SOPg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
        is.na(df[[PROCNTg_column]]) &
        is.na(df[[FAT_g_standardised_column]]) &
        is.na(df[[CHOAVLDFg_standardised_column]]) &
        is.na(df[[FIBTGg_standardised_column]]) &
        is.na(df[[ALCg_column]]) &
-       is.na(df[[ASHg_column]]), "SOPg_standardised"] <- NA
+       is.na(df[[ASHg_column]]), "SOPg_calculated"] <- NA
 
   # Inserting comment here
 
-  comment_message <- "SOPg_standardised calculated from adding constituents"
+  comment_message <- "SOPg_calculated calculated from adding constituents"
 
   if (comment == T) {
     if(!(comment_col %in% colnames(df))){
@@ -350,19 +432,19 @@ SOP_std_creator_New <- function(df,
     if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){ #If OutsideBoundsReplacement is set to one of the round options, then a special message must appear in specific columns, detailing the original value and that it was reset to the value it was reset to.
 
       # This is for rows with existing comments, and out of bounds values to the negative
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 93")
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated < LowerBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated < LowerBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated < LowerBound & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to ", LowerBound)
 
       # This is for rows without existing comments, and out of bounds values to the negative
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 93")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated < LowerBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated < LowerBound & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to ", LowerBound)
 
       # This is for rows with existing comments, and out of bounds values to the positive
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 107")
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated > UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated > UpperBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated > UpperBound & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to ", UpperBound)
 
       # This is for rows without existing comments, and out of bounds values to the positive
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 107")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated > UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated > UpperBound & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to ", UpperBound)
 
       # This is for rows with existing comments, and in bounds values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message)
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message)
 
       #This is for rows without existing comments, and in bounds values (All other values will have a comment by now)
       df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(comment_message)
@@ -371,13 +453,13 @@ SOP_std_creator_New <- function(df,
     } else if (is.na(OutsideBoundsReplacement)){ #If OutsideBoundsReplacement is set to NA, then a special message must appear in specific columns, detailing the original value and that it was reset to NA.
 
       # This is for rows with existing comments, and out of bounds values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), "SOPg_standardised"], " reset to NA")
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to NA")
 
       # This is for rows without existing comments, and out of bounds values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107) & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107) & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to NA")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message, " - Original value of ", df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to NA")
 
       # This is for rows with existing comments, and in bounds values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107, comment_col], "; ", comment_message)
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message)
 
       #This is for rows without existing comments, and in bounds values (All other values will already have a comment)
       df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(comment_message)
@@ -393,7 +475,8 @@ SOP_std_creator_New <- function(df,
     }
   }
 
-  OutOfBoundsValues <- df[df$SOPg_standardised < 93 | df$SOPg_standardised > 107, "SOPg_standardised"] #Sees how many values are out of bounds.
+  if (OutsideBoundsDF == F){ #Only produces this message if OutsideBoundsDF is False.
+  OutOfBoundsValues <- df[df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound, "SOPg_calculated"] #Sees how many values are out of bounds.
 
   if(length(OutOfBoundsValues) > 0){ #Triggers a warning if they are present.
 
@@ -401,7 +484,7 @@ SOP_std_creator_New <- function(df,
 
     message("---------------------------") #Prints a warning message.
     message()
-    message(length(OutOfBoundsValues), " SOPg_standardised values calculated to be Out of Bounds (less than 93 or higher than 107). Largest amount Out of Bounds: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
+    message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest amount Out of Bounds: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
     message()
     if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
       message("Out of Bounds values set to closest acceptable value, as per user input.")
@@ -415,19 +498,20 @@ SOP_std_creator_New <- function(df,
     message()
     message("---------------------------")
   }
+  }
 
   if (OutsideBoundsDF == T){ #Implements the OutsideBoundsDF functionality - stripping to a a df with just OoB SOP values.
-    result_df <- df[df$SOPg_standardised < 93 | df$SOPg_standardised > 107,]
-  } else { #Otherwise Goes throughthe command flow of what to do with OoB values
+    result_df <- df[(df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) | is.na(df$SOPg_calculated),]
+  } else { #Otherwise Goes through the command flow of what to do with OoB values
     if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
       result_df <- df
-      result_df[result_df$SOPg_standardised > 107 & !is.na(result_df$SOPg_standardised), "SOPg_standardised"] <- 107
-      result_df[result_df$SOPg_standardised < 93 & !is.na(result_df$SOPg_standardised), "SOPg_standardised"] <- 93
+      result_df[result_df$SOPg_calculated > UpperBound & !is.na(result_df$SOPg_calculated), "SOPg_calculated"] <- UpperBound
+      result_df[result_df$SOPg_calculated < LowerBound & !is.na(result_df$SOPg_calculated), "SOPg_calculated"] <- LowerBound
     } else if (is.na(OutsideBoundsReplacement)){
       result_df <- df
-      result_df[result_df$SOPg_standardised < 93 | result_df$SOPg_standardised > 107, "SOPg_standardised"] <- NA
+      result_df[(result_df$SOPg_calculated < LowerBound | result_df$SOPg_calculated > UpperBound) & !is.na(result_df$SOPg_calculated), "SOPg_calculated"] <- NA
     } else if (tolower(OutsideBoundsReplacement) %in% c("rm", "del", "remove", "delete")) {
-      result_df <- df[df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107,] #Only outputs rows with SOPg_standardised values in the acceptable bounds.
+      result_df <- df[df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated),] #Only outputs rows with SOPg_calculated values in the acceptable bounds.
     } else { #The only valid option left is to do nothing - so nothing happens.
       result_df <- df
     }
@@ -453,7 +537,7 @@ old_method_output <- SOP_std_creator(test_df)
 
 time_2 <- Sys.time()
 
-new_method_output <- SOP_std_creator_New(test_df, FIBTGg_standardised_column = "FIBTGg_std")
+new_method_output <- SOPg_calculator(test_df, FIBTGg_standardised_column = "FIBTGg_std")
 
 time_3 <- Sys.time()
 
@@ -494,23 +578,52 @@ results_comparison$difference <- results_comparison$SOPg_standardised - results_
 
 #With addition of comments its still ~24x faster
 
-# ¬ Functional Testing ----
+# ¬ SOPg EXAMPLES ----
 
 
-custom_testing_df <- data.frame(food_code = c(0001, 0002, 0003, 0004, 0005, 0006, 0007, 0008, 0009, 0010),
-                                WATERg = c(10, 15, 20, 25, 30, 35, 40, 45, 35, NA),
-                                PROCNTg = c(35, 20, 15, 20, 31, 50, 10, 22, 12, NA),
-                                FAT_g_standardised = c(1, 2, 4, 7, 1, 3, 2, 6, 2, NA),
-                                CHOAVLDFg_standardised = c(60, 1, 2, 50, 20, 30, 25, 32, 22, NA),
-                                FIBTGg_standardised = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
-                                ALCg = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
-                                ASHg = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
-                                comments_column = c("comment 1", NA, NA, "Comment 2, hi!", "", "", "hello", "no", "nearly the weekend", "Hai"))
+SOP_example_df <- data.frame(food_code = c("F0001", "F0002", "F0003", "F0004", "F0005", "F0006", "F0007", "F0008", "F0009", "F0010"),
+                                WATERg = c(10, 15, 20, 25, 30, 35, 40, NA, NA, NA),
+                                PROCNTg = c(35, 20, 20, 20, 31, 50, 10, 27, NA, NA),
+                                FAT_g_standardised = c(1, 2, NA, 7, 1, 3, 2, 6, NA, NA),
+                                CHOAVLDFg_standardised = c(10, 1, 24, 50, 20, 10, 25, 32, NA, NA),
+                                FIBTGg_standardised = c(12, 3, 8, 15, 6, 2, 9, 13, NA, NA),
+                                ALCg = c(12, 43, 8, 15, 6, 2, 9, 13, NA, NA),
+                                ASHg = c(12, 3, 28, 15, 6, 2, 9, 13, NA, NA),
+                                comments = c("", "These are imaginary food items", NA, "With imaginary nutrient values", "", "And blanks", NA, "To test different outputs", "", "And scenarios"))
+
+SOP_example_df_nonstandard <- data.frame(food_code = c("F0001", "F0002", "F0003", "F0004", "F0005", "F0006", "F0007", "F0008", "F0009", "F0010"),
+                             Water_values_g = c(10, 15, 20, 25, 30, 35, 40, NA, NA, NA),
+                             PROCNT_values_g = c(35, 20, 20, 20, 31, 50, 10, 27, NA, NA),
+                             FAT_values_g_standardised = c(1, 2, NA, 7, 1, 3, 2, 6, NA, NA),
+                             CHOAVLDF_values_g_standardised = c(10, 1, 24, 50, 20, 10, 25, 32, NA, NA),
+                             FIBTG_values_g_standardised = c(12, 3, 8, 15, 6, 2, 9, 13, NA, NA),
+                             ALC_values_g = c(12, 43, 8, 15, 6, 2, 9, 13, NA, NA),
+                             ASH_values_g = c(12, 3, 28, 15, 6, 2, 9, 13, NA, NA),
+                             comments_column = c("", "These are imaginary food items", NA, "With imaginary nutrient values", "", "And blanks", NA, "To test different outputs", "", "And scenarios"))
 
 
-custom_testing_df_results <- SOP_std_creator_New(custom_testing_df)
-custom_testing_df_results_2 <- SOP_std_creator_New(custom_testing_df, OutsideBoundsDF = T)
+# This line creates a dataset in the correct format for a package
+#usethis::use_data(SOP_example_df)
+#usethis::use_data(SOP_example_df_nonstandard)
 
+
+
+none_results_2 <- SOP_calculator(SOP_example_df, OutsideBoundsReplacement = "none")
+
+nothing_results_NonStandardInput <- SOP_std_creator_New( #An example of using the SOPg_std_creator on a data.frame with non-standard column names. Because the column names are non-standard, the function needs telling which columns refer to which input.
+  SOP_example_df_nonstandard,
+  WATERg_column = "Water_values_g",
+  PROCNTg_column = "PROCNT_values_g",
+  FAT_g_standardised_column = "FAT_values_g_standardised",
+  CHOAVLDFg_standardised_column = "CHOAVLDF_values_g_standardised",
+  FIBTGg_standardised_column = "FIBTG_values_g_standardised",
+  ALCg_column = "ALC_values_g",
+  ASHg_column = "ASH_values_g",
+  comment_col = "comments_column",
+  LowerBound = 97,
+  UpperBound = 103,
+  OutsideBoundsReplacement = "nothing"
+)
 
 
 # nutri_combiner ----
