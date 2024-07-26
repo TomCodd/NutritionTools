@@ -6,4 +6,3 @@
 .quarto
 docs
 vignettes/Fuzzy-Matcher-Guide.Rmd.orig
-!data/.Rdata
