@@ -5,3 +5,4 @@
 ^pkgdown$
 ^\.github$
 ^vignettes/Fuzzy-Matcher-Guide\.Rmd\.orig$
+^data-raw$
