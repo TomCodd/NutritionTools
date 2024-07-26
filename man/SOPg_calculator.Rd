@@ -13,12 +13,12 @@ SOPg_calculator(
   FIBTGg_standardised_column = "FIBTGg_standardised",
   ALCg_column = "ALCg",
   ASHg_column = "ASHg",
-  comment = T,
+  comment = TRUE,
   comment_col = "comments",
   OutsideBoundsReplacement = "none",
   LowerBound = 93,
   UpperBound = 107,
-  OutsideBoundsDF = F
+  OutsideBoundsDF = FALSE
 )
 }
 \arguments{
@@ -51,11 +51,11 @@ grams per 100g of Edible Portion (EP).}
 \item{ASHg_column}{Required - default: \code{'ASHg'} - Ashes in grams per
 100g of Edible Portion (EP).}
 
-\item{comment}{Optional - default: \code{T} - \code{TRUE} or
+\item{comment}{Optional - default: \code{TRUE} - \code{TRUE} or
 \code{FALSE}. If comment is set to \code{TRUE} (as it is by default), when
 the function is run a comment describing the source of the
 \code{SOPg_calculated} column is added to the comment_col. If no
-comment_col is selected, and \code{comment  T}, one is created, called
+comment_col is selected, and \code{comment = TRUE}, one is created, called
 \code{comments}.}
 
 \item{comment_col}{Optional - default: \code{'comments'} - A potential
@@ -86,7 +86,7 @@ determines the values affected by \code{OutsideBoundsReplacement} and
 \code{OutsideBoundsDF}. FAO standards list 107 as the upper boundary for
 acceptable values, and 105 as the upper boundary for preferred values.}
 
-\item{OutsideBoundsDF}{Optional - default: \code{F} - \code{TRUE} or
+\item{OutsideBoundsDF}{Optional - default: \code{FALSE} - \code{TRUE} or
 \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
 a copy of the input df with the the SOPg_calculated column to a subset
 of that dataframe only showing SOPg_calculated values that are out of
@@ -138,7 +138,7 @@ rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "
 #
 # The fifth example is of the out of bounds dataframe - an option useful for identifying
 # and examining out of bounds results.
-OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = T)
+OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
 # Only the out of bounds results are present, in their original form, for inspection.
 #
 #

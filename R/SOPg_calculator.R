@@ -24,17 +24,16 @@
 #'   100g of Edible Portion (EP).
 #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
 #'   100g of Edible Portion (EP).
-#' @param comment Optional - default: \code{T} - \code{TRUE} or
+#' @param comment Optional - default: \code{TRUE} - \code{TRUE} or
 #'   \code{FALSE}. If comment is set to \code{TRUE} (as it is by default), when
 #'   the function is run a comment describing the source of the
 #'   \code{SOPg_calculated} column is added to the comment_col. If no
-#'   comment_col is selected, and \code{comment  T}, one is created, called
+#'   comment_col is selected, and \code{comment = TRUE}, one is created, called
 #'   \code{comments}.
 #' @param comment_col Optional - default: \code{'comments'} - A potential
 #'   input variable; the column which contains the metadata comments for the
 #'   food item in question. Not required if the comment parameter is set to
 #'   \code{FALSE}.
-#' @return Original FCT dataset with a new SOPg_calculated column.
 #' @param OutsideBoundsReplacement Optional - default: \code{'none'} -
 #'   Options are \code{'round'}, \code{NA}, \code{'remove'}, or
 #'   \code{'none'}. Choose what happens to values that are outside of the
@@ -55,11 +54,12 @@
 #'   determines the values affected by \code{OutsideBoundsReplacement} and
 #'   \code{OutsideBoundsDF}. FAO standards list 107 as the upper boundary for
 #'   acceptable values, and 105 as the upper boundary for preferred values.
-#' @param OutsideBoundsDF Optional - default: \code{F} - \code{TRUE} or
+#' @param OutsideBoundsDF Optional - default: \code{FALSE} - \code{TRUE} or
 #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
 #'   a copy of the input df with the the SOPg_calculated column to a subset
 #'   of that dataframe only showing SOPg_calculated values that are out of
 #'   bounds, for manual inspection.
+#' @return Original FCT dataset with a new SOPg_calculated column.
 #' @examples
 #' # Two example data.frames have been prepared to illustrate the
 #' # SOPg_calculator. The first is a dataset of fictional food values to
@@ -97,7 +97,7 @@
 #' #
 #' # The fifth example is of the out of bounds dataframe - an option useful for identifying
 #' # and examining out of bounds results.
-#' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = T)
+#' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
 #' # Only the out of bounds results are present, in their original form, for inspection.
 #' #
 #' #
@@ -133,12 +133,12 @@ SOPg_calculator <- function(df,
                             FIBTGg_standardised_column = "FIBTGg_standardised",
                             ALCg_column = "ALCg",
                             ASHg_column = "ASHg",
-                            comment = T,
+                            comment = TRUE,
                             comment_col = "comments",
                             OutsideBoundsReplacement = "none",
                             LowerBound = 93,
                             UpperBound = 107,
-                            OutsideBoundsDF = F) {
+                            OutsideBoundsDF = FALSE) {
 
   # Check presence of required columns
 
@@ -170,16 +170,16 @@ SOPg_calculator <- function(df,
   stopifnot("The UpperBound parameter is not numeric. Please ensure it is numeric." = is.numeric(UpperBound))
 
   #This block checks to make sure logical entries are True or False.
-  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(comment))
-  stopifnot("The OutsideBoundsDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(OutsideBoundsDF))
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
+  stopifnot("The OutsideBoundsDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(OutsideBoundsDF))
 
   #Special check to check the options for the OutsideBoundsReplacement input.
   stopifnot("The OutsideBoundsReplacement parameter is not set to 'round', NA, 'remove' or 'nothing' - please use one of these options." = tolower(OutsideBoundsReplacement) %in% c(NA, "round", "closest", "nearest", "nothing", "none", "n", "rm", "del", "remove", "delete"))
 
 
 
-  if(OutsideBoundsDF == T){ #Turns off comments if OutsideBoundsDF is active. This produces a subdataset, without the changes that the comments are recording.
-    comment <- F
+  if(OutsideBoundsDF == TRUE){ #Turns off comments if OutsideBoundsDF is active. This produces a subdataset, without the changes that the comments are recording.
+    comment <- FALSE
   }
 
   df$SOPg_calculated <- NA #This row creates the SOPg_calculated column, and fills it with NA values
@@ -193,7 +193,7 @@ SOPg_calculator <- function(df,
     FIBTGg_standardised_column,
     ALCg_column,
     ASHg_column
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the SOPg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
@@ -208,7 +208,7 @@ SOPg_calculator <- function(df,
 
   comment_message <- "SOPg_calculated calculated from adding constituents"
 
-  if (comment == T) {
+  if (comment == TRUE) {
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- NA #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
@@ -259,7 +259,7 @@ SOPg_calculator <- function(df,
     }
   }
 
-  if (OutsideBoundsDF == F){ #Only produces this message if OutsideBoundsDF is False.
+  if (OutsideBoundsDF == FALSE){ #Only produces this message if OutsideBoundsDF is False.
     OutOfBoundsValues <- df[df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound, "SOPg_calculated"] #Sees how many values are out of bounds.
 
     if(length(OutOfBoundsValues) > 0){ #Triggers a warning if they are present.
@@ -284,7 +284,7 @@ SOPg_calculator <- function(df,
     }
   }
 
-  if (OutsideBoundsDF == T){ #Implements the OutsideBoundsDF functionality - stripping to a a df with just OoB SOP values.
+  if (OutsideBoundsDF == TRUE){ #Implements the OutsideBoundsDF functionality - stripping to a a df with just OoB SOP values.
     result_df <- df[(df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) | is.na(df$SOPg_calculated),]
   } else { #Otherwise Goes through the command flow of what to do with OoB values
     if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
