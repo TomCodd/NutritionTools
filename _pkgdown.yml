@@ -2,3 +2,18 @@ url: https://tomcodd.github.io/NutritionTools/
 template:
   bootstrap: 5
 
+reference:
+- title: Functions
+  contents:
+  - CARTBEQ_standardised
+  - Decimal_System_Checker
+  - ENERCKcal_standardised
+  - ENERCKj_standardised
+  - Fuzzy_Matcher
+  - Group_Summariser
+  - SOPg_calculator
+
+- title: Built in datasets
+  contents:
+  - SOP_example_df
+  - SOP_example_df_nonstandard
