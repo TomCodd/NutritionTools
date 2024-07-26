@@ -3,6 +3,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/TomCodd/NutritionTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TomCodd/NutritionTools/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/684522105.svg)](https://zenodo.org/doi/10.5281/zenodo.12928415)
 
 <!-- badges: end -->
 
