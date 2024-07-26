@@ -126,19 +126,19 @@
 #' @export
 
 SOPg_calculator <- function(df,
-                           WATERg_column = "WATERg",
-                           PROCNTg_column = "PROCNTg",
-                           FAT_g_standardised_column = "FAT_g_standardised",
-                           CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
-                           FIBTGg_standardised_column = "FIBTGg_standardised",
-                           ALCg_column = "ALCg",
-                           ASHg_column = "ASHg",
-                           comment = T,
-                           comment_col = "comments",
-                           OutsideBoundsReplacement = "none",
-                           LowerBound = 93,
-                           UpperBound = 107,
-                           OutsideBoundsDF = F) {
+                            WATERg_column = "WATERg",
+                            PROCNTg_column = "PROCNTg",
+                            FAT_g_standardised_column = "FAT_g_standardised",
+                            CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
+                            FIBTGg_standardised_column = "FIBTGg_standardised",
+                            ALCg_column = "ALCg",
+                            ASHg_column = "ASHg",
+                            comment = T,
+                            comment_col = "comments",
+                            OutsideBoundsReplacement = "none",
+                            LowerBound = 93,
+                            UpperBound = 107,
+                            OutsideBoundsDF = F) {
 
   # Check presence of required columns
 
@@ -240,7 +240,7 @@ SOPg_calculator <- function(df,
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to NA")
 
       # This is for rows without existing comments, and out of bounds values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message, " - Original value of ", df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to NA")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_calculated < LowerBound | df$SOPg_calculated > UpperBound) & !is.na(df$SOPg_calculated), "SOPg_calculated"], " reset to NA")
 
       # This is for rows with existing comments, and in bounds values
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message)
