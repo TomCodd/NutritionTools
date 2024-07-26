@@ -59,12 +59,12 @@
 <span>  FIBTGg_standardised_column <span class="op">=</span> <span class="st">"FIBTGg_standardised"</span>,</span>
 <span>  ALCg_column <span class="op">=</span> <span class="st">"ALCg"</span>,</span>
 <span>  ASHg_column <span class="op">=</span> <span class="st">"ASHg"</span>,</span>
-<span>  comment <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  comment <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  comment_col <span class="op">=</span> <span class="st">"comments"</span>,</span>
 <span>  OutsideBoundsReplacement <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  LowerBound <span class="op">=</span> <span class="fl">93</span>,</span>
 <span>  UpperBound <span class="op">=</span> <span class="fl">107</span>,</span>
-<span>  OutsideBoundsDF <span class="op">=</span> <span class="cn">F</span></span>
+<span>  OutsideBoundsDF <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,11 +118,11 @@ grams per 100g of Edible Portion (EP).</p></dd>
 
 
 <dt id="arg-comment">comment<a class="anchor" aria-label="anchor" href="#arg-comment"></a></dt>
-<dd><p>Optional - default: <code>T</code> - <code>TRUE</code> or
+<dd><p>Optional - default: <code>TRUE</code> - <code>TRUE</code> or
 <code>FALSE</code>. If comment is set to <code>TRUE</code> (as it is by default), when
 the function is run a comment describing the source of the
 <code>SOPg_calculated</code> column is added to the comment_col. If no
-comment_col is selected, and <code>comment  T</code>, one is created, called
+comment_col is selected, and <code>comment = TRUE</code>, one is created, called
 <code>comments</code>.</p></dd>
 
 
@@ -163,7 +163,7 @@ acceptable values, and 105 as the upper boundary for preferred values.</p></dd>
 
 
 <dt id="arg-outsideboundsdf">OutsideBoundsDF<a class="anchor" aria-label="anchor" href="#arg-outsideboundsdf"></a></dt>
-<dd><p>Optional - default: <code>F</code> - <code>TRUE</code> or
+<dd><p>Optional - default: <code>FALSE</code> - <code>TRUE</code> or
 <code>FALSE</code>. If set to <code>TRUE</code>, Then the output switches from being
 a copy of the input df with the the SOPg_calculated column to a subset
 of that dataframe only showing SOPg_calculated values that are out of
@@ -263,7 +263,7 @@ bounds, for manual inspection.</p></dd>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># The fifth example is of the out of bounds dataframe - an option useful for identifying</span></span></span>
 <span class="r-in"><span><span class="co"># and examining out of bounds results.</span></span></span>
-<span class="r-in"><span><span class="va">OoB_DF_results</span> <span class="op">&lt;-</span> <span class="fu">SOPg_calculator</span><span class="op">(</span><span class="va">SOP_example_df</span>, OutsideBoundsDF <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">OoB_DF_results</span> <span class="op">&lt;-</span> <span class="fu">SOPg_calculator</span><span class="op">(</span><span class="va">SOP_example_df</span>, OutsideBoundsDF <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Only the out of bounds results are present, in their original form, for inspection.</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
