@@ -108,19 +108,18 @@ Calculates SOPg_calculated = (WATERg + PROCNTg +
 # with non-standard column names, to show how to specify columns.
 
 # This is the first data.frame - before the SOPg_calculator has been used on it.
-View(SOP_example_df)
-
+SOP_example_df
+#
+#
 # First, an example of the standard usecase - calculate the SOPg_calculated
 # value, without modifying out of bounds values.
 nothing_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "none")
-View(nothing_results)
 # See the changes - the addition of the SOPg_calculated column, and the
 # additions to the comments column.
 #
 #
 # The second example shows the results when the Replacement option is set to NA
 NA_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = NA)
-View(NA_results)
 # Check the SOP column and comments column again - see how values outside of
 # bounds have been replaced with NA, and a note of this change logged in the
 # comments column.
@@ -128,13 +127,11 @@ View(NA_results)
 #
 # The third example shows the results when the Replacement option is set to 'remove'
 remove_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "remove")
-View(remove_results)
 # See how the out of bounds values have been removed.
 #
 #
 # The fourth example is of the rounding results.
 rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "round")
-View(rounding_results)
 # Look at the SOP_standardised values - and see how they've been capped to the bounds
 # if they would have been out fo bounds, with a note of the change in the comments.
 #
@@ -142,13 +139,12 @@ View(rounding_results)
 # The fifth example is of the out of bounds dataframe - an option useful for identifying
 # and examining out of bounds results.
 OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = T)
-View(OoB_DF_results)
 # Only the out of bounds results are present, in their original form, for inspection.
 #
 #
 # The sixth example is of the SOPg_calculator working on a dataframe with non-standard
 # column names. It uses a modified example data frame, shown below.
-View(SOP_example_df_nonstandard)
+SOP_example_df_nonstandard
 # Notice how the column names are different, and differ from the assumed names.
 #
 #
@@ -166,7 +162,6 @@ comment_col = "comments_column",
 LowerBound = 97,
 UpperBound = 103,
 OutsideBoundsReplacement = "nothing")
-View(nothing_results_NonStandardInput)
 # The resulting SOPg_calculated column is the same as in the first example, despite the
 # different names - although, due to the shift in the bounds, the warning message is not.
 }
