@@ -98,89 +98,16 @@ SOP_std_creator <- function(dataset) {
 
 
 
-SOP_std_creator_2 <- function(dataset) {
-  # Check presence of required columns
-  columns <- c(
-    "WATERg",
-    "PROCNTg",
-    "FAT_g_standardised",
-    # Change FAT_g to FAT_g_standardised
-    "CHOAVLg",
-    "FIBTGg",
-    "ALCg",
-    "ASHg_std" # change ASHg to ASHg_std
-  )
-
-  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(dataset))
-  stopifnot("The WATERg is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "WATERg" %in% colnames(dataset)) #Checks to see if the group_ID_col is in the list of column names for the df
-  stopifnot("The PROCNTg is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "PROCNTg" %in% colnames(dataset))
-  stopifnot("The FAT_g_standardised is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "FAT_g_standardised" %in% colnames(dataset))
-  stopifnot("The CHOAVLg is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "CHOAVLg" %in% colnames(dataset))
-  stopifnot("The FIBTGg is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "FIBTGg" %in% colnames(dataset))
-  stopifnot("The ALCg is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "ALCg" %in% colnames(dataset))
-  stopifnot("The ASHg_std is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = "ASHg_std" %in% colnames(dataset))
-
-
-  # Try the calculation
-  tryCatch(
-    dataset |>
-      as_tibble() |>
-      mutate_at(.vars = columns, .funs = as.numeric) |>
-      # ! Create a temp row with the number of NAs across the required
-      # column
-      mutate(temp = rowSums(is.na(
-        dataset |>
-          select(all_of(columns))
-      ))) |>
-      rowwise() |>
-      # ! Check if all the rows are NA then output NA else do the
-      # calculation and omit NAs
-      mutate(SOP_std = ifelse(
-        temp == length(columns),
-        NA,
-        sum(
-          WATERg,
-          PROCNTg,
-          FAT_g_standardised,
-          CHOAVLg,
-          FIBTGg,
-          ALCg,
-          ASHg_std,
-          na.rm = TRUE
-        )
-      )) |>
-      # ! remove the temp column
-      select(-temp) |>
-      ungroup(),
-    error = function(e) {
-      print(
-        paste0(
-          "Error : Required columns i.e. ",
-          columns,
-          " should be numeric. The SOP_std will not be calculated"
-        )
-      )
-    }
-  )
-}
-
-
-
-# ¬ New Version ----
-
-
-SOP_std_creator_New <- function(df,
-                                WATERg_column = "WATERg",
-                                PROCNTg_column = "PROCNTg",
-                                FAT_g_standardised_column = "FAT_g_standardised",
-                                CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
-                                FIBTGg_standardised_column = "FIBTGg_standardised",
-                                ALCg_column = "ALCg",
-                                ASHg_column = "ASHg",
-                                comment = T,
-                                comment_col = "comments",
-                                NegativeToZero = T,
-                                NegativeValueDF = F) {
+SOP_std_creator_2 <- function(df,
+                              WATERg_column = "WATERg",
+                              PROCNTg_column = "PROCNTg",
+                              FAT_g_standardised_column = "FAT_g_standardised",
+                              CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
+                              FIBTGg_standardised_column = "FIBTGg_standardised",
+                              ALCg_column = "ALCg",
+                              ASHg_column = "ASHg",
+                              comment = T,
+                              comment_col = "comments") {
 
   #' @title Sum of Proximate Calculator
   #' @description Calculates SOPg_standardised = (WATERg + PROCNTg + FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column + ALCg +ASHg).
@@ -200,17 +127,6 @@ SOP_std_creator_New <- function(df,
   #'   variable; the column which contains the metadata comments for the food item
   #'   in question. Not required if the comment parameter is set to \code{FALSE}.
   #' @return Original FCT dataset with a new SOPg_standardised column.
-  #' @param NegativeToZero Optional - default: \code{T} - \code{TRUE} or
-  #'   \code{FALSE}. If NegativeToZero is set to \code{TRUE} (as it is by
-  #'   default), when the function is run, if a SOPg_standardised value is
-  #'   calculated to be below 0, then the value is set to 0. If the value is
-  #'   less than -5, a message is posted for visibility and flagging. If comment
-  #'   is also set to \code{TRUE} This change is logged in the Comments Column.
-  #' @param NegativeValueDF Optional - default: \code{F} - \code{TRUE} or
-  #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
-  #'   a copy of the input df with the the SOPg_standardised column to a
-  #'   subset of that dataframe only showing SOPg_standardised values that
-  #'   are less than 0, for manual inspection.
   #' @examples
   #'
 
@@ -241,14 +157,6 @@ SOP_std_creator_New <- function(df,
   stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
-  #This block checks to make sure logical entries are True or False.
-  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
-  stopifnot("The NegativeToZero parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeToZero))
-  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeValueDF))
-
-  if(NegativeValueDF == T){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
-    comment <- F
-  }
 
   df$SOPg_standardised <- NA #This row creates the SOPg_standardised column, and fills it with NA values
 
@@ -276,71 +184,260 @@ SOP_std_creator_New <- function(df,
 
   # Inserting comment here
 
-  comment_message <- "SOPg_standardised calculated from adding constituents"
+  comment_message <- "SOPg_standardised calculated by adding constituents"
 
   if (comment == T) {
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
-    if (NegativeToZero == T){ #If NegativeToZero is set to True, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
+    #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
 
-      # This is for rows with existing comments, and negative values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, "SOPg_standardised"], " reset to 0")
+    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
 
-      # This is for rows without existing comments, and negative values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 0, "SOPg_standardised"], " reset to 0")
+  }
 
-      # This is for rows with existing comments, and positive values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col], "; ", comment_message)
+  return(df)
 
-      #This is for rows without existing comments, and positive values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 0, comment_col] <- paste0(comment_message)
+}
 
 
-    } else { #If NegativeToZero is not set to True, then the normal message appears.
+
+# ¬ New Version ----
+
+
+SOP_std_creator_New <- function(df,
+                                WATERg_column = "WATERg",
+                                PROCNTg_column = "PROCNTg",
+                                FAT_g_standardised_column = "FAT_g_standardised",
+                                CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
+                                FIBTGg_standardised_column = "FIBTGg_standardised",
+                                ALCg_column = "ALCg",
+                                ASHg_column = "ASHg",
+                                comment = T,
+                                comment_col = "comments",
+                                OutsideBoundsReplacement = "nothing",
+                                OutsideBoundsDF = F) {
+
+  #' @title Sum of Proximate Calculator
+  #' @description Calculates SOPg_standardised = (WATERg + PROCNTg +
+  #'   FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column
+  #'   + ALCg +ASHg). Column names are case sensitive and an error is returned
+  #'   if not found.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param WATERg_column Required - default: \code{'WATERg'} - The name of the
+  #'   column containing Water/moisture content in grams per 100g of Edible
+  #'   Portion (EP).
+  #' @param PROCNTg_column Required - default: \code{'PROCNTg'} - Protein in
+  #'   grams per 100g of Edible Portion (EP), as reported in the original FCT
+  #'   and assumed to be calculated from nitrogen (NTg) content.
+  #' @param FAT_g_standardised_column Required - default:
+  #'   \code{'FAT_g_standardised'} - Fat content, unknown method of calculation,
+  #'   in grams per 100g of Edible Portion (EP).
+  #' @param CHOAVLDFg_standardised_column Required - default:
+  #'   \code{'CHOAVLDFg_standardised'} - Available carbohydrates calculated by
+  #'   difference, in grams per 100g of Edible Portion (EP).
+  #' @param FIBTGg_standardised_column Required - default:
+  #'   \code{'FIBTGg_standardised'} - Fibre content from combined Tagnames, with
+  #'   preference of Total dietary fibre by AOAC Prosky method, expressed in
+  #'   grams per 100g of Edible Portion (EP).
+  #' @param ALCg_column Required - default: \code{'ALCg'} - Alcohol in grams per
+  #'   100g of Edible Portion (EP).
+  #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
+  #'   100g of Edible Portion (EP).
+  #' @param comment Optional - default: \code{T} - \code{TRUE} or
+  #'   \code{FALSE}.If comment is set to \code{TRUE} (as it is by default), when
+  #'   the function is run a comment describing the source of the
+  #'   \code{SOPg_standardised} column is added to the comment_col. If no
+  #'   comment_col is selected, and \code{comment  T}, one is created, called
+  #'   \code{comments}.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if the comment parameter is set to
+  #'   \code{FALSE}.
+  #' @return Original FCT dataset with a new SOPg_standardised column.
+  #' @param OutsideBoundsReplacement Optional - default: \code{'nothing'} -
+  #'   Options are \code{'round'}, \code{NA}, \code{'remove'}, or
+  #'   \code{'nothing'}. Choose what happens to values that are outside of the
+  #'   bounds. The ranges are set to FAO standards: 93-107 is considered
+  #'   acceptable. This parameter decides what happens to those values less than
+  #'   93, or over 107. If set to \code{round}, then outside of bound values are
+  #'   set to the closest acceptable value (e.g. 90 -> 93, 111 -> 107. If set to
+  #'   \code{NA}, they are replaced with NA. if set to \code{'remove'}, then
+  #'   those rows the \code{df} are removed. if set to \code{'nothing'},
+  #'   then they are left as the out of bound values.
+  #' @param OutsideBoundsDF Optional - default: \code{F} - \code{TRUE} or
+  #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
+  #'   a copy of the input df with the the SOPg_standardised column to a subset
+  #'   of that dataframe only showing SOPg_standardised values that are out of
+  #'   bounds, for manual inspection.
+  #' @examples
+  #'
+
+
+
+  # Check presence of required columns
+
+  # Input checks - goes through each input column name, and checks if its a column in the df. If it isn't, it prints an error message and stops.
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The WATERg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = WATERg_column %in% colnames(df))
+  stopifnot("The PROCNTg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = PROCNTg_column %in% colnames(df))
+  stopifnot("The FAT_g_standardised is not a column name in df - please input a string that is a column name in df, e.g. 'column three'." = FAT_g_standardised_column %in% colnames(df))
+  stopifnot("The CHOAVLDFg_standardised_column is not a column name in df - please input a string that is a column name in df, e.g. 'column four'." = CHOAVLDFg_standardised_column %in% colnames(df))
+  stopifnot("The FIBTGg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'." = FIBTGg_standardised_column %in% colnames(df))
+  stopifnot("The ALCg_columnis not a column name in df - please input a string that is a column name in df, e.g. 'column six'." = ALCg_column %in% colnames(df))
+  stopifnot("The ASHg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column seven'." = ASHg_column %in% colnames(df))
+
+  #This block of checks makes sure the columns that are meant to be numeric are numeric.
+  stopifnot("The WATERg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[WATERg_column]]))
+  stopifnot("The PROCNTg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[PROCNTg_column]]))
+  stopifnot("The FAT_g_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FAT_g_standardised_column]]))
+  stopifnot("The CHOAVLDFg_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CHOAVLDFg_standardised_column]]))
+  stopifnot("The FIBTGg_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FIBTGg_standardised_column]]))
+  stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
+  stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
+
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(comment))
+  stopifnot("The OutsideBoundsDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(OutsideBoundsDF))
+
+  #Special check to check the options for the OutsideBoundsReplacement input.
+  stopifnot("The OutsideBoundsReplacement parameter is not set to 'round', NA, 'remove' or 'nothing' - please use one of these options." = tolower(OutsideBoundsReplacement) %in% c(NA, "round", "closest", "nearest", "nothing", "none", "n", "rm", "del", "remove", "delete"))
+
+
+
+  if(OutsideBoundsDF == T){ #Turns off comments if OutsideBoundsDF is active. This produces a subdataset, without the changes that the comments are recording.
+    comment <- F
+  }
+
+  df$SOPg_standardised <- NA #This row creates the SOPg_standardised column, and fills it with NA values
+
+  #This adds all the columns together, ignoring NA results
+  df$SOPg_standardised <- rowSums(df[, c(
+    WATERg_column,
+    PROCNTg_column,
+    FAT_g_standardised_column,
+    CHOAVLDFg_standardised_column,
+    FIBTGg_standardised_column,
+    ALCg_column,
+    ASHg_column
+  )], na.rm = T)
+
+  # This checks if any rows were entirely NA values, and sets the SOPg_standardised to NA if so.
+  df[is.na(df[[WATERg_column]]) &
+       is.na(df[[PROCNTg_column]]) &
+       is.na(df[[FAT_g_standardised_column]]) &
+       is.na(df[[CHOAVLDFg_standardised_column]]) &
+       is.na(df[[FIBTGg_standardised_column]]) &
+       is.na(df[[ALCg_column]]) &
+       is.na(df[[ASHg_column]]), "SOPg_standardised"] <- NA
+
+  # Inserting comment here
+
+  comment_message <- "SOPg_standardised calculated from adding constituents"
+
+  if (comment == T) {
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- NA #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+    }
+
+    if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){ #If OutsideBoundsReplacement is set to one of the round options, then a special message must appear in specific columns, detailing the original value and that it was reset to the value it was reset to.
+
+      # This is for rows with existing comments, and out of bounds values to the negative
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 93")
+
+      # This is for rows without existing comments, and out of bounds values to the negative
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised < 93 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 93")
+
+      # This is for rows with existing comments, and out of bounds values to the positive
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 107")
+
+      # This is for rows without existing comments, and out of bounds values to the positive
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised > 107 & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to 107")
+
+      # This is for rows with existing comments, and in bounds values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107 & !is.na(df$SOPg_standardised), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107 & !is.na(df$SOPg_standardised), comment_col], "; ", comment_message)
+
+      #This is for rows without existing comments, and in bounds values (All other values will have a comment by now)
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(comment_message)
+
+
+    } else if (is.na(OutsideBoundsReplacement)){ #If OutsideBoundsReplacement is set to NA, then a special message must appear in specific columns, detailing the original value and that it was reset to NA.
+
+      # This is for rows with existing comments, and out of bounds values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107), "SOPg_standardised"], " reset to NA")
+
+      # This is for rows without existing comments, and out of bounds values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107) & !is.na(df$SOPg_standardised), comment_col] <- paste0(comment_message, " - Original value of ", df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]) & (df$SOPg_standardised < 93 | df$SOPg_standardised > 107) & !is.na(df$SOPg_standardised), "SOPg_standardised"], " reset to NA")
+
+      # This is for rows with existing comments, and in bounds values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107, comment_col], "; ", comment_message)
+
+      #This is for rows without existing comments, and in bounds values (All other values will already have a comment)
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(comment_message)
+
+
+    } else { #If OutsideBoundsReplacement is set to nothing, or delete (the only other valid options), the comments for those values don't matter. All comments are therefore the same - and OoB values do not need a custom message.
 
       #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
 
       #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
       df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
-
     }
-
   }
 
-  BelowZeroNumber <- length(df[df$SOPg_standardised < 0, "SOPg_standardised"]) #Sees how many values are less than 0.
+  OutOfBoundsValues <- df[df$SOPg_standardised < 93 | df$SOPg_standardised > 107, "SOPg_standardised"] #Sees how many values are out of bounds.
 
-  if(BelowZeroNumber > 0){ #Triggers a warning if they are present.
+  if(length(OutOfBoundsValues) > 0){ #Triggers a warning if they are present.
 
-    Min_Number <- min(df$SOPg_standardised) #Finds the lowest value.
-    Number_Below_Minus5 <- length(df[df$SOPg_standardised < -5, "SOPg_standardised"]) #Finds the nuimber of values less than -5.
+    largest_OoB <- max(abs(OutOfBoundsValues-100), na.rm = T) #Finds the highest value.
 
     message("---------------------------") #Prints a warning message.
     message()
-    message(BelowZeroNumber, " SOPg_standardised values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = T if you wish to inspect these values.")
+    message(length(OutOfBoundsValues), " SOPg_standardised values calculated to be Out of Bounds (less than 93 or higher than 107). Largest amount Out of Bounds: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
+    message()
+    if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
+      message("Out of Bounds values set to closest acceptable value, as per user input.")
+    } else if(is.na(OutsideBoundsReplacement)) {
+      message("Out of Bounds values set to NA, as per user input.")
+    } else if(tolower(OutsideBoundsReplacement) %in% c("nothing", "none", "n")) {
+      message("Out of Bounds values left untouched, as per user input.")
+    } else { #The only other valid option is for them to be removed.
+      message("Out of Bounds value rows removed, as per user input.")
+    }
     message()
     message("---------------------------")
   }
 
-  if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
-    result_df <- df[df$SOPg_standardised < 0,]
-  } else { #Otherwise does the normal process of setting negative values to 0, if NegativeToZero is set to TRUE.
-    if (NegativeToZero == T){
+  if (OutsideBoundsDF == T){ #Implements the OutsideBoundsDF functionality - stripping to a a df with just OoB SOP values.
+    result_df <- df[df$SOPg_standardised < 93 | df$SOPg_standardised > 107,]
+  } else { #Otherwise Goes throughthe command flow of what to do with OoB values
+    if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
       result_df <- df
-      result_df[result_df$SOPg_standardised < 0, "SOPg_standardised"] <- 0
-    } else {
-      result_df <- df #If NegativeValueDF and NegativeToZero are set to F, then it just outputs the negative values.
+      result_df[result_df$SOPg_standardised > 107 & !is.na(result_df$SOPg_standardised), "SOPg_standardised"] <- 107
+      result_df[result_df$SOPg_standardised < 93 & !is.na(result_df$SOPg_standardised), "SOPg_standardised"] <- 93
+    } else if (is.na(OutsideBoundsReplacement)){
+      result_df <- df
+      result_df[result_df$SOPg_standardised < 93 | result_df$SOPg_standardised > 107, "SOPg_standardised"] <- NA
+    } else if (tolower(OutsideBoundsReplacement) %in% c("rm", "del", "remove", "delete")) {
+      result_df <- df[df$SOPg_standardised >= 93 & df$SOPg_standardised <= 107,] #Only outputs rows with SOPg_standardised values in the acceptable bounds.
+    } else { #The only valid option left is to do nothing - so nothing happens.
+      result_df <- df
     }
-
   }
 
   return(result_df)
 
 }
 
-# ¬ Testing ----
+# ¬ Speed Testing ----
 
 test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
 
@@ -387,7 +484,7 @@ results_comparison$new_method_SOPg_standardised <- new_method_output$SOPg_standa
 
 results_comparison$difference <- results_comparison$SOPg_standardised - results_comparison$new_method_SOPg_standardised
 
-# ¬ Test results ----
+# ¬ Speed Test results ----
 
 #switching to stopifnot gives us more control, and has no affect on benchmarking.
 
@@ -396,6 +493,23 @@ results_comparison$difference <- results_comparison$SOPg_standardised - results_
 # New method results: 0.001843929 , 0.001731157 , 0.001951218
 
 #With addition of comments its still ~24x faster
+
+# ¬ Functional Testing ----
+
+
+custom_testing_df <- data.frame(food_code = c(0001, 0002, 0003, 0004, 0005, 0006, 0007, 0008, 0009, 0010),
+                                WATERg = c(10, 15, 20, 25, 30, 35, 40, 45, 35, NA),
+                                PROCNTg = c(35, 20, 15, 20, 31, 50, 10, 22, 12, NA),
+                                FAT_g_standardised = c(1, 2, 4, 7, 1, 3, 2, 6, 2, NA),
+                                CHOAVLDFg_standardised = c(60, 1, 2, 50, 20, 30, 25, 32, 22, NA),
+                                FIBTGg_standardised = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
+                                ALCg = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
+                                ASHg = c(12, 3, 8, 15, 6, 2, 9, 13, 10, NA),
+                                comments_column = c("comment 1", NA, NA, "Comment 2, hi!", "", "", "hello", "no", "nearly the weekend", "Hai"))
+
+
+custom_testing_df_results <- SOP_std_creator_New(custom_testing_df)
+custom_testing_df_results_2 <- SOP_std_creator_New(custom_testing_df, OutsideBoundsDF = T)
 
 
 
@@ -702,7 +816,7 @@ CHOAVLDFg_std_creator_New <- function(df,
                                 ASHg_column = "ASHg",
                                 comment = T,
                                 comment_col = "comments",
-                                NegativeToZero = T,
+                                NegativeValueReplacement = 0, #Was NegativeToZero
                                 NegativeValueDF = F) {
 
   #' @title Carbohydrates (calculated by difference) Calculator
@@ -728,29 +842,32 @@ CHOAVLDFg_std_creator_New <- function(df,
   #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
   #'   100g of Edible Portion (EP).
   #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
-  #'   If comment is set to \code{TRUE} (as it is by default), when the function
-  #'   is run a comment describing the source of the
-  #'   \code{CHOAVLDFg_standardised} column is added to the comment_col. If no
-  #'   comment_col is selected, and \code{comment = T}, one is created.
+  #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
+  #'   function is run a comment describing the source of the
+  #'   \code{CHOAVLDFg_standardised} column is added to the \code{comment_col}
+  #'   If no \code{comment_col} is selected, and \code{comment = T}, one is
+  #'   created.
   #' @param comment_col Optional - default: \code{'comments'} - A potential
   #'   input variable; the column which contains the metadata comments for the
-  #'   food item in question. Not required if the comment parameter is set to
-  #'   \code{FALSE}. If set to true, and the comment_col entry is not found in
-  #'   the df, it will create a column with the name of the entry.
-  #' @param NegativeToZero Optional - default: \code{T} - \code{TRUE} or
-  #'   \code{FALSE}. If NegativeToZero is set to \code{TRUE} (as it is by
-  #'   default), when the function is run, if a CHOAVLDFg_standardised value is
-  #'   calculated to be below 0, then the value is set to 0. If the value is
-  #'   less than -5, a message is posted for visibility and flagging. If comment
-  #'   is also set to \code{TRUE} This change is logged in the Comments Column.
+  #'   food item in question. Not required if \code{comment} is set to
+  #'   \code{FALSE}. If \code{comment} is set to true, and the
+  #'   \code{comment_col} input is not the name of a column found in the
+  #'   \code{df}, the function will create a column with the name of the
+  #'   \code{comment_col} input to store comments in.
+  #' @param NegativeValueReplacement Optional - default: \code{0} - Options are
+  #'   \code{0}, \code{NA}, \code{'remove'}, or \code{'nothing'}. Choose what
+  #'   happens to negative values. If set to \code{0}, then negative values are
+  #'   set to 0. If set to \code{NA}, they are replaced with NA. if set to
+  #'   \code{'remove'}, then those entries in the \code{df} are removed. if set to
+  #'   \code{'nothing'}, then they are left as negative values.
   #' @param NegativeValueDF Optional - default: \code{F} - \code{TRUE} or
   #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
-  #'   a copy of the input df with the the CHOAVLDFg_standardised column to a
-  #'   subset of that dataframe only showing CHOAVLDFg_standardised values that
-  #'   are less than 0, for manual inspection.
-  #'
-  #'
-  #' @return Original FCT dataset with a new CHOAVLDFg_standardised column.
+  #'   a copy of the input \code{df} with the the \code{CHOAVLDFg_standardised}
+  #'   column to a subset of that dataframe only showing
+  #'   \code{CHOAVLDFg_standardised} values that are less than 0, for manual
+  #'   inspection.
+  #' @return Original FCT dataset with a new \code{CHOAVLDFg_standardised}
+  #'   column.
   #'
   #'
   #'
@@ -763,12 +880,12 @@ CHOAVLDFg_std_creator_New <- function(df,
   stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
-  stopifnot("The WATERg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'" = WATERg_column %in% colnames(df))
-  stopifnot("The PROCNTg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'" = PROCNTg_column %in% colnames(df))
-  stopifnot("The FAT_g_standardised is not a column name in df - please input a string that is a column name in df, e.g. 'column three'" = FAT_g_standardised_column %in% colnames(df))
-  stopifnot("The FIBTGg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'" = FIBTGg_standardised_column %in% colnames(df))
-  stopifnot("The ALCg_columnis not a column name in df - please input a string that is a column name in df, e.g. 'column six'" = ALCg_column %in% colnames(df))
-  stopifnot("The ASHg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column seven'" = ASHg_column %in% colnames(df))
+  stopifnot("The WATERg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = WATERg_column %in% colnames(df))
+  stopifnot("The PROCNTg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = PROCNTg_column %in% colnames(df))
+  stopifnot("The FAT_g_standardised is not a column name in df - please input a string that is a column name in df, e.g. 'column three'." = FAT_g_standardised_column %in% colnames(df))
+  stopifnot("The FIBTGg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'." = FIBTGg_standardised_column %in% colnames(df))
+  stopifnot("The ALCg_columnis not a column name in df - please input a string that is a column name in df, e.g. 'column six'." = ALCg_column %in% colnames(df))
+  stopifnot("The ASHg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column seven'." = ASHg_column %in% colnames(df))
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The WATERg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[WATERg_column]]))
@@ -779,9 +896,13 @@ CHOAVLDFg_std_creator_New <- function(df,
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
   #This block checks to make sure logical entries are True or False.
-  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
-  stopifnot("The NegativeToZero parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeToZero))
-  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(NegativeValueDF))
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(comment))
+  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(NegativeValueDF))
+
+  #Special check to check the options for the NegativeValueReplacement input.
+  stopifnot("The NegativeValueReplacement parameter is not set to 0, NA, 'remove' or 'nothing' - please use one of these options." = tolower(NegativeValueReplacement) %in% c(NA, 0, "nothing", "none", "n", "rm", "del", "remove", "delete"))
+
+
 
   if(NegativeValueDF == T){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
     comment <- F
@@ -816,7 +937,7 @@ CHOAVLDFg_std_creator_New <- function(df,
       df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
-    if (NegativeToZero == T){ #If NegativeToZero is set to True, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
+    if (tolower(NegativeValueReplacement) %in% c(0)){ #If NegativeToZero is set to 0, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
 
       # This is for rows with existing comments, and negative values
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to 0")
@@ -831,28 +952,52 @@ CHOAVLDFg_std_creator_New <- function(df,
       df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(comment_message)
 
 
-    } else { #If NegativeToZero is not set to True, then the normal message appears.
+    } else if (is.na(NegativeValueReplacement)){ #If NegativeToZero is set to NA, then a special message must appear in specific columns, detailing the original value and that it was reset to NA.
+
+      # This is for rows with existing comments, and negative values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to NA")
+
+      # This is for rows without existing comments, and negative values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to NA")
+
+      # This is for rows with existing comments, and positive values
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col], "; ", comment_message)
+
+      #This is for rows without existing comments, and positive values
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(comment_message)
+
+
+    } else { #If NegativeValueReplacement is set to nothing, or delete (the only other valid options), the comments for the negative values don't matter. All comments are therefore the same - and negative values do not need a custom message.
 
       #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
 
       #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
       df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
-
     }
-
   }
+
 
   BelowZeroNumber <- length(df[df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"]) #Sees how many values are less than 0.
 
   if(BelowZeroNumber > 0){ #Triggers a warning if they are present.
 
     Min_Number <- min(df$CHOAVLDFg_standardised) #Finds the lowest value.
-    Number_Below_Minus5 <- length(df[df$CHOAVLDFg_standardised < -5, "CHOAVLDFg_standardised"]) #Finds the nuimber of values less than -5.
+    Number_Below_Minus5 <- length(df[df$CHOAVLDFg_standardised < -5, "CHOAVLDFg_standardised"]) #Finds the number of values less than -5.
 
     message("---------------------------") #Prints a warning message.
     message()
     message(BelowZeroNumber, " CHOAVLDFg_standardised values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = T if you wish to inspect these values.")
+    message()
+    if (tolower(NegativeValueReplacement) %in% c(0)){
+      message("Negative values set to 0, as per user input.")
+    } else if(is.na(NegativeValueReplacement)) {
+      message("Negative values set to NA, as per user input.")
+    } else if(tolower(NegativeValueReplacement) %in% c("nothing", "none", "n")) {
+      message("Negative values left untouched, as per user input.")
+    } else { #The only other valid option is for them to be removed.
+      message("Negative value rows removed, as per user input.")
+    }
     message()
     message("---------------------------")
   }
@@ -860,13 +1005,17 @@ CHOAVLDFg_std_creator_New <- function(df,
   if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
     result_df <- df[df$CHOAVLDFg_standardised < 0,]
   } else { #Otherwise does the normal process of setting negative values to 0, if NegativeToZero is set to TRUE.
-    if (NegativeToZero == T){
+    if (tolower(NegativeValueReplacement) %in% c(0)){
       result_df <- df
       result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- 0
-    } else {
-      result_df <- df #If NegativeValueDF and NegativeToZero are set to F, then it just outputs the negative values.
+    } else if (is.na(NegativeValueReplacement)){
+      result_df <- df
+      result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- NA
+    } else if (tolower(NegativeValueReplacement) %in% c("rm", "del", "remove", "delete")) {
+      result_df <- df[df$CHOAVLDFg_standardised >= 0,] #Only outputs rows with CHOAVLDFg_standardised values over 0.
+    } else { #The only valid option left is to do nothing - so nothing happens.
+      result_df <- df
     }
-
   }
 
   return(result_df)
@@ -887,7 +1036,7 @@ old_method_output <- CHOAVLDFg_std_creator(test_df)
 
 time_2 <- Sys.time()
 
-new_method_output <- CHOAVLDFg_std_creator_New(test_df, FIBTGg_standardised_column = "FIBTGg_std", NegativeToZero = F)
+new_method_output <- CHOAVLDFg_std_creator_New(test_df, FIBTGg_standardised_column = "FIBTGg_std", NegativeValueReplacement = "nothing")
 
 time_3 <- Sys.time()
 
@@ -977,6 +1126,8 @@ for (i in 1:length(unique_problematic_entries)){
 # Speed tests: New method: 0.00520, 0.00485, 0.00520, 0.00498
 
 # Speed improvement of ~23x
+
+#With new options (added choices of what to do kikwith negative values) speed improvement is now ~10x for set to 0, remove, or NA. still ~23x if no replacement.
 
 
 
