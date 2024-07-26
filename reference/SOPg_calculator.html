@@ -224,7 +224,13 @@ bounds, for manual inspection.</p></dd>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># The second example shows the results when the Replacement option is set to NA</span></span></span>
 <span class="r-in"><span><span class="va">NA_results</span> <span class="op">&lt;-</span> <span class="fu">SOPg_calculator</span><span class="op">(</span><span class="va">SOP_example_df</span>, OutsideBoundsReplacement <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in `[&lt;-.data.frame`(`*tmp*`, (df[[comment_col]] %in% "" | is.na(df[[comment_col]])) &amp;     (df$SOPg_calculated &lt; LowerBound | df$SOPg_calculated &gt; UpperBound) &amp;     !is.na(df$SOPg_calculated), comment_col, value = c("SOPg_calculated calculated from adding constituents - Original value of 92 reset to NA", "SOPg_calculated calculated from adding constituents - Original value of 108 reset to NA", "SOPg_calculated calculated from adding constituents - Original value of 100 reset to NA", "SOPg_calculated calculated from adding constituents - Original value of NA reset to NA")):</span> replacement has 4 rows, data has 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 6 SOPg_calculated values calculated to be Out of Bounds (less than 93 or higher than 107). Largest amount Out of Bounds: 47. Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Out of Bounds values set to NA, as per user input.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span><span class="co"># Check the SOP column and comments column again - see how values outside of</span></span></span>
 <span class="r-in"><span><span class="co"># bounds have been replaced with NA, and a note of this change logged in the</span></span></span>
 <span class="r-in"><span><span class="co"># comments column.</span></span></span>
