@@ -114,12 +114,16 @@ SOP_example_df
 # First, an example of the standard usecase - calculate the SOPg_calculated
 # value, without modifying out of bounds values.
 nothing_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "none")
+#
+nothing_results
 # See the changes - the addition of the SOPg_calculated column, and the
 # additions to the comments column.
 #
 #
 # The second example shows the results when the Replacement option is set to NA
 NA_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = NA)
+#
+NA_results
 # Check the SOP column and comments column again - see how values outside of
 # bounds have been replaced with NA, and a note of this change logged in the
 # comments column.
@@ -127,11 +131,15 @@ NA_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = NA)
 #
 # The third example shows the results when the Replacement option is set to 'remove'
 remove_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "remove")
+#
+remove_results
 # See how the out of bounds values have been removed.
 #
 #
 # The fourth example is of the rounding results.
 rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "round")
+#
+rounding_results
 # Look at the SOP_standardised values - and see how they've been capped to the bounds
 # if they would have been out fo bounds, with a note of the change in the comments.
 #
@@ -139,6 +147,8 @@ rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "
 # The fifth example is of the out of bounds dataframe - an option useful for identifying
 # and examining out of bounds results.
 OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
+#
+OoB_DF_results
 # Only the out of bounds results are present, in their original form, for inspection.
 #
 #
@@ -162,6 +172,8 @@ comment_col = "comments_column",
 LowerBound = 97,
 UpperBound = 103,
 OutsideBoundsReplacement = "nothing")
+#
+nothing_results_NonStandardInput
 # The resulting SOPg_calculated column is the same as in the first example, despite the
 # different names - although, due to the shift in the bounds, the warning message is not.
 }
