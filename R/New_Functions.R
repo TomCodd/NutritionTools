@@ -1741,6 +1741,12 @@ NIAmg_std_calculator <- function(df,
   stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
 
 
+  # ¬¬ IDEAS ----
+
+  # use NA for blank values, paste it in all the documentation, with explanation. Then use if !is.na() for checks, and column in df checks.
+
+  # for standardisation functions, replace the comment column with numbers. If a certain number is used, then that becomes a certain message.
+  # Can then table the occurances of each number and output a message of the number of times each was used.
 
   df$VITA_RAEmcg_calculated <- NA #This row creates the VITA_RAEmcg_calculated column, and fills it with NA values
   df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_std_column]]/12 #This creates a column for CARTBEQ_std divided by 6
