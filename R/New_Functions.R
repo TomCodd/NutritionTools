@@ -679,7 +679,7 @@ nutri_combiner <-  function(data.df, var1, var2, var3, new_var){
 
 # ¬ New Version ----
 
-nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_column, var5_column, var6_column, new_var, comment = T, comment_col = "comments"){
+nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_column, var5_column, var6_column, new_var, comment = TRUE, comment_col = "comments"){
 
   #' @title Multi-column Nutrient Combiner
   #' @description Combines nutrients or variables that are spread out over multiple columns into a single new column \code{new_var}, depending on a user-set hierarchy. The hierarchy is set so that \code{var1_column} is the main
@@ -694,12 +694,11 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
   #' @param var5_column Optional - The column name of the fifth most appropriate variable to pull values from, after the columns selected for \code{var1_column} to \code{var4_column}.
   #' @param var6_column Optional - The column name of the sixth variable. This should be the least appropriate variable to use, as it will only be used if a value cannot be found using \code{var1_column} to \code{var5_column}.
   #' @param new_var Required - The name of the new column that will be created by combining the variable columns.
-
-  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If comment is set to \code{TRUE} (as it is by default), when the function
-  #'   is run a comment describing the source of the
-  #'   \code{CHOAVLDFg_standardised} column is added to the comment_col. If no
-  #'   comment_col is selected, and \code{comment = T}, one is created.
+  #'   is run a comment describing the source of \code{new_var} column is added
+  #'   to the comment_col. If no comment_col is selected, and \code{comment =
+  #'   TRUE}, one is created.
   #' @param comment_col Optional - default: \code{'comments'} - A potential
   #'   input variable; the column which contains the metadata comments for the
   #'   food item in question. Not required if the comment parameter is set to
@@ -716,14 +715,14 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
   stopifnot("The var2_column is not a column name in df - please input a string that is a column name in df, e.g. 'FATCEg'" = var2_column %in% colnames(df))
 
   #This checks to make sure logical entries are True or False.
-  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE" = is.logical(comment))
 
   #This makes sure the new variable isn't missing.
   stopifnot("The new_var variable is not set. Please use it, inputting the name of the new column you would like to combine the values into; e.g. 'FAT_g_standardised'" = !missing(new_var))
 
   df[[new_var]] <- NA #Creates the new column, and sets the value to equal to NA
 
-  if (comment == T){
+  if (comment == TRUE){
     df$nutri_combiner_comment_col_temp <- NA
   }
 
@@ -736,7 +735,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
     df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), new_var] <- df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), var6_column] #Where var 6 is not NA or blank, sets new_variable to be that value.
 
-    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 6
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 6
       df[!(df[[var6_column]] %in% "" | is.na(df[[var6_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var6_column)
     }
   }
@@ -749,7 +748,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
     df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), new_var] <- df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), var5_column] #Where var 5 is not NA or blank, sets new_variable to be that value.
 
-    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 5
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 5
       df[!(df[[var5_column]] %in% "" | is.na(df[[var5_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var5_column)
     }
   }
@@ -761,7 +760,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
     df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), new_var] <- df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), var4_column] #Where var 4 is not NA or blank, sets new_variable to be that value.
 
-    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 4
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 4
       df[!(df[[var4_column]] %in% "" | is.na(df[[var4_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var4_column)
     }
   }
@@ -771,7 +770,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
     df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), new_var] <- df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), var3_column] #Where var 3 is not NA or blank, sets new_variable to be that value.
 
-    if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 3
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 3
       df[!(df[[var3_column]] %in% "" | is.na(df[[var3_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var3_column)
     }
   }
@@ -780,7 +779,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
   df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), new_var] <- df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), var2_column] #Where var 2 is not NA or blank, sets new_variable to be that value.
 
-  if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 2
+  if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 2
     df[!(df[[var2_column]] %in% "" | is.na(df[[var2_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var2_column)
   }
 
@@ -789,7 +788,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
   df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), new_var] <- df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), var1_column] #Where var 1 is not NA or blank, sets new_variable to be that value.
 
-  if(comment == T){ #If comments are true, sets the relevant rows to mention they come from var 1
+  if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 1
     df[!(df[[var1_column]] %in% "" | is.na(df[[var1_column]])), "nutri_combiner_comment_col_temp"] <- paste0(new_var, " equal to ", var1_column)
   }
 
@@ -797,7 +796,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
   #Then sorts out the comments - depending on whether there is already an existing column or not.
 
-  if (comment == T) {
+  if (comment == TRUE) {
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
     }
@@ -809,12 +808,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
 
     df$nutri_combiner_comment_col_temp <- NULL # Remove the temp column
   }
-
-
-
-
   return(df)
-
 }
 
 # ¬ nutri-combiner testing ----
@@ -954,7 +948,7 @@ CHOAVLDFg_calculator <- function(df,
   #'   100g of Edible Portion (EP).
   #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
   #'   100g of Edible Portion (EP).
-  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
   #'   function is run a comment describing the source of the
   #'   \code{CHOAVLDFg_calculated} column is added to the \code{comment_col}
@@ -967,13 +961,13 @@ CHOAVLDFg_calculator <- function(df,
   #'   \code{comment_col} input is not the name of a column found in the
   #'   \code{df}, the function will create a column with the name of the
   #'   \code{comment_col} input to store comments in.
-  #' @param NegativeValueReplacement Optional - default: \code{0} - Options are
+  #' @param NegativeValueReplacement Required - default: \code{0} - Options are
   #'   \code{0}, \code{NA}, \code{'remove'}, or \code{'nothing'}. Choose what
   #'   happens to negative values. If set to \code{0}, then negative values are
   #'   set to 0. If set to \code{NA}, they are replaced with NA. if set to
   #'   \code{'remove'}, then those entries in the \code{df} are removed. if set to
   #'   \code{'nothing'}, then they are left as negative values.
-  #' @param NegativeValueDF Optional - default: \code{FALSE} - \code{TRUE} or
+  #' @param NegativeValueDF Required - default: \code{FALSE} - \code{TRUE} or
   #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
   #'   a copy of the input \code{df} with the the \code{CHOAVLDFg_calculated}
   #'   column to a subset of that dataframe only showing
@@ -1379,7 +1373,7 @@ VITAmcg_calculator <- function(df,
   #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
   #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
   #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
-  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
   #'   function is run a comment describing the calculation used to find the
   #'   VITA_mcg_calculated value is added to the \code{comment_col}.
@@ -1544,7 +1538,7 @@ VITA_RAEmcg_calculator <- function(df,
   #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
   #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
   #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
-  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
   #'   function is run a comment describing the calculation used to find the
   #'   VITA_mcg_calculated value is added to the \code{comment_col}.
@@ -1657,6 +1651,137 @@ print(table(parity_test)) #Parity reached
 # nia_calculator ----
 # ¬ Problem - not found, not referenced ----
 
+nia_conversion_creator <- function(dataset) {
+  #' @title nia_conversion_creator
+  #' @description Calculates NIAmg_std if based on presence of NIAmg. i.e. NIAmg_std = case_when(!is.na(NIAmg) ~ NIAmg,is.na(NIAmg) ~ (NIAEQmg - (1 / 60 * TRPmg)))
+  #' @param NIAmg_std Niacin was combined into the Niacin standardised variable (`NIAmg_std`)
+  #' @param NIAEQmg Niacin equivalents, total. Preformed niacin plus niacin equivalents from tryptophan (TRP) in mg per 100g EP
+  #' @param TRPmg Tryptophan in mg per 100g of EP (includes only L-tryptophan)
+  #' @param NIAmg Niacin, prefrormed in mg per 100g EP
+  #' @return Original FCT dataset with additional column
+
+  columns <- c("NIAEQmg", "TRPmg", "NIAmg")
+  check_columns(dataset = dataset, columns = columns)
+  tryCatch(
+    dataset %>%
+      as_tibble() %>%
+      mutate_at(.vars = columns, .funs = as.numeric) %>%
+      mutate(NIAmg_std = case_when(
+        !is.na(NIAmg) ~ NIAmg,
+        is.na(NIAmg) ~ (NIAEQmg - (1 / 60 * TRPmg))
+      )),
+    error = function(e) {
+      print("Error : Required columns not found i.e :")
+      print(columns)
+    }
+  )
+}
+
+
+# ¬¬ Needed Updates ----
+# NIAmg can be calculated by (NIAEQmg-NIATRPmg) and that the function needs to
+# add the information about how it was calculated in the comments variable!
+
+
+# ¬ New Version ----
+
+
+
+NIAmg_std_calculator <- function(df,
+                             NIAmg_column = "NIAmg",
+                             TRPmg_column = "TRPmg",
+                             NIAEQmg_column = "NIAEQmg",
+                             NIATRPmg_column = "NIATRPmg",
+                             comment = TRUE,
+                             comment_col = "comments") {
+
+  #' @title Niacin Standardiser and Calculator
+  #' @description This function calculates potential values for Niacin, and then
+  #'   uses the most appropriate one to standardise the value with.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
+  #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
+  #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
+  #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
+  #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
+  #'   function is run a comment describing the calculation used to find the
+  #'   VITA_mcg_calculated value is added to the \code{comment_col}.
+  #'   If no \code{comment_col} is selected, and \code{comment = TRUE}, one is
+  #'   created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if \code{comment} is set to
+  #'   \code{FALSE}. If \code{comment} is set to \code{TRUE}, and the
+  #'   \code{comment_col} input is not the name of a column found in the
+  #'   \code{df}, the function will create a column with the name of the
+  #'   \code{comment_col} input to store comments in.
+  #' @return Original FCT dataset with a new \code{VITA_RAEmcg_calculated}
+  #'   column.
+  #' @examples
+  #' @export
+
+
+  # Check presence of required columns
+
+  # Input checks - goes through each input column name, and checks if its a column in the df. If it isn't, it prints an error message and stops.
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
+  stopifnot("The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_std_column %in% colnames(df))
+
+  #This block of checks makes sure the columns that are meant to be numeric are numeric.
+  stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))
+  stopifnot("The CARTBEQmcg_std_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_std_column]]))
+
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
+
+
+
+  df$VITA_RAEmcg_calculated <- NA #This row creates the VITA_RAEmcg_calculated column, and fills it with NA values
+  df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_std_column]]/12 #This creates a column for CARTBEQ_std divided by 6
+
+  #This adds the CARTBEQ/6 and RETOL columns together, ignoring NA results
+  df$VITA_RAEmcg_calculated <- rowSums(df[, c(
+    RETOLmcg_column,
+    "TEMPtwelthCARTBEQ"
+  )], na.rm = T)
+
+  # This checks if any rows were entirely NA values, and sets the VITA_RAEmcg_calculated to NA if so.
+  df[is.na(df[[RETOLmcg_column]]) &
+       is.na(df[[CARTBEQmcg_std_column]]), "VITA_RAEmcg_calculated"] <- NA
+
+  # This deletes the temporary TEMPsixthCARTBEQ column
+
+  df$TEMPtwelthCARTBEQ <- NULL
+
+  # Comments process
+  if (comment == TRUE) {
+    #Creates comments_message if comments are true
+    comment_message <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents"
+
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+    }
+
+    #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+    #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+
+  }
+
+  return(df)
+
+}
+
+
+
 
 # THIAmg_std_creator  ----
 # ¬ Taken from FAO-Fisheries (paper branch)/functions/summary_table_functions.R ----
@@ -1711,7 +1836,7 @@ Thiamine_standardiser <-  function(df, THIAmg_column = "THIAmg", THIAHCLmg_colum
   #' @param THIAHCLmg_column Required - default: \code{'THIAHCLmg'} - The name
   #'   of the column containing THIAHCLmg hydrochloride, vitamin B1 analysed and
   #'   expressed as Thiamine hydrochloride in mg per 100g of EP.
-  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Required - default: \code{T} - \code{TRUE} or \code{FALSE}.
   #'   If comment is set to \code{TRUE} (as it is by default), when the function
   #'   is run a comment describing the source of the
   #'   \code{THIAmg_standardised} column is added to the comment_col. If no
@@ -1807,7 +1932,7 @@ time_3 - time_2
 # dependencies, gives less clear error messages, has less checks, and less
 # potential comments.
 
-parity_test <- signif(old_method_output$THIAmg_std, 10) == signif(new_method_output$THIAmg_std, 10)
+parity_test <- signif(old_method_output$THIAmg_std, 10) == signif(new_method_output$THIAmg_standardised, 10)
 
 print(table(parity_test)) #Parity reached
 
