@@ -33,7 +33,7 @@
 #'   100g of Edible Portion (EP).
 #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
 #'   100g of Edible Portion (EP).
-#' @param comment Optional - default: \code{TRUE} - \code{TRUE} or
+#' @param comment Required - default: \code{TRUE} - \code{TRUE} or
 #'   \code{FALSE}. If comment is set to \code{TRUE} (as it is by default), when
 #'   the function is run a comment describing the source of the
 #'   \code{SOPg_calculated} column is added to the comment_col. If no
@@ -43,7 +43,7 @@
 #'   input variable; the column which contains the metadata comments for the
 #'   food item in question. Not required if the comment parameter is set to
 #'   \code{FALSE}.
-#' @param OutsideBoundsReplacement Optional - default: \code{'none'} -
+#' @param OutsideBoundsReplacement Required - default: \code{'none'} -
 #'   Options are \code{'round'}, \code{NA}, \code{'remove'}, or
 #'   \code{'none'}. Choose what happens to values that are outside of the
 #'   bounds. The ranges are set to FAO standards: 93-107 is considered
@@ -53,17 +53,17 @@
 #'   \code{NA}, they are replaced with NA. if set to \code{'remove'}, then
 #'   those rows are removed (including NA results). if set to \code{'none'},
 #'   then they are left as the out of bound values.
-#' @param LowerBound Optional - default: \code{93} - Integer value. Sets the
+#' @param LowerBound Required - default: \code{93} - Integer value. Sets the
 #'   lower boundary for acceptable SOPg_calculated values, and therefore
 #'   determines the values affected by \code{OutsideBoundsReplacement} and
 #'   \code{OutsideBoundsDF}. FAO standards list 93 as the lower boundary for
 #'   acceptable values, and 95 as the lower boundary for preferred values.
-#' @param UpperBound Optional - default: \code{107} - Integer value. Sets the
+#' @param UpperBound Required - default: \code{107} - Integer value. Sets the
 #'   upper boundary for acceptable SOPg_calculated values, and therefore
 #'   determines the values affected by \code{OutsideBoundsReplacement} and
 #'   \code{OutsideBoundsDF}. FAO standards list 107 as the upper boundary for
 #'   acceptable values, and 105 as the upper boundary for preferred values.
-#' @param OutsideBoundsDF Optional - default: \code{FALSE} - \code{TRUE} or
+#' @param OutsideBoundsDF Required - default: \code{FALSE} - \code{TRUE} or
 #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
 #'   a copy of the input df with the the SOPg_calculated column to a subset
 #'   of that dataframe only showing SOPg_calculated values that are out of
