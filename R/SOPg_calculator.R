@@ -1,3 +1,12 @@
+#---
+#Title: SOPg Calculator
+#Author: Thomas Codd - https://github.com/TomCodd
+#Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
+#Version: V1.0.0
+#Changelog:
+#Github: https://github.com/TomCodd/NutritionTools
+#---
+
 #' @title Sum of Proximate Calculator
 #' @description Calculates SOPg_calculated = (WATERg + PROCNTg +
 #'   FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column
@@ -280,7 +289,7 @@ SOPg_calculator <- function(df,
 
       message("---------------------------") #Prints a warning message.
       message()
-      message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest amount Out of Bounds: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
+      message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest distance from 100: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
       message()
       if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
         message("Out of Bounds values set to closest acceptable value, as per user input.")
