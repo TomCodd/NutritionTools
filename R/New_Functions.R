@@ -325,7 +325,7 @@ SOPg_calculator <- function(df,
   #' #
   #' # The fifth example is of the out of bounds dataframe - an option useful for identifying
   #' # and examining out of bounds results.
-  #' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = T)
+  #' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
   #' View(OoB_DF_results)
   #' # Only the out of bounds results are present, in their original form, for inspection.
   #' #
@@ -920,20 +920,20 @@ CHOAVLDFg_std_creator <- function(dataset) {
 # ¬ New Version ----
 
 
-CHOAVLDFg_std_creator_New <- function(df,
+CHOAVLDFg_calculator <- function(df,
                                 WATERg_column = "WATERg",
                                 PROCNTg_column = "PROCNTg",
                                 FAT_g_standardised_column = "FAT_g_standardised",
                                 FIBTGg_standardised_column = "FIBTGg_standardised",
                                 ALCg_column = "ALCg",
                                 ASHg_column = "ASHg",
-                                comment = T,
+                                comment = TRUE,
                                 comment_col = "comments",
-                                NegativeValueReplacement = 0, #Was NegativeToZero
-                                NegativeValueDF = F) {
+                                NegativeValueReplacement = 0,
+                                NegativeValueDF = FALSE) {
 
   #' @title Carbohydrates (calculated by difference) Calculator
-  #' @description Calculates CHOAVLDFg_std = (100 - (WATERg + PROTg +
+  #' @description Calculates CHOAVLDFg_calculated = (100 - (WATERg + PROTg +
   #'   FATg_standardised + FBGTg + ASHg + ALCg)). Column names are case
   #'   sensitive and an error is returned if not found.
   #' @param df Required - the data.frame the data is currently stored in.
@@ -954,16 +954,16 @@ CHOAVLDFg_std_creator_New <- function(df,
   #'   100g of Edible Portion (EP).
   #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
   #'   100g of Edible Portion (EP).
-  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
   #'   function is run a comment describing the source of the
-  #'   \code{CHOAVLDFg_standardised} column is added to the \code{comment_col}
-  #'   If no \code{comment_col} is selected, and \code{comment = T}, one is
+  #'   \code{CHOAVLDFg_calculated} column is added to the \code{comment_col}
+  #'   If no \code{comment_col} is selected, and \code{comment = TRUE}, one is
   #'   created.
   #' @param comment_col Optional - default: \code{'comments'} - A potential
   #'   input variable; the column which contains the metadata comments for the
   #'   food item in question. Not required if \code{comment} is set to
-  #'   \code{FALSE}. If \code{comment} is set to true, and the
+  #'   \code{FALSE}. If \code{comment} is set to \code{TRUE}, and the
   #'   \code{comment_col} input is not the name of a column found in the
   #'   \code{df}, the function will create a column with the name of the
   #'   \code{comment_col} input to store comments in.
@@ -973,18 +973,94 @@ CHOAVLDFg_std_creator_New <- function(df,
   #'   set to 0. If set to \code{NA}, they are replaced with NA. if set to
   #'   \code{'remove'}, then those entries in the \code{df} are removed. if set to
   #'   \code{'nothing'}, then they are left as negative values.
-  #' @param NegativeValueDF Optional - default: \code{F} - \code{TRUE} or
+  #' @param NegativeValueDF Optional - default: \code{FALSE} - \code{TRUE} or
   #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
-  #'   a copy of the input \code{df} with the the \code{CHOAVLDFg_standardised}
+  #'   a copy of the input \code{df} with the the \code{CHOAVLDFg_calculated}
   #'   column to a subset of that dataframe only showing
-  #'   \code{CHOAVLDFg_standardised} values that are less than 0, for manual
+  #'   \code{CHOAVLDFg_calculated} values that are less than 0, for manual
   #'   inspection.
-  #' @return Original FCT dataset with a new \code{CHOAVLDFg_standardised}
+  #' @return Original FCT dataset with a new \code{CHOAVLDFg_calculated}
   #'   column.
+  #' @examples
+  #' # Two example data.frames have been prepared to illustrate the
+  #' # CHOAVLDFg_calculator The first is a dataset of fictional food values to
+  #' # illustrate the various options in the function, and the second is a dataset
+  #' # with non-standard column names, to show how to specify columns.
   #'
-  #'
-  #'
-  #'
+  #' # This is the first data.frame - before the CHOAVLDFg_calculator has been used on it.
+  #' SOP_example_df
+  #' #
+  #' #
+  #' # First, an example of the standard usecase - calculate the CHOAVLDFg_calculated
+  #' # value, while resetting negative values to 0.
+  #' NegativeToZeroResults <- CHOAVLDFg_calculator(SOP_example_df, NegativeValueReplacement = 0)
+  #' #
+  #' NegativeToZeroResults
+  #' # See the changes - the addition of the CHOAVLDFg_calculated column, and
+  #' # the additions to the comments column. Notice how some comments are
+  #' # specially formulated to show if the corresponding CHOAVLDFg_calculated
+  #' # value has been reset to 0.
+  #' #
+  #' #
+  #' # The second example shows the results when the Replacement option is set to NA
+  #' NegativeToNA_results <- CHOAVLDFg_calculator(SOP_example_df, NegativeValueReplacement = NA)
+  #' #
+  #' NegativeToNA_results
+  #' # Check the CHOAVLDFg_calculated column and comments column again - see how
+  #' # values below zero have been replaced with NA, and a note of this change
+  #' # logged in the comments column.
+  #' #
+  #' #
+  #' # The third example shows the results when the Replacement option is set to 'remove'
+  #' remove_results <- CHOAVLDFg_calculator(SOP_example_df, NegativeValueReplacement = "remove")
+  #' #
+  #' remove_results
+  #' # See how the out of bounds values have been removed.
+  #' #
+  #' #
+  #' # The fourth example is of the nothing results - i.e. nothing happens to the
+  #' # negative values.
+  #' NegativeNoChangeResults <- CHOAVLDFg_calculator(SOP_example_df, NegativeValueReplacement = "nothing")
+  #' #
+  #' NegativeNoChangeResults
+  #' # Look at the CHOAVLDFg_calculator values - and see how they've been left,
+  #' # even if they're negative.
+  #' #
+  #' #
+  #' # The fifth example is of the negative dataframe - an option useful for identifying
+  #' # and examining negative results.
+  #' NegativeCarb_results <- CHOAVLDFg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
+  #' #
+  #' NegativeCarb_results
+  #' # Only the out of bounds results are present, in their original form, for inspection.
+  #' #
+  #' #
+  #' # The sixth example is of the CHOAVLDFg_calculator working on a dataframe with
+  #' # non-standard column names. It uses a modified example data frame, shown below.
+  #' SOP_example_df_nonstandard
+  #' # Notice how the column names are different, and differ from the assumed names.
+  #' #
+  #' #
+  #' # Because of the different names, the column names for each input must be specified.
+  #' nothing_results_NonStandardInput <- CHOAVLDFg_calculator(
+  #' SOP_example_df_nonstandard,
+  #' WATERg_column = "Water_values_g",
+  #' PROCNTg_column = "PROCNT_values_g",
+  #' FAT_g_standardised_column = "FAT_values_g_standardised",
+  #' FIBTGg_standardised_column = "FIBTG_values_g_standardised",
+  #' ALCg_column = "ALC_values_g",
+  #' ASHg_column = "ASH_values_g",
+  #' comment_col = "comments_column",
+  #' comments = TRUE,
+  #' NegativeValueReplacement = 0,
+  #' NegativeValueDF = FALSE
+  #' )
+  #' # The resulting CHOAVLDFg_calculated column is the same as in the first example,
+  #' # despite the different names.
+  #' @export
+
+
+
   # Check presence of required columns
 
   # Input checks - goes through each input column name, and checks if its a column in the df. If it isn't, it prints an error message and stops.
@@ -1009,22 +1085,22 @@ CHOAVLDFg_std_creator_New <- function(df,
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
   #This block checks to make sure logical entries are True or False.
-  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(comment))
-  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F." = is.logical(NegativeValueDF))
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
+  stopifnot("The NegativeValueDF parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(NegativeValueDF))
 
   #Special check to check the options for the NegativeValueReplacement input.
   stopifnot("The NegativeValueReplacement parameter is not set to 0, NA, 'remove' or 'nothing' - please use one of these options." = tolower(NegativeValueReplacement) %in% c(NA, 0, "nothing", "none", "n", "rm", "del", "remove", "delete"))
 
 
 
-  if(NegativeValueDF == T){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
-    comment <- F
+  if(NegativeValueDF == TRUE){ #Turns off comments if NegativeValueDF is active. This produces a subdataset, without the changes that the comments are recording.
+    comment <- FALSE
   }
 
-  df$CHOAVLDFg_standardised <- NA #This row creates the CHOAVLDFg_standardised column, and fills it with NA values
+  df$CHOAVLDFg_calculated <- NA #This row creates the CHOAVLDFg_calculated column, and fills it with NA values
 
   #This adds all the columns together, ignoring NA results
-  df$CHOAVLDFg_standardised <- 100 - rowSums(df[, c(
+  df$CHOAVLDFg_calculated <- 100 - rowSums(df[, c(
     WATERg_column,
     PROCNTg_column,
     FAT_g_standardised_column,
@@ -1033,19 +1109,19 @@ CHOAVLDFg_std_creator_New <- function(df,
     ASHg_column
   )], na.rm = T)
 
-  # This checks if any rows were entirely NA values, and sets the CHOAVLDFg_standardised to NA if so.
+  # This checks if any rows were entirely NA values, and sets the CHOAVLDFg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
        is.na(df[[PROCNTg_column]]) &
        is.na(df[[FAT_g_standardised_column]]) &
        is.na(df[[FIBTGg_standardised_column]]) &
        is.na(df[[ALCg_column]]) &
-       is.na(df[[ASHg_column]]), "CHOAVLDFg_standardised"] <- NA
+       is.na(df[[ASHg_column]]), "CHOAVLDFg_calculated"] <- NA
 
   # Inserting comment here
 
-  comment_message <- "CHOAVLDFg_standardised calculated from 100-[constituents]"
+  comment_message <- "CHOAVLDFg_calculated calculated from 100-[constituents]"
 
-  if (comment == T) {
+  if (comment == TRUE) {
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
@@ -1053,54 +1129,54 @@ CHOAVLDFg_std_creator_New <- function(df,
     if (tolower(NegativeValueReplacement) %in% c(0)){ #If NegativeToZero is set to 0, then a special message must appear in specific columns, detailing the original value and that it was reset to 0.
 
       # This is for rows with existing comments, and negative values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to 0")
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"], " reset to 0")
 
       # This is for rows without existing comments, and negative values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to 0")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"], " reset to 0")
 
       # This is for rows with existing comments, and positive values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col], "; ", comment_message)
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col], "; ", comment_message)
 
       #This is for rows without existing comments, and positive values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(comment_message)
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col] <- paste0(comment_message)
 
 
     } else if (is.na(NegativeValueReplacement)){ #If NegativeToZero is set to NA, then a special message must appear in specific columns, detailing the original value and that it was reset to NA.
 
       # This is for rows with existing comments, and negative values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to NA")
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col], "; ", comment_message, " - Original value of ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"], " reset to NA")
 
       # This is for rows without existing comments, and negative values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"], " reset to NA")
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, comment_col] <- paste0(comment_message, " - Original value of ", df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"], " reset to NA")
 
       # This is for rows with existing comments, and positive values
-      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col], "; ", comment_message)
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col], "; ", comment_message)
 
       #This is for rows without existing comments, and positive values
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_standardised >= 0, comment_col] <- paste0(comment_message)
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$CHOAVLDFg_calculated >= 0, comment_col] <- paste0(comment_message)
 
 
     } else { #If NegativeValueReplacement is set to nothing, or delete (the only other valid options), the comments for the negative values don't matter. All comments are therefore the same - and negative values do not need a custom message.
 
-      #If comment == T and there is already a comment col in the df, then this appends the message to the existing comments.
+      #If comment == TRUE and there is already a comment col in the df, then this appends the message to the existing comments.
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
 
-      #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+      #If comment == TRUE and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
       df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
     }
   }
 
 
-  BelowZeroNumber <- length(df[df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"]) #Sees how many values are less than 0.
+  BelowZeroNumber <- length(df[df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"]) #Sees how many values are less than 0.
 
   if(BelowZeroNumber > 0){ #Triggers a warning if they are present.
 
-    Min_Number <- min(df$CHOAVLDFg_standardised) #Finds the lowest value.
-    Number_Below_Minus5 <- length(df[df$CHOAVLDFg_standardised < -5, "CHOAVLDFg_standardised"]) #Finds the number of values less than -5.
+    Min_Number <- min(df$CHOAVLDFg_calculated) #Finds the lowest value.
+    Number_Below_Minus5 <- length(df[df$CHOAVLDFg_calculated < -5, "CHOAVLDFg_calculated"]) #Finds the number of values less than -5.
 
     message("---------------------------") #Prints a warning message.
     message()
-    message(BelowZeroNumber, " CHOAVLDFg_standardised values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = T if you wish to inspect these values.")
+    message(BelowZeroNumber, " CHOAVLDFg_calculated values calculated to be less than 0. Minimum result: ", Min_Number, ". Number of values below -5: ", Number_Below_Minus5, ". Please rerun the function with NegativeValueDF = TRUE if you wish to inspect these values.")
     message()
     if (tolower(NegativeValueReplacement) %in% c(0)){
       message("Negative values set to 0, as per user input.")
@@ -1115,17 +1191,17 @@ CHOAVLDFg_std_creator_New <- function(df,
     message("---------------------------")
   }
 
-  if (NegativeValueDF == T){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
-    result_df <- df[df$CHOAVLDFg_standardised < 0,]
+  if (NegativeValueDF == TRUE){ #Implements the NegativeValueDF functionality - stripping to a a df with just negative calc Carb values.
+    result_df <- df[df$CHOAVLDFg_calculated < 0,]
   } else { #Otherwise does the normal process of setting negative values to 0, if NegativeToZero is set to TRUE.
     if (tolower(NegativeValueReplacement) %in% c(0)){
       result_df <- df
-      result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- 0
+      result_df[result_df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"] <- 0
     } else if (is.na(NegativeValueReplacement)){
       result_df <- df
-      result_df[result_df$CHOAVLDFg_standardised < 0, "CHOAVLDFg_standardised"] <- NA
+      result_df[result_df$CHOAVLDFg_calculated < 0, "CHOAVLDFg_calculated"] <- NA
     } else if (tolower(NegativeValueReplacement) %in% c("rm", "del", "remove", "delete")) {
-      result_df <- df[df$CHOAVLDFg_standardised >= 0,] #Only outputs rows with CHOAVLDFg_standardised values over 0.
+      result_df <- df[df$CHOAVLDFg_calculated >= 0,] #Only outputs rows with CHOAVLDFg_calculated values over 0.
     } else { #The only valid option left is to do nothing - so nothing happens.
       result_df <- df
     }
@@ -1285,6 +1361,131 @@ VITAmcg_std_creator <- function(dataset) {
 }
 
 
+# ¬ New Version ----
+
+
+
+VITAmcg_calculator <- function(df,
+                                 RETOLmcg_column = "RETOLmcg",
+                                 CARTBEQmcg_std_column = "CARTBEQmcg_std",
+                                 comment = TRUE,
+                                 comment_col = "comments") {
+
+  #' @title Vitamin A Calculator
+  #' @description Calculates VITAmcg_calculated = (RETOLmcg + (CARTBEQmcg_std/6)).
+  #' Column names are case sensitive and an error is returned if not found.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
+  #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
+  #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
+  #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
+  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
+  #'   function is run a comment describing the calculation used to find the
+  #'   VITA_mcg_calculated value is added to the \code{comment_col}.
+  #'   If no \code{comment_col} is selected, and \code{comment = TRUE}, one is
+  #'   created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if \code{comment} is set to
+  #'   \code{FALSE}. If \code{comment} is set to \code{TRUE}, and the
+  #'   \code{comment_col} input is not the name of a column found in the
+  #'   \code{df}, the function will create a column with the name of the
+  #'   \code{comment_col} input to store comments in.
+  #' @return Original FCT dataset with a new \code{VITAmcg_calculated}
+  #'   column.
+  #' @examples
+  #' @export
+
+
+  # Check presence of required columns
+
+  # Input checks - goes through each input column name, and checks if its a column in the df. If it isn't, it prints an error message and stops.
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
+  stopifnot("The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_std_column %in% colnames(df))
+
+  #This block of checks makes sure the columns that are meant to be numeric are numeric.
+  stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))
+  stopifnot("The CARTBEQmcg_std_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_std_column]]))
+
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
+
+
+
+  df$VITAmcg_calculated <- NA #This row creates the VITAmcg_calculated column, and fills it with NA values
+  df$TEMPsixthCARTBEQ <- df[[CARTBEQmcg_std_column]]/6 #This creates a column for CARTBEQ_std divided by 6
+
+  #This adds the CARTBEQ/6 and RETOL columns together, ignoring NA results
+  df$VITAmcg_calculated <- rowSums(df[, c(
+    RETOLmcg_column,
+    "TEMPsixthCARTBEQ"
+  )], na.rm = T)
+
+  # This checks if any rows were entirely NA values, and sets the VITAmcg_calculated to NA if so.
+  df[is.na(df[[RETOLmcg_column]]) &
+       is.na(df[[CARTBEQmcg_std_column]]), "VITAmcg_calculated"] <- NA
+
+  # This deletes the temporary TEMPsixthCARTBEQ column
+
+  df$TEMPsixthCARTBEQ <- NULL
+
+  # Comments process
+  if (comment == TRUE) {
+    #Creates comments_message if comments are true
+    comment_message <- "VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents"
+
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+    }
+
+    #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+    #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+
+  }
+
+  return(df)
+
+}
+
+
+# ¬ Testing ----
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+test_df$CARTBEQmcg_std
+test_df$RETOLmcg
+
+library(dplyr)
+time_1 <- Sys.time()
+
+old_method_output <- VITAmcg_std_creator(test_df)
+
+time_2 <- Sys.time()
+
+new_method_output <- VITAmcg_calculator(test_df)
+
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+# 15-20x faster
+
+parity_test <- signif(old_method_output$VITAmcg_std, 10) == signif(new_method_output$VITAmcg_calculated, 10)
+
+print(table(parity_test)) #Parity reached
+
+
 
 # VITA_RAEmcg_std_creator ----
 # ¬ Taken from FAO-Fisheries (paper branch)/functions/summary_table_functions.R ----
@@ -1325,6 +1526,134 @@ VITA_RAEmcg_std_creator <- function(dataset) {
 }
 
 
+# ¬ New Version ----
+
+
+
+VITA_RAEmcg_calculator <- function(df,
+                               RETOLmcg_column = "RETOLmcg",
+                               CARTBEQmcg_std_column = "CARTBEQmcg_std",
+                               comment = TRUE,
+                               comment_col = "comments") {
+
+  #' @title Vitamin A (Retinol Activity Equivalent) Calculator
+  #' @description Calculates VITA_RAEmcg_calculated = (RETOLmcg + (CARTBEQmcg_std/12)).
+  #' Column names are case sensitive and an error is returned if not found.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
+  #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
+  #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
+  #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
+  #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
+  #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
+  #'   function is run a comment describing the calculation used to find the
+  #'   VITA_mcg_calculated value is added to the \code{comment_col}.
+  #'   If no \code{comment_col} is selected, and \code{comment = TRUE}, one is
+  #'   created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if \code{comment} is set to
+  #'   \code{FALSE}. If \code{comment} is set to \code{TRUE}, and the
+  #'   \code{comment_col} input is not the name of a column found in the
+  #'   \code{df}, the function will create a column with the name of the
+  #'   \code{comment_col} input to store comments in.
+  #' @return Original FCT dataset with a new \code{VITA_RAEmcg_calculated}
+  #'   column.
+  #' @examples
+  #' @export
+
+
+  # Check presence of required columns
+
+  # Input checks - goes through each input column name, and checks if its a column in the df. If it isn't, it prints an error message and stops.
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
+  stopifnot("The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_std_column %in% colnames(df))
+
+  #This block of checks makes sure the columns that are meant to be numeric are numeric.
+  stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))
+  stopifnot("The CARTBEQmcg_std_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_std_column]]))
+
+  #This block checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
+
+
+
+  df$VITA_RAEmcg_calculated <- NA #This row creates the VITA_RAEmcg_calculated column, and fills it with NA values
+  df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_std_column]]/12 #This creates a column for CARTBEQ_std divided by 6
+
+  #This adds the CARTBEQ/6 and RETOL columns together, ignoring NA results
+  df$VITA_RAEmcg_calculated <- rowSums(df[, c(
+    RETOLmcg_column,
+    "TEMPtwelthCARTBEQ"
+  )], na.rm = T)
+
+  # This checks if any rows were entirely NA values, and sets the VITA_RAEmcg_calculated to NA if so.
+  df[is.na(df[[RETOLmcg_column]]) &
+       is.na(df[[CARTBEQmcg_std_column]]), "VITA_RAEmcg_calculated"] <- NA
+
+  # This deletes the temporary TEMPsixthCARTBEQ column
+
+  df$TEMPtwelthCARTBEQ <- NULL
+
+  # Comments process
+  if (comment == TRUE) {
+    #Creates comments_message if comments are true
+    comment_message <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents"
+
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+    }
+
+    #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+    #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+
+  }
+
+  return(df)
+
+}
+
+# Testing ----
+
+
+
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+test_df$CARTBEQmcg_std
+test_df$RETOLmcg
+
+library(dplyr)
+time_1 <- Sys.time()
+
+old_method_output <- VITA_RAEmcg_std_creator(test_df)
+
+time_2 <- Sys.time()
+
+new_method_output <- VITA_RAEmcg_calculator(test_df)
+
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+# 15-20x faster
+
+parity_test <- signif(old_method_output$VITA_RAEmcg_std, 10) == signif(new_method_output$VITA_RAEmcg_calculated, 10)
+
+print(table(parity_test)) #Parity reached
+
+
+
 # nia_calculator ----
 # ¬ Problem - not found, not referenced ----
 
@@ -1362,3 +1691,152 @@ THIAmg_std_creator <- function(dataset) {
     }
   )
 }
+
+
+# ¬ New Version ----
+
+# Looks like a job for the nutri combiner. But alongside that...
+
+
+Thiamine_standardiser <-  function(df, THIAmg_column = "THIAmg", THIAHCLmg_column = "THIAHCLmg", comment = T, comment_col = "comments"){
+
+  #' @title Thiamine Nutrient Combiner/Standardiser
+  #' @description Combines possible values for Thiamine heirachically so the
+  #'   most suitable is the one used. Considers Thiamine and Thiamine
+  #'   Hydrochloride.
+  #' @param df Required - the data.frame the data is currently stored in.
+  #' @param THIAmg_column Required - default: \code{'THIAmg'} - The name of the
+  #'   column containing Thiamine, vitamin B1 analysed and expressed as Thiamine
+  #'   in mg per 100g of EP.
+  #' @param THIAHCLmg_column Required - default: \code{'THIAHCLmg'} - The name
+  #'   of the column containing THIAHCLmg hydrochloride, vitamin B1 analysed and
+  #'   expressed as Thiamine hydrochloride in mg per 100g of EP.
+  #' @param comment Optional - default: \code{T} - \code{TRUE} or \code{FALSE}.
+  #'   If comment is set to \code{TRUE} (as it is by default), when the function
+  #'   is run a comment describing the source of the
+  #'   \code{THIAmg_standardised} column is added to the comment_col. If no
+  #'   comment_col is selected, and \code{comment = T}, one is created.
+  #' @param comment_col Optional - default: \code{'comments'} - A potential
+  #'   input variable; the column which contains the metadata comments for the
+  #'   food item in question. Not required if the comment parameter is set to
+  #'   \code{FALSE}. If set to true, and the comment_col entry is not found in
+  #'   the df, it will create a column with the name of the entry.
+  #' @return Original FCT dataset with a new THIAmg_standardised column.
+
+
+  # This check makes sure the entered df is a data frame.
+  stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This block of checks throws an error if the entry for the columns is not present in the df.
+  stopifnot("The THIAmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'Thiamine_mg'" = THIAmg_column %in% colnames(df))
+  stopifnot("The THIAHCLmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'Thiamine_HCL_mg'" = THIAHCLmg_column %in% colnames(df))
+
+  #This checks to make sure logical entries are True or False.
+  stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE, or T or F" = is.logical(comment))
+
+
+  df$THIAmg_standardised <- NA #Creates the new column, and sets the value to equal to NA
+
+  if (comment == TRUE){
+    df$THIAmg_standardised_comment_col_temp <- "No suitable value for THIAmg_standardised found"
+  }
+
+
+  #Fills values in from THIAHCLmg_column if there are legitimate values there (not NA or blank)
+
+  df[!(df[[THIAHCLmg_column]] %in% "" | is.na(df[[THIAHCLmg_column]])), "THIAmg_standardised"] <- df[!(df[[THIAHCLmg_column]] %in% "" | is.na(df[[THIAHCLmg_column]])), THIAHCLmg_column]
+
+  if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 2
+    df[!(df[[THIAHCLmg_column]] %in% "" | is.na(df[[THIAHCLmg_column]])), "THIAmg_standardised_comment_col_temp"] <- paste0("THIAmg_standardised equal to THIAHCLmg")
+  }
+
+
+  #Then overrides those values if better ones (THIAmg values) are available.
+
+  df[!(df[[THIAmg_column]] %in% "" | is.na(df[[THIAmg_column]])), "THIAmg_standardised"] <- df[!(df[[THIAmg_column]] %in% "" | is.na(df[[THIAmg_column]])), THIAmg_column]
+
+  if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from var 1
+    df[!(df[[THIAmg_column]] %in% "" | is.na(df[[THIAmg_column]])), "THIAmg_standardised_comment_col_temp"] <- paste0("THIAmg_standardised equal to THIAmg")
+  }
+
+
+
+  #Then sorts out the comments - depending on whether there is already an existing column or not.
+
+  if (comment == TRUE) {
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
+    }
+
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), "THIAmg_standardised_comment_col_temp"])
+
+    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), "THIAmg_standardised_comment_col_temp"]
+
+    df$THIAmg_standardised_comment_col_temp <- NULL # Remove the temp column
+  }
+
+  return(df)
+
+}
+
+
+
+
+
+
+# ¬ Testing ----
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+library(dplyr)
+time_1 <- Sys.time()
+
+old_method_output <- THIAmg_std_creator(test_df)
+
+time_2 <- Sys.time()
+
+new_method_output <- Thiamine_standardiser(test_df)
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+# 1.5x to 3x the time of the old version, but old version has annoying
+# dependencies, gives less clear error messages, has less checks, and less
+# potential comments.
+
+parity_test <- signif(old_method_output$THIAmg_std, 10) == signif(new_method_output$THIAmg_std, 10)
+
+print(table(parity_test)) #Parity reached
+
+
+
+# New function testing
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+library(dplyr)
+time_1 <- Sys.time()
+
+old_method_output <- THIAmg_std_creator(test_df)
+
+time_2 <- Sys.time()
+
+new_method_output <- nutri_combiner_new(test_df, var1_column = "THIAmg", var2_column = "THIAHCLmg", new_var = "THIAmg_std")
+
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+# 2-3x slower with nutri_combiner. But still consistently less than 0.1 second.
+
+parity_test <- signif(old_method_output$THIAmg_std, 10) == signif(new_method_output$THIAmg_std, 10)
+
+print(table(parity_test)) #Parity reached
+
+
+
