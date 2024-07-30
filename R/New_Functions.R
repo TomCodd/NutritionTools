@@ -169,7 +169,7 @@ SOP_std_creator_2 <- function(df,
     FIBTGg_standardised_column,
     ALCg_column,
     ASHg_column
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the SOPg_standardised to NA if so.
   df[is.na(df[[WATERg_column]]) &
@@ -409,7 +409,7 @@ SOPg_calculator <- function(df,
     FIBTGg_standardised_column,
     ALCg_column,
     ASHg_column
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the SOPg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
@@ -480,7 +480,7 @@ SOPg_calculator <- function(df,
 
   if(length(OutOfBoundsValues) > 0){ #Triggers a warning if they are present.
 
-    largest_OoB <- max(abs(OutOfBoundsValues-100), na.rm = T) #Finds the highest value.
+    largest_OoB <- max(abs(OutOfBoundsValues-100), na.rm = TRUE) #Finds the highest value.
 
     message("---------------------------") #Prints a warning message.
     message()
@@ -723,7 +723,7 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
   df[[new_var]] <- NA #Creates the new column, and sets the value to equal to NA
 
   if (comment == TRUE){
-    df$nutri_combiner_comment_col_temp <- NA
+    df$nutri_combiner_comment_col_temp <- paste0("No suitable value for ", new_var, " found")
   }
 
   if(!missing(var6_column)){ #Starts with Var 6, if present
@@ -793,10 +793,17 @@ nutri_combiner_new <-  function(df, var1_column, var2_column, var3_column, var4_
   }
 
 
-
   #Then sorts out the comments - depending on whether there is already an existing column or not.
 
   if (comment == TRUE) {
+
+    message("---------------------------")
+    message()
+    message("Breakdown of values used:")
+    print(table(df$nutri_combiner_comment_col_temp)) #A pretty acceptable detail message
+    message()
+    message("---------------------------")
+
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
     }
@@ -1101,7 +1108,7 @@ CHOAVLDFg_calculator <- function(df,
     FIBTGg_standardised_column,
     ALCg_column,
     ASHg_column
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the CHOAVLDFg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
@@ -1419,7 +1426,7 @@ VITAmcg_calculator <- function(df,
   df$VITAmcg_calculated <- rowSums(df[, c(
     RETOLmcg_column,
     "TEMPsixthCARTBEQ"
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the VITAmcg_calculated to NA if so.
   df[is.na(df[[RETOLmcg_column]]) &
@@ -1584,7 +1591,7 @@ VITA_RAEmcg_calculator <- function(df,
   df$VITA_RAEmcg_calculated <- rowSums(df[, c(
     RETOLmcg_column,
     "TEMPtwelthCARTBEQ"
-  )], na.rm = T)
+  )], na.rm = TRUE)
 
   # This checks if any rows were entirely NA values, and sets the VITA_RAEmcg_calculated to NA if so.
   df[is.na(df[[RETOLmcg_column]]) &
@@ -1675,6 +1682,7 @@ nia_conversion_creator <- function(dataset) {
       print(columns)
     }
   )
+  return(dataset)
 }
 
 
@@ -1687,7 +1695,7 @@ nia_conversion_creator <- function(dataset) {
 
 
 
-NIAmg_std_calculator <- function(df,
+NIAmg_calc_standardiser <- function(df,
                              NIAmg_column = "NIAmg",
                              TRPmg_column = "TRPmg",
                              NIAEQmg_column = "NIAEQmg",
@@ -1695,18 +1703,36 @@ NIAmg_std_calculator <- function(df,
                              comment = TRUE,
                              comment_col = "comments") {
 
-  #' @title Niacin Standardiser and Calculator
+  #' @title Niacin Calculator and Standardiser
   #' @description This function calculates potential values for Niacin, and then
-  #'   uses the most appropriate one to standardise the value with.
+  #'   uses the most appropriate one to standardise the value with. Inputs must
+  #'   cover at least two of the following combinations: NIAmg_column,
+  #'   NIAEQmg_column + NIATRPmg_column, NIAEQmg_column + TRPmg_column. This is
+  #'   because the function can then find Niacin values in multiple ways, and
+  #'   select the most appropriate.
+  #'
+  #'   The priority for standardisation is 1st:  \code{Niacin}, 2nd: \code{Total
+  #'   Niacin Equivalents} - \code{(Tryptophan/60)}, 3rd: \code{Total Niacin
+  #'   Equivalents} - \code{Niacin Equivalents from Tryptophan}.
   #' @param df Required - the data.frame the data is currently stored in.
-  #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
-  #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
-  #' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
-  #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
+  #' @param NIAmg_column Optional - default: \code{'NIAmg'} - The name of the
+  #'   column containing Niacin (preformed) in mg per 100g of Edible Portion (EP).
+  #'   If unavailable, set input to \code{NA}.
+  #' @param TRPmg_column Optional - default: \code{'TRPmg'} - Tryptophan, in mg
+  #'   per 100g of Edible Portion (EP). If unavailable, set input to \code{NA}.
+  #' @param NIAEQmg_column Required - default: \code{'NIAEQmg'} - The name of the
+  #'   column containing Niacin equivalents, total (preformed Niacin as well as
+  #'   Niacin equivalents from Tryptophan) in mg per 100g of Edible Portion
+  #'   (EP). The only required input as its impossible to get 2 or more ways of
+  #'   calculating \code{NIAmg_standardised} without it, which is required for
+  #'   the function to work.
+  #' @param NIATRPmg_column Optional - default: \code{'NIATRPmg'} - The name of the
+  #'   column containing Niacin equivalents from Tryptophan, in mg per 100g of
+  #'   Edible Portion (EP). If unavailable, set input to \code{NA}.
   #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
   #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
   #'   function is run a comment describing the calculation used to find the
-  #'   VITA_mcg_calculated value is added to the \code{comment_col}.
+  #'   NIAmg_standardised value is added to the \code{comment_col}.
   #'   If no \code{comment_col} is selected, and \code{comment = TRUE}, one is
   #'   created.
   #' @param comment_col Optional - default: \code{'comments'} - A potential
@@ -1716,7 +1742,7 @@ NIAmg_std_calculator <- function(df,
   #'   \code{comment_col} input is not the name of a column found in the
   #'   \code{df}, the function will create a column with the name of the
   #'   \code{comment_col} input to store comments in.
-  #' @return Original FCT dataset with a new \code{VITA_RAEmcg_calculated}
+  #' @return Original FCT dataset with a new \code{NIAmg_standardised}
   #'   column.
   #' @examples
   #' @export
@@ -1730,61 +1756,148 @@ NIAmg_std_calculator <- function(df,
   stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
-  stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
-  stopifnot("The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_std_column %in% colnames(df))
+  stopifnot("The NIAEQmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = NIAEQmg_column %in% colnames(df))
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
-  stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))
-  stopifnot("The CARTBEQmcg_std_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_std_column]]))
+  stopifnot("The NIAEQmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[NIAEQmg_column]]))
 
   #This block checks to make sure logical entries are True or False.
   stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
 
+  #This block makes sure that enough options are present for NIAmg_standardised to be calculated in 2+ ways.
+  #It also performs input checks on non-NA inputs, and pre-calculations for if they require them, e.g. TRP, followed by the actual calculations.
 
-  # ¬¬ IDEAS ----
+  #1st way: NIAmg
+  #2nd way: NIAEQmg_column - (TRPmg/60)
+  #3rd way: NIAEQmg_column - NIATRPmg
 
-  # use NA for blank values, paste it in all the documentation, with explanation. Then use if !is.na() for checks, and column in df checks.
+  NumberOfWays <- 0
 
-  # for standardisation functions, replace the comment column with numbers. If a certain number is used, then that becomes a certain message.
-  # Can then table the occurances of each number and output a message of the number of times each was used.
+  if(!is.na(NIAmg_column)){
+    NumberOfWays <- NumberOfWays+1
+    stopifnot("The NIAmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'. If there is no column for NIAmg, please set the NIAmg_column input to NA." = NIAmg_column %in% colnames(df))
+    stopifnot("The NIAmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[NIAmg_column]]))
+  }
 
-  df$VITA_RAEmcg_calculated <- NA #This row creates the VITA_RAEmcg_calculated column, and fills it with NA values
-  df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_std_column]]/12 #This creates a column for CARTBEQ_std divided by 6
+  if(!is.na(TRPmg_column)){
+    NumberOfWays <- NumberOfWays+1
+    stopifnot("The TRPmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column three'. If there is no column for TRPmg, please set the TRPmg_column input to NA." = TRPmg_column %in% colnames(df))
+    stopifnot("The TRPmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[TRPmg_column]]))
+    df$TEMP_NIAmg_std_NIAEQ_TRP <- df[[NIAEQmg_column]]-(df[[TRPmg_column]]/60)
+  }
 
-  #This adds the CARTBEQ/6 and RETOL columns together, ignoring NA results
-  df$VITA_RAEmcg_calculated <- rowSums(df[, c(
-    RETOLmcg_column,
-    "TEMPtwelthCARTBEQ"
-  )], na.rm = T)
-
-  # This checks if any rows were entirely NA values, and sets the VITA_RAEmcg_calculated to NA if so.
-  df[is.na(df[[RETOLmcg_column]]) &
-       is.na(df[[CARTBEQmcg_std_column]]), "VITA_RAEmcg_calculated"] <- NA
-
-  # This deletes the temporary TEMPsixthCARTBEQ column
-
-  df$TEMPtwelthCARTBEQ <- NULL
-
-  # Comments process
-  if (comment == TRUE) {
-    #Creates comments_message if comments are true
-    comment_message <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents"
-
-    if(!(comment_col %in% colnames(df))){
-      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
-    }
-
-    #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
-    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
-
-    #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
-    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+  if(!is.na(NIATRPmg_column)){
+    NumberOfWays <- NumberOfWays+1
+    stopifnot("The NIATRPmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column four'. If there is no column for NIATRPmg, please set the NIATRPmg_column input to NA." = NIATRPmg_column %in% colnames(df))
+    stopifnot("The NIATRPmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[NIATRPmg_column]]))
+    df$TEMP_NIAmg_std_NIAEQ_NIATRP <- df[[NIAEQmg_column]]-df[[NIATRPmg_column]]
 
   }
+
+  if(NumberOfWays < 2){
+    stop(
+      "Not enough ways to calculate NIAmg_standardised found. Please make sure you have included inputs for at least 2 of the following parameters: NIAmg_column, TRPmg_column, NIATRPmg_column. please run '?NIAmg_calc_standardiser()' to learn more."
+    )
+  }
+
+  #Standardisation
+
+  df$NIAmg_standardised <- NA #This row creates the NIAmg_standardised column, and fills it with NA values
+  if(comment == TRUE){
+    df$TEMP_NIA_comment <- "No suitable value for NIAmg_standardised found"
+  }
+
+  # The least wanted input is NIAEQmg - NIATRPmg, so we'll do that one first.
+
+  if(!is.na(NIATRPmg_column)){
+    df[!(df$TEMP_NIAmg_std_NIAEQ_NIATRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_NIATRP)), "NIAmg_standardised"] <- df[!(df$TEMP_NIAmg_std_NIAEQ_NIATRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_NIATRP)), "TEMP_NIAmg_std_NIAEQ_NIATRP"] #Where TEMP_NIAmg_std_NIAEQ_NIATRP is not NA or blank, sets new_variable to be that value.
+
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from this calculation
+      df[!(df$TEMP_NIAmg_std_NIAEQ_NIATRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_NIATRP)), "TEMP_NIA_comment"] <- paste0("NIAmg_standardised equal to ", NIAEQmg_column, " - ", NIATRPmg_column)
+    }
+  }
+
+
+
+  # Then the second least wanted input; NIAEQmg - TRPmg/60
+
+  if(!is.na(TRPmg_column)){
+    df[!(df$TEMP_NIAmg_std_NIAEQ_TRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_TRP)), "NIAmg_standardised"] <- df[!(df$TEMP_NIAmg_std_NIAEQ_TRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_TRP)), "TEMP_NIAmg_std_NIAEQ_TRP"] #Where TEMP_NIAmg_std_NIAEQ_TRP is not NA or blank, sets new_variable to be that value.
+
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from this calculation
+      df[!(df$TEMP_NIAmg_std_NIAEQ_TRP %in% "" | is.na(df$TEMP_NIAmg_std_NIAEQ_TRP)), "TEMP_NIA_comment"] <- paste0("NIAmg_standardised equal to ", NIAEQmg_column, " - (", TRPmg_column, "/60)")
+    }
+  }
+
+
+
+  # Then the most wanted input; NIAmg
+
+  if(!is.na(NIAmg_column)){
+    df[!(df[[NIAmg_column]] %in% "" | is.na(df[[NIAmg_column]])), "NIAmg_standardised"] <- df[!(df[[NIAmg_column]] %in% "" | is.na(df[[NIAmg_column]])), NIAmg_column] #Where TEMP_NIAmg_std_NIAEQ_TRP is not NA or blank, sets new_variable to be that value.
+
+    if(comment == TRUE){ #If comments are true, sets the relevant rows to mention they come from htis value
+      df[!(df[[NIAmg_column]] %in% "" | is.na(df[[NIAmg_column]])), "TEMP_NIA_comment"] <- paste0("NIAmg_standardised equal to ", NIAmg_column)
+    }
+  }
+
+
+
+  #The sort out the comments
+
+  if (comment == TRUE) {
+
+    message("---------------------------")
+    message()
+    message("Breakdown of values used:")
+    print(table(df$TEMP_NIA_comment)) #A pretty acceptable detail message
+    message()
+    message("---------------------------")
+
+    if(!(comment_col %in% colnames(df))){
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
+    }
+
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), "TEMP_NIA_comment"])
+
+    #If comment == T and there is already a comment col in the df, but its empty, then this becomes the first entry into the column.
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), "TEMP_NIA_comment"]
+
+  }
+
+  # Remove the temp columns
+  df$TEMP_NIA_comment <- NULL
+  df$TEMP_NIAmg_std_NIAEQ_NIATRP <- NULL
+  df$TEMP_NIAmg_std_NIAEQ_TRP <- NULL
 
   return(df)
 
 }
+
+
+# ¬ Testing ----
+
+test_df <- read.csv("~/GitHub/UoN-FAO/Output/Global_nct_imitation_v1.0.2.csv")
+
+time_1 <- Sys.time()
+
+old_method_output <- nia_conversion_creator(test_df)
+
+time_2 <- Sys.time()
+
+new_method_output <- NIAmg_calc_standardiser(test_df)
+
+time_3 <- Sys.time()
+
+time_2 - time_1
+
+time_3 - time_2
+
+parity_test <- signif(old_method_output$NIA,10) == signif(new_method_output$new_FAT_standardisation, 10)
+
+print(table(parity_test))
+
+
 
 
 
@@ -1895,6 +2008,14 @@ Thiamine_standardiser <-  function(df, THIAmg_column = "THIAmg", THIAHCLmg_colum
   #Then sorts out the comments - depending on whether there is already an existing column or not.
 
   if (comment == TRUE) {
+
+    message("---------------------------")
+    message()
+    message("Breakdown of values used:")
+    print(table(df$THIAmg_standardised_comment_col_temp)) #A pretty acceptable detail message
+    message()
+    message("---------------------------")
+
     if(!(comment_col %in% colnames(df))){
       df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
     }
