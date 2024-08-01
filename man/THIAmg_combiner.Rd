@@ -79,7 +79,7 @@ breakfast_df_nonstandard
 
 # To use these non-standard names, you must specify each input - as shown below.
 
-THIA_results_nonstandard <- THIAmg_combiner(breakfast_df,
+THIA_results_nonstandard <- THIAmg_combiner(breakfast_df_nonstandard,
 THIAmg_column = "Thiamine_milligrams",
 THIAHCLmg_column = "Thiamine_from_HCL_milligrams",
 comment_col = "comments_column")
