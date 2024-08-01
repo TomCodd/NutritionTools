@@ -5,6 +5,7 @@
 #' @format A data frame with 10 rows and 20 columns:
 #' \describe{
 #'   \item{food_code}{Imaginary Food ID}
+#'   \item{food_name}{Food names to attach the imaginary nutritional data to}
 #'   \item{WATERg}{Imaginary Water values}
 #'   \item{PROCNTg}{Imaginary Protein values}
 #'   \item{FAT_g_combined}{Imaginary Fat values}
@@ -36,6 +37,7 @@
 #' @format A data frame with 10 rows and 20 columns:
 #' \describe{
 #'   \item{food_code}{Imaginary Food ID}
+#'   \item{food_name}{Food names to attach the imaginary nutritional data to}
 #'   \item{Water_values_g}{Imaginary Water values}
 #'   \item{PROCNT_values_g}{Imaginary Protein values}
 #'   \item{FAT_values_g_combined}{Imaginary Fat values}
