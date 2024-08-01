@@ -710,7 +710,16 @@ nutri_combiner <-  function(data.df, var1, var2, var3, new_var){
 
 # ¬ New Version ----
 
-nutri_combiner <-  function(df, var1_column, var2_column, var3_column, var4_column, var5_column, var6_column, new_var, comment = TRUE, comment_col = "comments"){
+nutri_combiner <-  function(df,
+                            var1_column,
+                            var2_column,
+                            var3_column,
+                            var4_column,
+                            var5_column,
+                            var6_column,
+                            new_var,
+                            comment = TRUE,
+                            comment_col = "comments") {
 
   #' @title Multi-column Nutrient Combiner
   #' @description Combines nutrients or variables that are spread out over
