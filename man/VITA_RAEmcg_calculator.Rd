@@ -7,7 +7,7 @@
 VITA_RAEmcg_calculator(
   df,
   RETOLmcg_column = "RETOLmcg",
-  CARTBEQmcg_std_column = "CARTBEQmcg_std",
+  CARTBEQmcg_combined_column = "CARTBEQmcg_combined",
   comment = TRUE,
   comment_col = "comments"
 )
@@ -18,7 +18,7 @@ VITA_RAEmcg_calculator(
 \item{RETOLmcg_column}{Required - default: \code{'RETOLmcg'} - The name of the
 column containing Retinol in mcg per 100g of Edible Portion (EP).}
 
-\item{CARTBEQmcg_std_column}{Required - default: \code{'CARTBEQmcg_std'} -
+\item{CARTBEQmcg_combined_column}{Required - default: \code{'CARTBEQmcg_combined'} -
 Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).}
 
 \item{comment}{Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
@@ -56,9 +56,9 @@ breakfast_df
 # the required columns for calculation, and a comments column. Everything
 # needed to run the VITA_RAEmcg_calculator.
 
-VitA_results <- VITA_RAEmcg_calculator(breakfast_df)
+VITA_RAE_results <- VITA_RAEmcg_calculator(breakfast_df)
 
-VitA_results
+VITA_RAE_results
 
 # You can see how the data.frame has been returned with a new column (VITAmcg_calculated)
 # and an additional comment in the comments column, detailing the calculation used.
@@ -75,12 +75,12 @@ breakfast_df_nonstandard
 # column names. This will mean the function will not know what the required
 # column names are, and will need the user to name them.
 
-VitA_results_nonstandard <- VITA_RAEmcg_calculator(breakfast_df_nonstandard,
+VITA_RAE_results_nonstandard <- VITA_RAEmcg_calculator(breakfast_df_nonstandard,
 RETOLmcg_column = "Retinol_micrograms",
 CARTBEQmcg_combined_column = "Beta_Carotene_Equivalents_micrograms",
 comment_col = "comments_column")
 
-VitA_results_nonstandard
+VITA_RAE_results_nonstandard
 
 # You can see how the results are the same as calculated above, regardless of
 # the changed column names.

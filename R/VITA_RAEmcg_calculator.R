@@ -13,7 +13,7 @@
 #' @param df Required - the data.frame the data is currently stored in.
 #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
 #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
-#' @param CARTBEQmcg_std_column Required - default: \code{'CARTBEQmcg_std'} -
+#' @param CARTBEQmcg_combined_column Required - default: \code{'CARTBEQmcg_combined'} -
 #'   Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).
 #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
 #'   If \code{comment} is set to \code{TRUE} (as it is by default), when the
@@ -42,9 +42,9 @@
 #' # the required columns for calculation, and a comments column. Everything
 #' # needed to run the VITA_RAEmcg_calculator.
 #'
-#' VitA_results <- VITA_RAEmcg_calculator(breakfast_df)
+#' VITA_RAE_results <- VITA_RAEmcg_calculator(breakfast_df)
 #'
-#' VitA_results
+#' VITA_RAE_results
 #'
 #' # You can see how the data.frame has been returned with a new column (VITAmcg_calculated)
 #' # and an additional comment in the comments column, detailing the calculation used.
@@ -61,12 +61,12 @@
 #' # column names. This will mean the function will not know what the required
 #' # column names are, and will need the user to name them.
 #'
-#' VitA_results_nonstandard <- VITA_RAEmcg_calculator(breakfast_df_nonstandard,
+#' VITA_RAE_results_nonstandard <- VITA_RAEmcg_calculator(breakfast_df_nonstandard,
 #' RETOLmcg_column = "Retinol_micrograms",
 #' CARTBEQmcg_combined_column = "Beta_Carotene_Equivalents_micrograms",
 #' comment_col = "comments_column")
 #'
-#' VitA_results_nonstandard
+#' VITA_RAE_results_nonstandard
 #'
 #' # You can see how the results are the same as calculated above, regardless of
 #' # the changed column names.
@@ -76,7 +76,7 @@
 
 VITA_RAEmcg_calculator <- function(df,
                                    RETOLmcg_column = "RETOLmcg",
-                                   CARTBEQmcg_std_column = "CARTBEQmcg_std",
+                                   CARTBEQmcg_combined_column = "CARTBEQmcg_combined",
                                    comment = TRUE,
                                    comment_col = "comments") {
 
@@ -89,11 +89,11 @@ VITA_RAEmcg_calculator <- function(df,
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
-  stopifnot("The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_std_column %in% colnames(df))
+  stopifnot("The CARTBEQmcg_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_combined_column %in% colnames(df))
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))
-  stopifnot("The CARTBEQmcg_std_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_std_column]]))
+  stopifnot("The CARTBEQmcg_combined_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CARTBEQmcg_combined_column]]))
 
   #This block checks to make sure logical entries are True or False.
   stopifnot("The comment parameter is not set to TRUE or FALSE - please use TRUE or FALSE." = is.logical(comment))
@@ -101,7 +101,7 @@ VITA_RAEmcg_calculator <- function(df,
 
 
   df$VITA_RAEmcg_calculated <- NA #This row creates the VITA_RAEmcg_calculated column, and fills it with NA values
-  df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_std_column]]/12 #This creates a column for CARTBEQ_std divided by 6
+  df$TEMPtwelthCARTBEQ <- df[[CARTBEQmcg_combined_column]]/12 #This creates a column for CARTBEQ_std divided by 6
 
   #This adds the CARTBEQ/6 and RETOL columns together, ignoring NA results
   df$VITA_RAEmcg_calculated <- rowSums(df[, c(
@@ -111,7 +111,7 @@ VITA_RAEmcg_calculator <- function(df,
 
   # This checks if any rows were entirely NA values, and sets the VITA_RAEmcg_calculated to NA if so.
   df[is.na(df[[RETOLmcg_column]]) &
-       is.na(df[[CARTBEQmcg_std_column]]), "VITA_RAEmcg_calculated"] <- NA
+       is.na(df[[CARTBEQmcg_combined_column]]), "VITA_RAEmcg_calculated"] <- NA
 
   # This deletes the temporary TEMPsixthCARTBEQ column
 
