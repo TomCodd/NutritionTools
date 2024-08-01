@@ -1,6 +1,20 @@
+#---
+# Title: SOPg Calculator
+# Author: Thomas Codd - https://github.com/TomCodd
+# Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
+# Version: V1.1.0
+# Changelog:
+# V1.0.0 -> V1.1.0: Change in default inputs from CHOAVLDFg_standardised to CHOAVLg;
+# from FAT_g_standardised to FAT_g_combined; from FIBTGg_standardised to FIBTGg_combined.
+# Change in input parameters to match these changes (e.g. FAT_g_standardised_column
+# to FAT_g_combined_column). Added a warning message if CHOAVLDFg_calculated used
+# as an input to CHOAVLg_column. Updated examples.
+# Github: https://github.com/TomCodd/NutritionTools
+#---
+
 #' @title Sum of Proximate Calculator
 #' @description Calculates SOPg_calculated = (WATERg + PROCNTg +
-#'   FAT_g_standardised + CHOAVLDFg_standardised + FIBTGg_standardised_column
+#'   FAT_g_combined + CHOAVLg + FIBTGg_combined
 #'   + ALCg +ASHg). Column names are case sensitive and an error is returned
 #'   if not found.
 #' @param df Required - the data.frame the data is currently stored in.
@@ -10,21 +24,21 @@
 #' @param PROCNTg_column Required - default: \code{'PROCNTg'} - Protein in
 #'   grams per 100g of Edible Portion (EP), as reported in the original FCT
 #'   and assumed to be calculated from nitrogen (NTg) content.
-#' @param FAT_g_standardised_column Required - default:
-#'   \code{'FAT_g_standardised'} - Fat content, unknown method of calculation,
+#' @param FAT_g_combined_column Required - default:
+#'   \code{'FAT_g_combined'} - Fat content, unknown method of calculation,
 #'   in grams per 100g of Edible Portion (EP).
-#' @param CHOAVLDFg_standardised_column Required - default:
-#'   \code{'CHOAVLDFg_standardised'} - Available carbohydrates calculated by
+#' @param CHOAVLg_column Required - default:
+#'   \code{'CHOAVLg'} - Available carbohydrates calculated by
 #'   difference, in grams per 100g of Edible Portion (EP).
-#' @param FIBTGg_standardised_column Required - default:
-#'   \code{'FIBTGg_standardised'} - Fibre content from combined Tagnames, with
+#' @param FIBTGg_combined_column Required - default:
+#'   \code{'FIBTGg_combined'} - Fibre content from combined Tagnames, with
 #'   preference of Total dietary fibre by AOAC Prosky method, expressed in
 #'   grams per 100g of Edible Portion (EP).
 #' @param ALCg_column Required - default: \code{'ALCg'} - Alcohol in grams per
 #'   100g of Edible Portion (EP).
 #' @param ASHg_column Required - default: \code{'ASHg'} - Ashes in grams per
 #'   100g of Edible Portion (EP).
-#' @param comment Optional - default: \code{TRUE} - \code{TRUE} or
+#' @param comment Required - default: \code{TRUE} - \code{TRUE} or
 #'   \code{FALSE}. If comment is set to \code{TRUE} (as it is by default), when
 #'   the function is run a comment describing the source of the
 #'   \code{SOPg_calculated} column is added to the comment_col. If no
@@ -34,7 +48,7 @@
 #'   input variable; the column which contains the metadata comments for the
 #'   food item in question. Not required if the comment parameter is set to
 #'   \code{FALSE}.
-#' @param OutsideBoundsReplacement Optional - default: \code{'none'} -
+#' @param OutsideBoundsReplacement Required - default: \code{'none'} -
 #'   Options are \code{'round'}, \code{NA}, \code{'remove'}, or
 #'   \code{'none'}. Choose what happens to values that are outside of the
 #'   bounds. The ranges are set to FAO standards: 93-107 is considered
@@ -44,22 +58,24 @@
 #'   \code{NA}, they are replaced with NA. if set to \code{'remove'}, then
 #'   those rows are removed (including NA results). if set to \code{'none'},
 #'   then they are left as the out of bound values.
-#' @param LowerBound Optional - default: \code{93} - Integer value. Sets the
+#' @param LowerBound Required - default: \code{93} - Integer value. Sets the
 #'   lower boundary for acceptable SOPg_calculated values, and therefore
 #'   determines the values affected by \code{OutsideBoundsReplacement} and
 #'   \code{OutsideBoundsDF}. FAO standards list 93 as the lower boundary for
 #'   acceptable values, and 95 as the lower boundary for preferred values.
-#' @param UpperBound Optional - default: \code{107} - Integer value. Sets the
+#' @param UpperBound Required - default: \code{107} - Integer value. Sets the
 #'   upper boundary for acceptable SOPg_calculated values, and therefore
 #'   determines the values affected by \code{OutsideBoundsReplacement} and
 #'   \code{OutsideBoundsDF}. FAO standards list 107 as the upper boundary for
 #'   acceptable values, and 105 as the upper boundary for preferred values.
-#' @param OutsideBoundsDF Optional - default: \code{FALSE} - \code{TRUE} or
+#' @param OutsideBoundsDF Required - default: \code{FALSE} - \code{TRUE} or
 #'   \code{FALSE}. If set to \code{TRUE}, Then the output switches from being
 #'   a copy of the input df with the the SOPg_calculated column to a subset
 #'   of that dataframe only showing SOPg_calculated values that are out of
 #'   bounds, for manual inspection.
-#' @return Original FCT dataset with a new SOPg_calculated column.
+#' @return Original data.frame with a new \code{SOPg_calculated} column, and
+#'   (depending on the options selected) an additional comment/comments column
+#'   and comment.
 #' @examples
 #' # Two example data.frames have been prepared to illustrate the
 #' # SOPg_calculator. The first is a dataset of fictional food values to
@@ -67,12 +83,15 @@
 #' # with non-standard column names, to show how to specify columns.
 #'
 #' # This is the first data.frame - before the SOPg_calculator has been used on it.
-#' SOP_example_df
+#' breakfast_df <- breakfast_df[,c("food_code", "food_name", "WATERg",
+#' "PROCNTg", "FAT_g_combined", "CHOAVLg", "FIBTGg_combined", "ALCg", "ASHg",
+#' "comments")]
+#' breakfast_df
 #' #
 #' #
 #' # First, an example of the standard usecase - calculate the SOPg_calculated
 #' # value, without modifying out of bounds values.
-#' nothing_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "none")
+#' nothing_results <- SOPg_calculator(breakfast_df, OutsideBoundsReplacement = "none")
 #' #
 #' nothing_results
 #' # See the changes - the addition of the SOPg_calculated column, and the
@@ -80,7 +99,7 @@
 #' #
 #' #
 #' # The second example shows the results when the Replacement option is set to NA
-#' NA_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = NA)
+#' NA_results <- SOPg_calculator(breakfast_df, OutsideBoundsReplacement = NA)
 #' #
 #' NA_results
 #' # Check the SOP column and comments column again - see how values outside of
@@ -89,23 +108,23 @@
 #' #
 #' #
 #' # The third example shows the results when the Replacement option is set to 'remove'
-#' remove_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "remove")
+#' remove_results <- SOPg_calculator(breakfast_df, OutsideBoundsReplacement = "remove")
 #' #
 #' remove_results
 #' # See how the out of bounds values have been removed.
 #' #
 #' #
 #' # The fourth example is of the rounding results.
-#' rounding_results <- SOPg_calculator(SOP_example_df, OutsideBoundsReplacement = "round")
+#' rounding_results <- SOPg_calculator(breakfast_df, OutsideBoundsReplacement = "round")
 #' #
 #' rounding_results
-#' # Look at the SOP_standardised values - and see how they've been capped to the bounds
+#' # Look at the SOP_combined values - and see how they've been capped to the bounds
 #' # if they would have been out fo bounds, with a note of the change in the comments.
 #' #
 #' #
 #' # The fifth example is of the out of bounds dataframe - an option useful for identifying
 #' # and examining out of bounds results.
-#' OoB_DF_results <- SOPg_calculator(SOP_example_df, OutsideBoundsDF = TRUE)
+#' OoB_DF_results <- SOPg_calculator(breakfast_df, OutsideBoundsDF = TRUE)
 #' #
 #' OoB_DF_results
 #' # Only the out of bounds results are present, in their original form, for inspection.
@@ -113,18 +132,22 @@
 #' #
 #' # The sixth example is of the SOPg_calculator working on a dataframe with non-standard
 #' # column names. It uses a modified example data frame, shown below.
-#' SOP_example_df_nonstandard
+#' breakfast_df_nonstandard <- breakfast_df_nonstandard[,c("food_code",
+#' "food_name", "Water_values_g", "CHOAVL_values_g", "PROCNT_values_g",
+#' "FIBTG_values_g_combined", "ALC_values_g", "ASH_values_g",
+#' "comments_column")]
+#' breakfast_df_nonstandard
 #' # Notice how the column names are different, and differ from the assumed names.
 #' #
 #' #
 #' # Because of the different names, the column names for each input must be specified.
 #' nothing_results_NonStandardInput <- SOPg_calculator(
-#' SOP_example_df_nonstandard,
+#' breakfast_df_nonstandard,
 #' WATERg_column = "Water_values_g",
 #' PROCNTg_column = "PROCNT_values_g",
-#' FAT_g_standardised_column = "FAT_values_g_standardised",
-#' CHOAVLDFg_standardised_column = "CHOAVLDF_values_g_standardised",
-#' FIBTGg_standardised_column = "FIBTG_values_g_standardised",
+#' FAT_g_combined_column = "FAT_values_g_combined",
+#' CHOAVLg_column = "CHOAVL_values_g",
+#' FIBTGg_combined_column = "FIBTG_values_g_combined",
 #' ALCg_column = "ALC_values_g",
 #' ASHg_column = "ASH_values_g",
 #' comment_col = "comments_column",
@@ -140,9 +163,9 @@
 SOPg_calculator <- function(df,
                             WATERg_column = "WATERg",
                             PROCNTg_column = "PROCNTg",
-                            FAT_g_standardised_column = "FAT_g_standardised",
-                            CHOAVLDFg_standardised_column = "CHOAVLDFg_standardised",
-                            FIBTGg_standardised_column = "FIBTGg_standardised",
+                            FAT_g_combined_column = "FAT_g_combined",
+                            CHOAVLg_column = "CHOAVLg",
+                            FIBTGg_combined_column = "FIBTGg_combined",
                             ALCg_column = "ALCg",
                             ASHg_column = "ASHg",
                             comment = TRUE,
@@ -162,18 +185,18 @@ SOPg_calculator <- function(df,
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The WATERg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = WATERg_column %in% colnames(df))
   stopifnot("The PROCNTg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = PROCNTg_column %in% colnames(df))
-  stopifnot("The FAT_g_standardised is not a column name in df - please input a string that is a column name in df, e.g. 'column three'." = FAT_g_standardised_column %in% colnames(df))
-  stopifnot("The CHOAVLDFg_standardised_column is not a column name in df - please input a string that is a column name in df, e.g. 'column four'." = CHOAVLDFg_standardised_column %in% colnames(df))
-  stopifnot("The FIBTGg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'." = FIBTGg_standardised_column %in% colnames(df))
-  stopifnot("The ALCg_columnis not a column name in df - please input a string that is a column name in df, e.g. 'column six'." = ALCg_column %in% colnames(df))
+  stopifnot("The FAT_g_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column three'." = FAT_g_combined_column %in% colnames(df))
+  stopifnot("The CHOAVLg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column four'." = CHOAVLg_column %in% colnames(df))
+  stopifnot("The FIBTGg_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'." = FIBTGg_combined_column %in% colnames(df))
+  stopifnot("The ALCg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column six'." = ALCg_column %in% colnames(df))
   stopifnot("The ASHg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column seven'." = ASHg_column %in% colnames(df))
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The WATERg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[WATERg_column]]))
   stopifnot("The PROCNTg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[PROCNTg_column]]))
-  stopifnot("The FAT_g_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FAT_g_standardised_column]]))
-  stopifnot("The CHOAVLDFg_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CHOAVLDFg_standardised_column]]))
-  stopifnot("The FIBTGg_standardised_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FIBTGg_standardised_column]]))
+  stopifnot("The FAT_g_combined_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FAT_g_combined_column]]))
+  stopifnot("The CHOAVLg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[CHOAVLg_column]]))
+  stopifnot("The FIBTGg_combined_column is not numeric. Please ensure it is numeric." = is.numeric(df[[FIBTGg_combined_column]]))
   stopifnot("The ALCg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ALCg_column]]))
   stopifnot("The ASHg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[ASHg_column]]))
 
@@ -188,7 +211,13 @@ SOPg_calculator <- function(df,
   #Special check to check the options for the OutsideBoundsReplacement input.
   stopifnot("The OutsideBoundsReplacement parameter is not set to 'round', NA, 'remove' or 'nothing' - please use one of these options." = tolower(OutsideBoundsReplacement) %in% c(NA, "round", "closest", "nearest", "nothing", "none", "n", "rm", "del", "remove", "delete"))
 
-
+  if(CHOAVLg_column == "CHOAVLDFg_calculated"){
+    message("---------------------------") #Prints a warning message.
+    message()
+    message("WARNING - input column name of 'CHOAVLDFg_calculated' in the CHOAVLg_column detected. SOPg_calculated and CHOAVLDFg_calculated are inversions of each other, and so SOPg will likely always be 100 if CHOAVLDFg_calculated is used, and therefore be of little informational use.")
+    message()
+    message("---------------------------")
+  }
 
   if(OutsideBoundsDF == TRUE){ #Turns off comments if OutsideBoundsDF is active. This produces a subdataset, without the changes that the comments are recording.
     comment <- FALSE
@@ -200,9 +229,9 @@ SOPg_calculator <- function(df,
   df$SOPg_calculated <- rowSums(df[, c(
     WATERg_column,
     PROCNTg_column,
-    FAT_g_standardised_column,
-    CHOAVLDFg_standardised_column,
-    FIBTGg_standardised_column,
+    FAT_g_combined_column,
+    CHOAVLg_column,
+    FIBTGg_combined_column,
     ALCg_column,
     ASHg_column
   )], na.rm = TRUE)
@@ -210,9 +239,9 @@ SOPg_calculator <- function(df,
   # This checks if any rows were entirely NA values, and sets the SOPg_calculated to NA if so.
   df[is.na(df[[WATERg_column]]) &
        is.na(df[[PROCNTg_column]]) &
-       is.na(df[[FAT_g_standardised_column]]) &
-       is.na(df[[CHOAVLDFg_standardised_column]]) &
-       is.na(df[[FIBTGg_standardised_column]]) &
+       is.na(df[[FAT_g_combined_column]]) &
+       is.na(df[[CHOAVLg_column]]) &
+       is.na(df[[FIBTGg_combined_column]]) &
        is.na(df[[ALCg_column]]) &
        is.na(df[[ASHg_column]]), "SOPg_calculated"] <- NA
 
@@ -258,7 +287,7 @@ SOPg_calculator <- function(df,
       df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & df$SOPg_calculated >= LowerBound & df$SOPg_calculated <= UpperBound & !is.na(df$SOPg_calculated), comment_col], "; ", comment_message)
 
       #This is for rows without existing comments, and in bounds values (All other values will already have a comment)
-      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(comment_message)
+      df[(df[[comment_col]] %in% "" | is.na(df[[comment_col]])) & !is.na(df$SOPg_calculated), comment_col] <- paste0(comment_message)
 
 
     } else { #If OutsideBoundsReplacement is set to nothing, or delete (the only other valid options), the comments for those values don't matter. All comments are therefore the same - and OoB values do not need a custom message.
@@ -277,10 +306,11 @@ SOPg_calculator <- function(df,
     if(length(OutOfBoundsValues) > 0){ #Triggers a warning if they are present.
 
       largest_OoB <- max(abs(OutOfBoundsValues-100), na.rm = T) #Finds the highest value.
+      NA_number <- length(df[is.na(df$SOPg_calculated)])
 
       message("---------------------------") #Prints a warning message.
       message()
-      message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest amount Out of Bounds: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
+      message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest distance from 100: ", largest_OoB, ". Number of NA's: ", NA_number, ". Please rerun the function with OutsideBoundsDF = TRUE if you wish to inspect these values.")
       message()
       if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
         message("Out of Bounds values set to closest acceptable value, as per user input.")
