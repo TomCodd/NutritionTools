@@ -47,7 +47,7 @@ Column names are case sensitive and an error is returned if not found.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">VITA_RAEmcg_calculator</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
 <span>  RETOLmcg_column <span class="op">=</span> <span class="st">"RETOLmcg"</span>,</span>
-<span>  CARTBEQmcg_std_column <span class="op">=</span> <span class="st">"CARTBEQmcg_std"</span>,</span>
+<span>  CARTBEQmcg_combined_column <span class="op">=</span> <span class="st">"CARTBEQmcg_combined"</span>,</span>
 <span>  comment <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  comment_col <span class="op">=</span> <span class="st">"comments"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -66,8 +66,8 @@ Column names are case sensitive and an error is returned if not found.</p>
 column containing Retinol in mcg per 100g of Edible Portion (EP).</p></dd>
 
 
-<dt id="arg-cartbeqmcg-std-column">CARTBEQmcg_std_column<a class="anchor" aria-label="anchor" href="#arg-cartbeqmcg-std-column"></a></dt>
-<dd><p>Required - default: <code>'CARTBEQmcg_std'</code> -
+<dt id="arg-cartbeqmcg-combined-column">CARTBEQmcg_combined_column<a class="anchor" aria-label="anchor" href="#arg-cartbeqmcg-combined-column"></a></dt>
+<dd><p>Required - default: <code>'CARTBEQmcg_combined'</code> -
 Beta-carotene equivalents, in mcg per 100g of Edible Portion (EP).</p></dd>
 
 
@@ -131,11 +131,42 @@ food item in question. Not required if <code>comment</code> is set to
 <span class="r-in"><span><span class="co"># the required columns for calculation, and a comments column. Everything</span></span></span>
 <span class="r-in"><span><span class="co"># needed to run the VITA_RAEmcg_calculator.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">VitA_results</span> <span class="op">&lt;-</span> <span class="fu">VITA_RAEmcg_calculator</span><span class="op">(</span><span class="va">breakfast_df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in VITA_RAEmcg_calculator(breakfast_df):</span> The CARTBEQmcg_std_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'.</span>
+<span class="r-in"><span><span class="va">VITA_RAE_results</span> <span class="op">&lt;-</span> <span class="fu">VITA_RAEmcg_calculator</span><span class="op">(</span><span class="va">breakfast_df</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">VitA_results</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'VitA_results' not found</span>
+<span class="r-in"><span><span class="va">VITA_RAE_results</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name RETOLmcg CARTBEQmcg_combined</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon       53                  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans       12                  51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast       20                  91</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom       NA                  22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs       62                  62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato       40                 102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage      140                  32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter      210                  72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce       41                 112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup       NA                  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                 comments</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  These are imaginary food items; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                      And blanks; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       To test different outputs; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                  And scenarios; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    VITA_RAEmcg_calculated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               53.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               16.250000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               27.583333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                1.833333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               67.166667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               48.500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7              142.666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              216.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               50.333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                     NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can see how the data.frame has been returned with a new column (VITAmcg_calculated)</span></span></span>
 <span class="r-in"><span><span class="co"># and an additional comment in the comments column, detailing the calculation used.</span></span></span>
@@ -174,14 +205,56 @@ food item in question. Not required if <code>comment</code> is set to
 <span class="r-in"><span><span class="co"># column names. This will mean the function will not know what the required</span></span></span>
 <span class="r-in"><span><span class="co"># column names are, and will need the user to name them.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">VitA_results_nonstandard</span> <span class="op">&lt;-</span> <span class="fu">VITA_RAEmcg_calculator</span><span class="op">(</span><span class="va">breakfast_df_nonstandard</span>,</span></span>
+<span class="r-in"><span><span class="va">VITA_RAE_results_nonstandard</span> <span class="op">&lt;-</span> <span class="fu">VITA_RAEmcg_calculator</span><span class="op">(</span><span class="va">breakfast_df_nonstandard</span>,</span></span>
 <span class="r-in"><span>RETOLmcg_column <span class="op">=</span> <span class="st">"Retinol_micrograms"</span>,</span></span>
 <span class="r-in"><span>CARTBEQmcg_combined_column <span class="op">=</span> <span class="st">"Beta_Carotene_Equivalents_micrograms"</span>,</span></span>
 <span class="r-in"><span>comment_col <span class="op">=</span> <span class="st">"comments_column"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in VITA_RAEmcg_calculator(breakfast_df_nonstandard, RETOLmcg_column = "Retinol_micrograms",     CARTBEQmcg_combined_column = "Beta_Carotene_Equivalents_micrograms",     comment_col = "comments_column"):</span> unused argument (CARTBEQmcg_combined_column = "Beta_Carotene_Equivalents_micrograms")</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">VitA_results_nonstandard</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'VitA_results_nonstandard' not found</span>
+<span class="r-in"><span><span class="va">VITA_RAE_results_nonstandard</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name Retinol_micrograms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon                 53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans                 12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast                 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom                 NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs                 62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato                 40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage                140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter                210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce                 41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup                 NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Beta_Carotene_Equivalents_micrograms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                    51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                    91</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                    22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                    62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                    32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                    72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                   112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                          comments_column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  These are imaginary food items; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                      And blanks; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       To test different outputs; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                  VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                  And scenarios; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    VITA_RAEmcg_calculated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               53.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               16.250000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               27.583333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                1.833333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               67.166667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               48.500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7              142.666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              216.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               50.333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                     NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can see how the results are the same as calculated above, regardless of</span></span></span>
 <span class="r-in"><span><span class="co"># the changed column names.</span></span></span>
