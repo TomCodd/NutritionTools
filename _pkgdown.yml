@@ -12,6 +12,12 @@ reference:
   - Fuzzy_Matcher
   - Group_Summariser
   - SOPg_calculator
+  - CHOAVLDFg_calculator
+  - NIAmg_calc_combiner
+  - THIAmg_combiner
+  - VITA_RAEmcg_calculator
+  - VITAmcg_calculator
+  - nutri_combiner
 
 - title: Built in datasets
   contents:
