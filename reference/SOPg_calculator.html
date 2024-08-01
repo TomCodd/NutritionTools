@@ -449,43 +449,43 @@ bounds, for manual inspection.</p></dd>
 <span class="r-in"><span><span class="co"># The sixth example is of the SOPg_calculator working on a dataframe with non-standard</span></span></span>
 <span class="r-in"><span><span class="co"># column names. It uses a modified example data frame, shown below.</span></span></span>
 <span class="r-in"><span><span class="va">breakfast_df_nonstandard</span> <span class="op">&lt;-</span> <span class="va">breakfast_df_nonstandard</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"food_code"</span>,</span></span>
-<span class="r-in"><span><span class="st">"food_name"</span>, <span class="st">"Water_values_g"</span>, <span class="st">"CHOAVL_values_g"</span>, <span class="st">"PROCNT_values_g"</span>,</span></span>
-<span class="r-in"><span><span class="st">"FIBTG_values_g_combined"</span>, <span class="st">"ALC_values_g"</span>, <span class="st">"ASH_values_g"</span>,</span></span>
+<span class="r-in"><span><span class="st">"food_name"</span>, <span class="st">"Water_values_g"</span>, <span class="st">"FAT_values_g_combined"</span>, <span class="st">"CHOAVL_values_g"</span>,</span></span>
+<span class="r-in"><span><span class="st">"PROCNT_values_g"</span>, <span class="st">"FIBTG_values_g_combined"</span>, <span class="st">"ALC_values_g"</span>, <span class="st">"ASH_values_g"</span>,</span></span>
 <span class="r-in"><span><span class="st">"comments_column"</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">breakfast_df_nonstandard</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name Water_values_g CHOAVL_values_g PROCNT_values_g</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon             10              10              15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans             15               1              10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast             20              24              20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom             25              46              15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs             30              20              21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato             35               2              28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage             40              24              10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter             NA              22              27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce             NA              NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup             NA              NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    FIBTG_values_g_combined ALC_values_g ASH_values_g</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                       12           12           12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                        3           43            3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                        8            8           28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                       15           15           15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                        6            6            6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                        2            2            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                        9            9            9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                       13           13           13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                       NA           NA           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10                      NA           NA           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   comments_column</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  These are imaginary food items</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                      And blanks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       To test different outputs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10                  And scenarios</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name Water_values_g FAT_values_g_combined</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon             10                    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans             15                    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast             20                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom             25                    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs             30                    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato             35                    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage             40                    13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter             NA                    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce             NA                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup             NA                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    CHOAVL_values_g PROCNT_values_g FIBTG_values_g_combined ALC_values_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               10              15                      12           12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                1              10                       3           43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               24              20                       8            8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               46              15                      15           15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               20              21                       6            6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                2              28                       2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7               24              10                       9            9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8               22              27                      13           13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               NA              NA                      NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              NA              NA                      NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ASH_values_g                comments_column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            12                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2             3 These are imaginary food items</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3            28                           &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            15 With imaginary nutrient values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5             6                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6             2                     And blanks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7             9                           &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8            13      To test different outputs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9            NA                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10           NA                  And scenarios</span>
 <span class="r-in"><span><span class="co"># Notice how the column names are different, and differ from the assumed names.</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
@@ -503,10 +503,70 @@ bounds, for manual inspection.</p></dd>
 <span class="r-in"><span>LowerBound <span class="op">=</span> <span class="fl">97</span>,</span></span>
 <span class="r-in"><span>UpperBound <span class="op">=</span> <span class="fl">103</span>,</span></span>
 <span class="r-in"><span>OutsideBoundsReplacement <span class="op">=</span> <span class="st">"nothing"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SOPg_calculator(breakfast_df_nonstandard, WATERg_column = "Water_values_g",     PROCNTg_column = "PROCNT_values_g", FAT_g_combined_column = "FAT_values_g_combined",     CHOAVLg_column = "CHOAVL_values_g", FIBTGg_combined_column = "FIBTG_values_g_combined",     ALCg_column = "ALC_values_g", ASHg_column = "ASH_values_g",     comment_col = "comments_column", LowerBound = 97, UpperBound = 103,     OutsideBoundsReplacement = "nothing"):</span> The FAT_g_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column three'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 9 SOPg_calculated values calculated to be Out of Bounds (less than 97 or higher than 103). Largest distance from 100: 47. Number of NA's: 2. Please rerun the function with OutsideBoundsDF = TRUE if you wish to inspect these values.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Out of Bounds values left untouched, as per user input.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="va">nothing_results_NonStandardInput</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nothing_results_NonStandardInput' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name Water_values_g FAT_values_g_combined</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon             10                    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans             15                    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast             20                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom             25                    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs             30                    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato             35                    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage             40                    13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter             NA                    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce             NA                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup             NA                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    CHOAVL_values_g PROCNT_values_g FIBTG_values_g_combined ALC_values_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               10              15                      12           12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                1              10                       3           43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               24              20                       8            8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               46              15                      15           15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               20              21                       6            6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                2              28                       2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7               24              10                       9            9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8               22              27                      13           13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               NA              NA                      NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              NA              NA                      NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ASH_values_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2             3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3            28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5             6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6             2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7             9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8            13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                        comments_column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                  SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  These are imaginary food items; SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                  SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values; SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                      And blanks; SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                  SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       To test different outputs; SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                  SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                  And scenarios; SOPg_calculated calculated from adding constituents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    SOPg_calculated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3              108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4              147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5              100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6              104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7              114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              NA</span>
 <span class="r-in"><span><span class="co"># The resulting SOPg_calculated column is the same as in the first example, despite the</span></span></span>
 <span class="r-in"><span><span class="co"># different names - although, due to the shift in the bounds, the warning message is not.</span></span></span>
 </code></pre></div>
