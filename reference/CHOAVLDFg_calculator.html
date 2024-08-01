@@ -404,11 +404,26 @@ inspection.</p></dd>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># The fifth example is of the negative dataframe - an option useful for identifying</span></span></span>
 <span class="r-in"><span><span class="co"># and examining negative results.</span></span></span>
-<span class="r-in"><span><span class="va">NegativeCarb_results</span> <span class="op">&lt;-</span> <span class="fu">CHOAVLDFg_calculator</span><span class="op">(</span><span class="va">breakfast_df</span>, OutsideBoundsDF <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in CHOAVLDFg_calculator(breakfast_df, OutsideBoundsDF = TRUE):</span> unused argument (OutsideBoundsDF = TRUE)</span>
+<span class="r-in"><span><span class="va">NegativeCarb_results</span> <span class="op">&lt;-</span> <span class="fu">CHOAVLDFg_calculator</span><span class="op">(</span><span class="va">breakfast_df</span>, NegativeValueDF <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 4 CHOAVLDFg_calculated values calculated to be less than 0. Minimum result: -2. Number of values below -5: 0. Number of NA results: 2. Please rerun the function with NegativeValueDF = TRUE if you wish to inspect these values.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Negative values set to 0, as per user input.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="va">NegativeCarb_results</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'NegativeCarb_results' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      food_code food_name WATERg PROCNTg FAT_g_combined FIBTGg_combined ALCg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        F0004  Mushroom     25      15             16              15   15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        F0006    Tomato     35      28             33               2    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NA        &lt;NA&gt;      &lt;NA&gt;     NA      NA             NA              NA   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NA.1      &lt;NA&gt;      &lt;NA&gt;     NA      NA             NA              NA   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ASHg                       comments CHOAVLDFg_calculated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      15 With imaginary nutrient values                   -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       2                     And blanks                   -2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NA     NA                           &lt;NA&gt;                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NA.1   NA                           &lt;NA&gt;                   NA</span>
 <span class="r-in"><span><span class="co"># Only the out of bounds results are present, in their original form, for inspection.</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
@@ -456,7 +471,7 @@ inspection.</p></dd>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># Because of the different names, the column names for each input must be specified.</span></span></span>
-<span class="r-in"><span><span class="va">nothing_results_NonStandardInput</span> <span class="op">&lt;-</span> <span class="fu"><a href="SOPg_calculator.html">SOPg_calculator</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">nothing_results_NonStandardInput</span> <span class="op">&lt;-</span> <span class="fu">CHOAVLDFg_calculator</span><span class="op">(</span></span></span>
 <span class="r-in"><span><span class="va">breakfast_df_nonstandard</span>,</span></span>
 <span class="r-in"><span>WATERg_column <span class="op">=</span> <span class="st">"Water_values_g"</span>,</span></span>
 <span class="r-in"><span>PROCNTg_column <span class="op">=</span> <span class="st">"PROCNT_values_g"</span>,</span></span>
@@ -466,7 +481,7 @@ inspection.</p></dd>
 <span class="r-in"><span>ASHg_column <span class="op">=</span> <span class="st">"ASH_values_g"</span>,</span></span>
 <span class="r-in"><span>comment_col <span class="op">=</span> <span class="st">"comments_column"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SOPg_calculator(breakfast_df_nonstandard, WATERg_column = "Water_values_g",     PROCNTg_column = "PROCNT_values_g", FAT_g_combined_column = "FAT_values_g_combined",     FIBTGg_combined_column = "FIBTG_values_g_combined", ALCg_column = "ALC_values_g",     ASHg_column = "ASH_values_g", comment_col = "comments_column"):</span> The FAT_g_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column three'.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in CHOAVLDFg_calculator(breakfast_df_nonstandard, WATERg_column = "Water_values_g",     PROCNTg_column = "PROCNT_values_g", FAT_g_combined_column = "FAT_values_g_combined",     FIBTGg_combined_column = "FIBTG_values_g_combined", ALCg_column = "ALC_values_g",     ASHg_column = "ASH_values_g", comment_col = "comments_column"):</span> The FAT_g_combined is not a column name in df - please input a string that is a column name in df, e.g. 'column three'.</span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># The resulting CHOAVLDFg_calculated column is the same as in the first example,</span></span></span>
 <span class="r-in"><span><span class="co"># despite the different names.</span></span></span>
