@@ -134,7 +134,7 @@ NegativeNoChangeResults
 #
 # The fifth example is of the negative dataframe - an option useful for identifying
 # and examining negative results.
-NegativeCarb_results <- CHOAVLDFg_calculator(breakfast_df, OutsideBoundsDF = TRUE)
+NegativeCarb_results <- CHOAVLDFg_calculator(breakfast_df, NegativeValueDF = TRUE)
 #
 NegativeCarb_results
 # Only the out of bounds results are present, in their original form, for inspection.
@@ -151,7 +151,7 @@ breakfast_df_nonstandard
 #
 #
 # Because of the different names, the column names for each input must be specified.
-nothing_results_NonStandardInput <- SOPg_calculator(
+nothing_results_NonStandardInput <- CHOAVLDFg_calculator(
 breakfast_df_nonstandard,
 WATERg_column = "Water_values_g",
 PROCNTg_column = "PROCNT_values_g",
