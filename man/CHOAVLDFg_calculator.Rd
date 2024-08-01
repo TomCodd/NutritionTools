@@ -144,8 +144,8 @@ NegativeCarb_results
 # non-standard column names. It uses a modified example data frame, shown below.
 #
 breakfast_df_nonstandard <- breakfast_df_nonstandard[,c("food_code",
-"food_name", "Water_values_g", "PROCNT_values_g", "FIBTG_values_g_combined",
-"ALC_values_g", "ASH_values_g", "comments_column")]
+"food_name", "Water_values_g", "PROCNT_values_g", "FAT_values_g_combined",
+"FIBTG_values_g_combined", "ALC_values_g", "ASH_values_g", "comments_column")]
 breakfast_df_nonstandard
 # Notice how the column names are different, and differ from the assumed names.
 #
@@ -161,6 +161,7 @@ ALCg_column = "ALC_values_g",
 ASHg_column = "ASH_values_g",
 comment_col = "comments_column"
 )
+nothing_results_NonStandardInput
 #
 # The resulting CHOAVLDFg_calculated column is the same as in the first example,
 # despite the different names.
