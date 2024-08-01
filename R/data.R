@@ -2,7 +2,7 @@
 #'
 #' An imaginary dataset of Food Items used to demonstrate various functions
 #'
-#' @format A data frame with 10 rows and 20 columns:
+#' @format A data frame with 10 rows and 21 columns:
 #' \describe{
 #'   \item{food_code}{Imaginary Food ID}
 #'   \item{food_name}{Food names to attach the imaginary nutritional data to}
@@ -34,7 +34,7 @@
 #' An imaginary dataset of Food Items with non-standard column names used to
 #' demonstrate various functions
 #'
-#' @format A data frame with 10 rows and 20 columns:
+#' @format A data frame with 10 rows and 21 columns:
 #' \describe{
 #'   \item{food_code}{Imaginary Food ID}
 #'   \item{food_name}{Food names to attach the imaginary nutritional data to}
