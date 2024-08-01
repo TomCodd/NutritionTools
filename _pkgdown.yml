@@ -15,5 +15,5 @@ reference:
 
 - title: Built in datasets
   contents:
-  - SOP_example_df
-  - SOP_example_df_nonstandard
+  - breakfast_df
+  - breakfast_df_nonstandard
