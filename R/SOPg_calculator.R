@@ -1,5 +1,4 @@
 #---
-<<<<<<< HEAD
 # Title: SOPg Calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
@@ -11,14 +10,6 @@
 # to FAT_g_combined_column). Added a warning message if CHOAVLDFg_calculated used
 # as an input to CHOAVLg_column. Updated examples.
 # Github: https://github.com/TomCodd/NutritionTools
-=======
-#Title: SOPg Calculator
-#Author: Thomas Codd - https://github.com/TomCodd
-#Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.0.0
-#Changelog:
-#Github: https://github.com/TomCodd/NutritionTools
->>>>>>> 90a8dfb7eed74bb900793c75dddd08dd68ea993f
 #---
 
 #' @title Sum of Proximate Calculator
@@ -319,11 +310,7 @@ SOPg_calculator <- function(df,
 
       message("---------------------------") #Prints a warning message.
       message()
-<<<<<<< HEAD
       message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest distance from 100: ", largest_OoB, ". Number of NA's: ", NA_number, ". Please rerun the function with OutsideBoundsDF = TRUE if you wish to inspect these values.")
-=======
-      message(length(OutOfBoundsValues), " SOPg_calculated values calculated to be Out of Bounds (less than ", LowerBound, " or higher than ", UpperBound, "). Largest distance from 100: ", largest_OoB, ". Please rerun the function with OutsideBoundsDF = T if you wish to inspect these values.")
->>>>>>> 90a8dfb7eed74bb900793c75dddd08dd68ea993f
       message()
       if (tolower(OutsideBoundsReplacement) %in% c("round", "closest", "nearest")){
         message("Out of Bounds values set to closest acceptable value, as per user input.")
