@@ -2,7 +2,8 @@
 #Title: Fuzzy_Matcher
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: 1.0.2
+#Version: 1.0.3
+#Changelog: V1.0.2 -> V1.0.3; Created multimatch option
 #Changelog: V1.0.1 -> V1.0.2; Applied extra conversions (encoding to latin1) on input to prevent function crashes, and fixed csv save name (removed invalid characters)
 #Changelog: V1.0.0 -> V1.0.1; Sped up the process considerably by removing some conditional formatting on output table
 #Github: https://github.com/TomCodd/NutritionTools
@@ -25,6 +26,8 @@
 #' @param focus_term Optional - Specify a string. If the string is contained
 #' in the item name, then the fuzzy matcher opens a wider potential list of
 #' matches to that item.
+#' @param multimatch Optional - default: \code{FALSE} - \code{TRUE} or \{FALSE}.
+#'   If set to \code{TRUE}, allows multimatches to occur.
 #' @return An R object of csv that contains items from \code{df1} and their
 #' counterparts from \code{df2} in the same row.
 #'
@@ -50,7 +53,7 @@
 
 
 
-Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
+Fuzzy_Matcher <- function(df1, df2, focus_term, multimatch = FALSE){ #Focus term is a string that
   #makes the filtering more lenient - use to catch more items with this term in
   #them; for example "raw" when looking at food items would prioritise raw foods.
 
@@ -62,6 +65,7 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
   stopifnot("df2 is not a data frame - please input a data frame consisting of an id/code column and an item name column." = is.data.frame(df2))
   stopifnot("df1 is too long - please make sure the input dataframes are two columns in length." = (length(df1) == 2))
   stopifnot("df2 is too long - please make sure the input dataframes are two columns in length." = (length(df2) == 2))
+  stopifnot("multimatch is not set to TRUE or FALSE. Please set multimatch to TRUe or FALSE." = is.logical(multimatch))
 
   if(!missing(focus_term)){
     stopifnot("The focus term is not a character or string - please input a character or string, e.g. 'raw'" = is.character(focus_term))
@@ -184,11 +188,16 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
     shiny::observeEvent(input$table,{
       input_table <- as.data.frame(rhandsontable::hot_to_r(input$table)) #Makes the table "hot" - i.e. interact-able with rhandsontable
 
-      matched_df2_codes <- input_table[,3][input_table[,7] == TRUE] #Creates a list of list A codes that have been successfully matched
-      matched_df1_codes <- input_table[,5][input_table[,7] == TRUE] #creates a list of matched df1 codes
-      incorrect_matched_codes <- input_table[,1][input_table[,3] %in% matched_df2_codes & input_table[,7] == FALSE | input_table[,5] %in% matched_df1_codes & input_table[,7] == FALSE] #creates the list of codes that are incorrect matches
-      input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
-      input_table[,2][which(input_table[,1] %in% incorrect_matched_codes)]<-NA #Sets PseudoID to NA if the row contains an incorrect match
+      if (multimatch == TRUE){
+        input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
+      } else {
+        matched_df2_codes <- input_table[,3][input_table[,7] == TRUE] #Creates a list of list A codes that have been successfully matched
+        matched_df1_codes <- input_table[,5][input_table[,7] == TRUE] #creates a list of matched df1 codes
+        incorrect_matched_codes <- input_table[,1][input_table[,3] %in% matched_df2_codes & input_table[,7] == FALSE | input_table[,5] %in% matched_df1_codes & input_table[,7] == FALSE] #creates the list of codes that are incorrect matches
+        input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
+        input_table[,2][which(input_table[,1] %in% incorrect_matched_codes)] <- NA #Sets PseudoID to NA if the row contains an incorrect match
+      }
+
       input_table<-input_table[order(input_table[,2], na.last=TRUE),] #resorts the table based on pseudotable, putting NA matches at the bottom
       values$data<-input_table #Resets the data values to match the edited table
 
@@ -216,12 +225,16 @@ Fuzzy_Matcher <- function(df1, df2, focus_term){ #Focus term is a string that
     shiny::observeEvent(input$saveBtn, { #Controls what happens when the save button is pressed
       input_table<-as.data.frame(rhandsontable::hot_to_r(input$table)) #Makes the table "hot" - i.e. interact-able with rhandsontable
 
-      # This next bit of code is an attempt to stop the skipping of confidence values when forgotten occasionally - essentially refreshes the input table before saving.
-      matched_df2_codes <- input_table[,3][input_table[,7] == TRUE] #Creates a list of list A codes that have been successfully matched
-      matched_df1_codes <- input_table[,5][input_table[,7] == TRUE] #creates a list of matched df1 codes
-      incorrect_matched_codes <- input_table[,1][input_table[,3] %in% matched_df2_codes & input_table[,7] == FALSE | input_table[,5] %in% matched_df1_codes & input_table[,7] == FALSE] #creates the list of codes that are incorrect matches
-      input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
-      input_table[,2][which(input_table[,1] %in% incorrect_matched_codes)]<-NA #Sets PseudoID to NA if the row contains an incorrect match
+      if (multimatch == TRUE){
+        input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
+      } else {
+        # This next bit of code is an attempt to stop the skipping of confidence values when forgotten occasionally - essentially refreshes the input table before saving.
+        matched_df2_codes <- input_table[,3][input_table[,7] == TRUE] #Creates a list of list A codes that have been successfully matched
+        matched_df1_codes <- input_table[,5][input_table[,7] == TRUE] #creates a list of matched df1 codes
+        incorrect_matched_codes <- input_table[,1][input_table[,3] %in% matched_df2_codes & input_table[,7] == FALSE | input_table[,5] %in% matched_df1_codes & input_table[,7] == FALSE] #creates the list of codes that are incorrect matches
+        input_table[,2] <- input_table[,1] #resets pseudo_ID to ID
+        input_table[,2][which(input_table[,1] %in% incorrect_matched_codes)]<-NA #Sets PseudoID to NA if the row contains an incorrect match
+      }
       input_table<-input_table[order(input_table[,2], na.last=TRUE),] #re-sorts the table based on pseudotable, putting NA matches at the bottom
       values$data<-input_table
       # End of refreshing input table.

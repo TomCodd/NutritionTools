@@ -5,7 +5,7 @@
 \title{A GUI interface to match rows in two dataframes to each other via a fuzzy
 string search}
 \usage{
-Fuzzy_Matcher(df1, df2, focus_term)
+Fuzzy_Matcher(df1, df2, focus_term, multimatch = FALSE)
 }
 \arguments{
 \item{df1}{Required - The primary dataframe, with items that need matches.
