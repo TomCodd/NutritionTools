@@ -20,9 +20,12 @@ names.}
 \item{focus_term}{Optional - Specify a string. If the string is contained
 in the item name, then the fuzzy matcher opens a wider potential list of
 matches to that item.}
+
+\item{multimatch}{Optional - default: \code{FALSE} - \code{TRUE} or \code{FALSE}.
+If set to \code{TRUE}, allows multimatches to occur.}
 }
 \value{
-An R object of csv that contains items from \code{df1} and their
+An R object or csv that contains items from \code{df1} and their
 counterparts from \code{df2} in the same row.
 }
 \description{
