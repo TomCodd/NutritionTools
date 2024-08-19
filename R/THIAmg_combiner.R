@@ -133,7 +133,7 @@ THIAmg_combiner <-  function(df,
     message("---------------------------")
 
     if(!(comment_col %in% colnames(df))){
-      df[[comment_col]] <- comment_message #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
+      df[[comment_col]] <- NA #If the comment column isn't present yet in the data frame, but comments are set to True, then it creates the comment column
     }
 
     df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), "THIAmg_combined_comment_col_temp"])
