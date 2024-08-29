@@ -13,6 +13,7 @@ nutri_combiner(
   var5_column,
   var6_column,
   new_var,
+  fill_missing = FALSE,
   comment = TRUE,
   comment_col = "comments"
 )
@@ -50,6 +51,13 @@ by combining the variable columns. It is recommended to use the
 nutrient's INFOODS Tagname, followed by the units - e.g. Thiamine in
 milligrams would be 'THIAmg'. The suffix '_combined' is automatically
 attached to the inputted name.}
+
+\item{fill_missing}{Optional - default: \code{FALSE} - \code{TRUE} or
+\code{FALSE}. If set to \code{TRUE}, this will cause the nutri_combiner to
+check for missing columns (or inputs that don't match columns in the df).
+If it finds them, instead of throwing an error as it normally would, the
+function removes the ones which aren't valid, and then fills in the
+variables in the correct order out of the remaining valid column names.}
 
 \item{comment}{Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
 If comment is set to \code{TRUE} (as it is by default), when the function
@@ -108,4 +116,21 @@ Fat_combined_results
 
 # Note how the values are filled in according to the priority order - with
 # a note added to the comments column showing the origins for each.
+
+# As an example of the fill_missing function, see what happens when the
+function is run with an incorrect column entered:
+
+Fat_combined_results_2 <- nutri_combiner(
+  breakfast_df,
+  "FATg",
+  "FAT_g",
+  "NonExistant_Fat_Value",
+  "FATCEg",
+  new_var = "FAT_g",
+  fill_missing = TRUE)
+
+Fat_combined_results_2
+
+# See how the columns reorder, with notice.
+
 }
