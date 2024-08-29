@@ -175,8 +175,7 @@ nutri_combiner <-  function(df,
       unused_variable_placements <- 6-length(present_variables) #works out how many variables are meant to be empty/missing in the new order
 
       for(i in 1:unused_variable_placements){
-        eval(parse(text = paste0("var", length(present_variables)+i, "_column <- NULL"))) #Creates the variable/overwrites it if its already present
-        eval(parse(text = paste0("rm(var", length(present_variables)+i, "_column)"))) #removes the variable
+        eval(parse(text = paste0("var", length(present_variables)+i, "_column <- quote(expr = )"))) #Sets the variable to missing
     }
 
     }
