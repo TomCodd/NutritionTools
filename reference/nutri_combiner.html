@@ -83,6 +83,7 @@
 <span>  <span class="va">var5_column</span>,</span>
 <span>  <span class="va">var6_column</span>,</span>
 <span>  <span class="va">new_var</span>,</span>
+<span>  fill_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  comment <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  comment_col <span class="op">=</span> <span class="st">"comments"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -141,6 +142,15 @@ milligrams would be 'THIAmg'. The suffix '_combined' is automatically
 attached to the inputted name.</p></dd>
 
 
+<dt id="arg-fill-missing">fill_missing<a class="anchor" aria-label="anchor" href="#arg-fill-missing"></a></dt>
+<dd><p>Optional - default: <code>FALSE</code> - <code>TRUE</code> or
+<code>FALSE</code>. If set to <code>TRUE</code>, this will cause the nutri_combiner to
+check for missing columns (or inputs that don't match columns in the df).
+If it finds them, instead of throwing an error as it normally would, the
+function removes the ones which aren't valid, and then fills in the
+variables in the correct order out of the remaining valid column names.</p></dd>
+
+
 <dt id="arg-comment">comment<a class="anchor" aria-label="anchor" href="#arg-comment"></a></dt>
 <dd><p>Required - default: <code>TRUE</code> - <code>TRUE</code> or <code>FALSE</code>.
 If comment is set to <code>TRUE</code> (as it is by default), when the function
@@ -166,90 +176,7 @@ the df, it will create a column with the name of the entry.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># An example data.frame has been created to give an example of using the</span></span></span>
-<span class="r-in"><span><span class="co"># nutri_combiner to combine FAT values.</span></span></span>
-<span class="r-in"><span><span class="va">breakfast_df</span> <span class="op">&lt;-</span> <span class="va">breakfast_df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"food_code"</span>, <span class="st">"food_name"</span>, <span class="st">"FATg"</span>, <span class="st">"FAT_g"</span>,</span></span>
-<span class="r-in"><span><span class="st">"FATCEg"</span>, <span class="st">"comments"</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">breakfast_df</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name FATg FAT_g FATCEg                       comments</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon   21  20.9     NA                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans   NA  12.0     NA These are imaginary food items</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast   NA    NA     NA                           &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom   NA    NA   16.0 With imaginary nutrient values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs   11  10.9     NA                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato   NA  33.0   33.0                     And blanks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage   13  12.1     NA                           &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter   16  16.1   15.9      To test different outputs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce   NA    NA     NA                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup   NA    NA     NA                  And scenarios</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># We start with a data.frame containing multiple patchy values for fat. Ideally</span></span></span>
-<span class="r-in"><span><span class="co"># we would like to combine these into a single 'combined' column with as few gaps</span></span></span>
-<span class="r-in"><span><span class="co"># as possible. We would like to use FATg as the main value, and then fill in with</span></span></span>
-<span class="r-in"><span><span class="co"># FAT_g as a second choice, and then FATCEg as a last resort. We would like the</span></span></span>
-<span class="r-in"><span><span class="co"># new column to be called 'FAT_g_combined'.</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># In this case, the following nutri_combiner input would be used:</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">Fat_combined_results</span> <span class="op">&lt;-</span> <span class="fu">nutri_combiner</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">breakfast_df</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"FATg"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"FAT_g"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"FATCEg"</span>,</span></span>
-<span class="r-in"><span>  new_var <span class="op">=</span> <span class="st">"FAT_g"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Breakdown of values used:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             FAT_g_combined equal to FATCEg </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              FAT_g_combined equal to FAT_g </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               FAT_g_combined equal to FATg </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No suitable value for FAT_g_combined found </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          3 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">Fat_combined_results</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name FATg FAT_g FATCEg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon   21  20.9     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans   NA  12.0     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast   NA    NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom   NA    NA   16.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs   11  10.9     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato   NA  33.0   33.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage   13  12.1     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter   16  16.1   15.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce   NA    NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup   NA    NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                          comments</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                    FAT_g_combined equal to FATg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   These are imaginary food items; FAT_g_combined equal to FAT_g</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                      No suitable value for FAT_g_combined found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values; FAT_g_combined equal to FATCEg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                    FAT_g_combined equal to FATg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                       And blanks; FAT_g_combined equal to FAT_g</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                    FAT_g_combined equal to FATg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         To test different outputs; FAT_g_combined equal to FATg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                      No suitable value for FAT_g_combined found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      And scenarios; No suitable value for FAT_g_combined found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    FAT_g_combined</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1              21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2              12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4              16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5              11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6              33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7              13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8              16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10             NA</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Note how the values are filled in according to the priority order - with</span></span></span>
-<span class="r-in"><span><span class="co"># a note added to the comments column showing the origins for each.</span></span></span>
-</code></pre></div>
+
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
