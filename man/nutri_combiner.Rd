@@ -97,7 +97,7 @@ breakfast_df
 #
 # In this case, the following nutri_combiner input would be used:
 
-Fat_combined_results <- nutri_combiner_output <- nutri_combiner(
+Fat_combined_results <- nutri_combiner(
   breakfast_df,
   "FATg",
   "FAT_g",

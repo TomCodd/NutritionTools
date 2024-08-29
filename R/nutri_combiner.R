@@ -2,8 +2,9 @@
 # Title: Multi-column Nutrient Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.0
+# Version: V1.0.1
 # Changelog:
+# V1.0.0 -> V1.0.1: Changed due to error in the documentation examples.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -73,7 +74,7 @@
 #' #
 #' # In this case, the following nutri_combiner input would be used:
 #'
-#' Fat_combined_results <- nutri_combiner_output <- nutri_combiner(
+#' Fat_combined_results <- nutri_combiner(
 #'   breakfast_df,
 #'   "FATg",
 #'   "FAT_g",
