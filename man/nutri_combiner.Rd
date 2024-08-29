@@ -118,7 +118,7 @@ Fat_combined_results
 # a note added to the comments column showing the origins for each.
 
 # As an example of the fill_missing function, see what happens when the
-function is run with an incorrect column entered:
+# function is run with an incorrect column entered:
 
 Fat_combined_results_2 <- nutri_combiner(
   breakfast_df,
