@@ -273,10 +273,55 @@ the df, it will create a column with the name of the entry.</p></dd>
 <span class="r-in"><span>  fill_missing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Error - the following columns are not present in df. nutri-combiner will attempt to shift variables to fill the gap in the heirachy, if present.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> NonExistant_Fat_Value</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in nutri_combiner(breakfast_df, "FATg", "FAT_g", "NonExistant_Fat_Value",     "FATCEg", new_var = "FAT_g", fill_missing = TRUE):</span> 'missing(var6_column)' did not find an argument</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Breakdown of values used:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             FAT_g_combined equal to FATCEg </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              FAT_g_combined equal to FAT_g </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               FAT_g_combined equal to FATg </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No suitable value for FAT_g_combined found </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          3 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">Fat_combined_results_2</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'Fat_combined_results_2' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    food_code      food_name FATg FAT_g FATCEg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      F0001          Bacon   21  20.9     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      F0002          Beans   NA  12.0     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      F0003          Toast   NA    NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      F0004       Mushroom   NA    NA   16.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      F0005           Eggs   11  10.9     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      F0006         Tomato   NA  33.0   33.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      F0007        Sausage   13  12.1     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      F0008         Butter   16  16.1   15.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      F0009    Brown Sauce   NA    NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     F0010 Tomato Ketchup   NA    NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                          comments</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                    FAT_g_combined equal to FATg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   These are imaginary food items; FAT_g_combined equal to FAT_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                      No suitable value for FAT_g_combined found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  With imaginary nutrient values; FAT_g_combined equal to FATCEg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                    FAT_g_combined equal to FATg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                       And blanks; FAT_g_combined equal to FAT_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                    FAT_g_combined equal to FATg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         To test different outputs; FAT_g_combined equal to FATg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                      No suitable value for FAT_g_combined found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      And scenarios; No suitable value for FAT_g_combined found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    FAT_g_combined</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1              21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2              12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3              NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4              16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5              11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6              33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7              13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9              NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10             NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># See how the columns reorder, with notice.</span></span></span>
 <span class="r-in"><span></span></span>
