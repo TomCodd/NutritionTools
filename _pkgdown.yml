@@ -19,7 +19,7 @@ reference:
   - VITAmcg_calculator
   - nutri_combiner
 
-- title: Built in datasets
+- title: Built-in datasets
   contents:
   - breakfast_df
   - breakfast_df_nonstandard
