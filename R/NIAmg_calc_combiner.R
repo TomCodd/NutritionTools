@@ -127,9 +127,9 @@
 
 
 NIAmg_calc_combiner <- function(df,
+                                NIAEQmg_column = "NIAEQmg",
                                 NIAmg_column = "NIAmg",
                                 TRPmg_column = "TRPmg",
-                                NIAEQmg_column = "NIAEQmg",
                                 NIATRPmg_column = "NIATRPmg",
                                 comment = TRUE,
                                 comment_col = "comments") {
@@ -146,7 +146,7 @@ NIAmg_calc_combiner <- function(df,
 
   #This converts the columns to numeric, if needed
 
-  present_columns <- c(NIAEQmg_column, TRPmg_column, NIAEQmg_column, NIATRPmg_column)
+  present_columns <- c(NIAEQmg_column, TRPmg_column, NIAmg_column, NIATRPmg_column)
   present_columns <- present_columns[!is.na(present_columns)]
 
   if("character" %in% sapply(df[, present_columns], class)){ #Checks to see if character class is detected
