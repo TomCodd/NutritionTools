@@ -2,7 +2,7 @@
 # Title: Multi-column Nutrient Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.1
+# Version: V1.1.0
 # Changelog:
 # V1.0.0 -> V1.0.1: Changed due to error in the documentation examples.
 # V1.0.1 -> V1.1.0: Added the fill_missing functionality.
@@ -155,7 +155,7 @@ nutri_combiner <-  function(df,
     }
 
 
-    #Checks inputs against the column names in df - creates a list of inputs whcih dont match, and inputs that do
+    #Checks inputs against the column names in df - creates a list of inputs which don't match, and inputs that do
     columnnames <- colnames(df)
     missing_variables <- variable_list[!variable_list %in% columnnames]
     present_variables <- variable_list[variable_list %in% columnnames]
@@ -176,13 +176,9 @@ nutri_combiner <-  function(df,
 
       for(i in 1:unused_variable_placements){
         eval(parse(text = paste0("var", length(present_variables)+i, "_column <- quote(expr = )"))) #Sets the variable to missing
+      }
     }
-
-    }
-
   }
-
-
 
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
