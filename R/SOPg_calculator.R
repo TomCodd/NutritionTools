@@ -3,13 +3,15 @@
 # Title: SOPg Calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.1.0
+# Version: V1.1.1
 # Changelog:
 # V1.0.0 -> V1.1.0: Change in default inputs from CHOAVLDFg_standardised to CHOAVLg;
 # from FAT_g_standardised to FAT_g_combined; from FIBTGg_standardised to FIBTGg_combined.
 # Change in input parameters to match these changes (e.g. FAT_g_standardised_column
 # to FAT_g_combined_column). Added a warning message if CHOAVLDFg_calculated used
 # as an input to CHOAVLg_column. Updated examples.
+# V1.1.0 -> V1.1.1: Added conversion of character classes to numeric for key
+# columns, if needed.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -17,7 +19,8 @@
 #' @description Calculates SOPg_calculated = (WATERg + PROCNTg +
 #'   FAT_g_combined + CHOAVLg + FIBTGg_combined
 #'   + ALCg +ASHg). Column names are case sensitive and an error is returned
-#'   if not found.
+#'   if not found. Non-numeric columns will be converted if possible in function
+#'   to be numeric.
 #' @param df Required - the data.frame the data is currently stored in.
 #' @param WATERg_column Required - default: \code{'WATERg'} - The name of the
 #'   column containing Water/moisture content in grams per 100g of Edible
@@ -191,6 +194,14 @@ SOPg_calculator <- function(df,
   stopifnot("The FIBTGg_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column five'." = FIBTGg_combined_column %in% colnames(df))
   stopifnot("The ALCg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column six'." = ALCg_column %in% colnames(df))
   stopifnot("The ASHg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column seven'." = ASHg_column %in% colnames(df))
+
+  #This converts the columns to numeric
+  if("character" %in% sapply(df[,c(WATERg_column, PROCNTg_column, FAT_g_combined_column, CHOAVLg_column, FIBTGg_combined_column, ALCg_column, ASHg_column)], class)){ #Checks to see if character class is detected
+    char_cols <- colnames(df[, sapply(df, class) == "character"]) #creates list of all character classes
+    input_char_cols <- char_cols[char_cols %in% c(WATERg_column, PROCNTg_column, FAT_g_combined_column, CHOAVLg_column, FIBTGg_combined_column, ALCg_column, ASHg_column)] #selects character classes which are also input columns
+    message("Character class detected in input columns. Attempting to convert following columns to Numeric: ", paste0(input_char_cols, collapse = ", ")) #prints message, listing erroneous columns
+    df[[input_char_cols]] <- sapply(df[[input_char_cols]],as.numeric) #attempts to convert to numeric
+  }
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The WATERg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[WATERg_column]]))

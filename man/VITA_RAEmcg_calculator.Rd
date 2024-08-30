@@ -43,7 +43,8 @@ Original data.frame with a new \code{VITA_RAEmcg_calculated} column, and
 }
 \description{
 Calculates VITA_RAEmcg_calculated = (RETOLmcg + (CARTBEQmcg_std/12)).
-Column names are case sensitive and an error is returned if not found.
+Column names are case sensitive and an error is returned if not found. Non-numeric
+columns will be converted if possible in function to be numeric.
 }
 \examples{
 # We will go through two examples of the VITA_RAEmcg_calculator, one using standard

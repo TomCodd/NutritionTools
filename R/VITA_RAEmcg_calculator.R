@@ -2,14 +2,17 @@
 # Title: VITA_RAEmcg_calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.0
+# Version: V1.0.1
 # Changelog:
+# V1.0.0 -> V1.0.1: Added conversion of character classes to numeric for key
+# columns, if needed.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
 #' @title Vitamin A (Retinol Activity Equivalent) Calculator
 #' @description Calculates VITA_RAEmcg_calculated = (RETOLmcg + (CARTBEQmcg_std/12)).
-#' Column names are case sensitive and an error is returned if not found.
+#' Column names are case sensitive and an error is returned if not found. Non-numeric
+#' columns will be converted if possible in function to be numeric.
 #' @param df Required - the data.frame the data is currently stored in.
 #' @param RETOLmcg_column Required - default: \code{'RETOLmcg'} - The name of the
 #'   column containing Retinol in mcg per 100g of Edible Portion (EP).
@@ -90,6 +93,14 @@ VITA_RAEmcg_calculator <- function(df,
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The RETOLmcg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = RETOLmcg_column %in% colnames(df))
   stopifnot("The CARTBEQmcg_combined_column is not a column name in df - please input a string that is a column name in df, e.g. 'column two'." = CARTBEQmcg_combined_column %in% colnames(df))
+
+  #This converts the columns to numeric
+  if("character" %in% sapply(df[,c(RETOLmcg_column, CARTBEQmcg_combined_column)], class)){ #Checks to see if character class is detected
+    char_cols <- colnames(df[, sapply(df, class) == "character"]) #creates list of all character classes
+    input_char_cols <- char_cols[char_cols %in% c(RETOLmcg_column, CARTBEQmcg_combined_column)] #selects character classes which are also input columns
+    message("Character class detected in input columns. Attempting to convert following columns to Numeric: ", paste0(input_char_cols, collapse = ", ")) #prints message, listing erroneous columns
+    df[[input_char_cols]] <- sapply(df[[input_char_cols]],as.numeric) #attempts to convert to numeric
+  }
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The RETOLmcg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[RETOLmcg_column]]))

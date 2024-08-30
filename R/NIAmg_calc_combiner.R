@@ -3,8 +3,10 @@
 # Title: Niacin Calculator and Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.0
+# Version: V1.0.1
 # Changelog:
+# V1.0.0 -> V1.0.1: Added conversion of character classes to numeric for key
+# columns, if needed.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -141,6 +143,18 @@ NIAmg_calc_combiner <- function(df,
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The NIAEQmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = NIAEQmg_column %in% colnames(df))
+
+  #This converts the columns to numeric, if needed
+
+  present_columns <- c(NIAEQmg_column, TRPmg_column, NIAEQmg_column, NIATRPmg_column)
+  present_columns <- present_columns[!is.na(present_columns)]
+
+  if("character" %in% sapply(df[, present_columns], class)){ #Checks to see if character class is detected
+    char_cols <- colnames(df[, sapply(df, class) == "character"]) #creates list of all character classes
+    input_char_cols <- char_cols[char_cols %in% present_columns] #selects character classes which are also input columns
+    message("Character class detected in input columns. Attempting to convert following columns to Numeric: ", paste0(input_char_cols, collapse = ", ")) #prints message, listing erroneous columns
+    df[[input_char_cols]] <- sapply(df[[input_char_cols]],as.numeric) #attempts to convert to numeric
+  }
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The NIAEQmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[NIAEQmg_column]]))
