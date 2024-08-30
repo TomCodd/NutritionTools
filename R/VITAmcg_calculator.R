@@ -100,7 +100,7 @@ VITAmcg_calculator <- function(df,
     char_cols <- colnames(df[, sapply(df, class) == "character"]) #creates list of all character classes
     input_char_cols <- char_cols[char_cols %in% c(RETOLmcg_column, CARTBEQmcg_combined_column)] #selects character classes which are also input columns
     message("Character class detected in input columns. Attempting to convert following columns to Numeric: ", paste0(input_char_cols, collapse = ", ")) #prints message, listing erroneous columns
-    df[[input_char_cols]] <- sapply(df[[input_char_cols]],as.numeric) #attempts to convert to numeric
+    df[, input_char_cols] <- sapply(df[, input_char_cols], as.numeric) #attempts to convert to numeric
   }
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
