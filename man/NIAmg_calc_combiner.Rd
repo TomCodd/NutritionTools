@@ -6,9 +6,9 @@
 \usage{
 NIAmg_calc_combiner(
   df,
+  NIAEQmg_column = "NIAEQmg",
   NIAmg_column = "NIAmg",
   TRPmg_column = "TRPmg",
-  NIAEQmg_column = "NIAEQmg",
   NIATRPmg_column = "NIATRPmg",
   comment = TRUE,
   comment_col = "comments"
@@ -17,19 +17,19 @@ NIAmg_calc_combiner(
 \arguments{
 \item{df}{Required - the data.frame the data is currently stored in.}
 
-\item{NIAmg_column}{Optional - default: \code{'NIAmg'} - The name of the
-column containing Niacin (preformed) in mg per 100g of Edible Portion (EP).
-If unavailable, set input to \code{NA}.}
-
-\item{TRPmg_column}{Optional - default: \code{'TRPmg'} - Tryptophan, in mg
-per 100g of Edible Portion (EP). If unavailable, set input to \code{NA}.}
-
 \item{NIAEQmg_column}{Required - default: \code{'NIAEQmg'} - The name of the
 column containing Niacin equivalents, total (preformed Niacin as well as
 Niacin equivalents from Tryptophan) in mg per 100g of Edible Portion
 (EP). The only required input as its impossible to get 2 or more ways of
 calculating \code{NIAmg_combined} without it, which is required for
 the function to work.}
+
+\item{NIAmg_column}{Optional - default: \code{'NIAmg'} - The name of the
+column containing Niacin (preformed) in mg per 100g of Edible Portion (EP).
+If unavailable, set input to \code{NA}.}
+
+\item{TRPmg_column}{Optional - default: \code{'TRPmg'} - Tryptophan, in mg
+per 100g of Edible Portion (EP). If unavailable, set input to \code{NA}.}
 
 \item{NIATRPmg_column}{Optional - default: \code{'NIATRPmg'} - The name of the
 column containing Niacin equivalents from Tryptophan, in mg per 100g of
