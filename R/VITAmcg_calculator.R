@@ -2,8 +2,9 @@
 # Title: VITAmcg_calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.0
+# Version: V1.0.1
 # Changelog:
+# V1.0.0 -> V1.0.1: Fixed comments issue where each item's comment covered every comment in the df
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -121,17 +122,16 @@ VITAmcg_calculator <- function(df,
   # Comments process
   if (comment == TRUE) {
     #Creates comments_message if comments are true
-    comment_message <- "VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents"
 
     if(!(comment_col %in% colnames(df))){
-      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+      df[[comment_col]] <- "VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents" #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
     #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
-    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents")
 
     #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
-    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
+    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- "VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents"
 
   }
 
