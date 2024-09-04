@@ -2,9 +2,10 @@
 # Title: Multi-column Nutrient Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.1
+# Version: V1.1.0
 # Changelog:
 # V1.0.0 -> V1.0.1: Changed due to error in the documentation examples.
+# V1.0.1 -> V1.1.0: Added the fill_missing functionality.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -46,6 +47,12 @@
 #'   nutrient's INFOODS Tagname, followed by the units - e.g. Thiamine in
 #'   milligrams would be 'THIAmg'. The suffix '_combined' is automatically
 #'   attached to the inputted name.
+#' @param fill_missing Optional - default: \code{FALSE} - \code{TRUE} or
+#'   \code{FALSE}. If set to \code{TRUE}, this will cause the nutri_combiner to
+#'   check for missing columns (or inputs that don't match columns in the df).
+#'   If it finds them, instead of throwing an error as it normally would, the
+#'   function removes the ones which aren't valid, and then fills in the
+#'   variables in the correct order out of the remaining valid column names.
 #' @param comment Required - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
 #'   If comment is set to \code{TRUE} (as it is by default), when the function
 #'   is run a comment describing the source of \code{new_var} column is added
@@ -85,6 +92,23 @@
 #'
 #' # Note how the values are filled in according to the priority order - with
 #' # a note added to the comments column showing the origins for each.
+#'
+#' # As an example of the fill_missing function, see what happens when the
+#' # function is run with an incorrect column entered:
+#'
+#' Fat_combined_results_2 <- nutri_combiner(
+#'   breakfast_df,
+#'   "FATg",
+#'   "FAT_g",
+#'   "NonExistant_Fat_Value",
+#'   "FATCEg",
+#'   new_var = "FAT_g",
+#'   fill_missing = TRUE)
+#'
+#' Fat_combined_results_2
+#'
+#' # See how the columns reorder, with notice.
+#'
 #' @export
 
 nutri_combiner <-  function(df,
@@ -95,12 +119,67 @@ nutri_combiner <-  function(df,
                             var5_column,
                             var6_column,
                             new_var,
+                            fill_missing = FALSE,
                             comment = TRUE,
                             comment_col = "comments") {
 
 
   # This check makes sure the entered df is a data frame.
   stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))
+
+  #This checks to see if the two required columns are present.
+  stopifnot("var1_column is missing. Please put the name of a column in df as the input for var1_column" = !missing(var1_column))
+  stopifnot("var2_column is missing. Please put the name of a column in df as the input for var2_column" = !missing(var2_column))
+
+
+  #This checks if the columns need to be reordered. This only happens if fill_missing = TRUE.
+  #If true, it will fill the columns if one is missing. e.g. if the entry for var2 isn't present in
+  #the df, then var3 will move to fill in var2, if available.
+
+  if(fill_missing == TRUE){ #checks if this input is selected - its not by default.
+
+    variable_list <- c(var1_column, var2_column) #creates list of the two columns that must be there.
+
+    #These lines check if the optional columns are present, and fills them if so.
+    if(!missing(var3_column)){
+      variable_list <- c(variable_list, var3_column)
+    }
+    if(!missing(var4_column)){
+      variable_list <- c(variable_list, var4_column)
+    }
+    if(!missing(var5_column)){
+      variable_list <- c(variable_list, var5_column)
+    }
+    if(!missing(var6_column)){
+      variable_list <- c(variable_list, var6_column)
+    }
+
+
+    #Checks inputs against the column names in df - creates a list of inputs which don't match, and inputs that do
+    columnnames <- colnames(df)
+    missing_variables <- variable_list[!variable_list %in% columnnames]
+    present_variables <- variable_list[variable_list %in% columnnames]
+
+    if(length(missing_variables)>0){ #If any inputs don't match, gives a warning message, then tries to fill gaps
+      message(paste0("Error - the following columns are not present in df. nutri-combiner will attempt to shift variables to fill the gap in the heirachy, if present."))
+      message(paste0(missing_variables, collapse = ", "))
+
+      if(length(present_variables)<2){
+        stop("Error - less than 2 valid column names found. nutri_combiner needs at least 2 valid columns to run.")
+      }
+
+      for(i in 1:length(present_variables)){ #loops through the number of correctly assigned variables
+        eval(parse(text = paste0("var", i, "_column <- present_variables[", i, "]"))) #And overwrites the input variables with the new value
+      }
+
+      unused_variable_placements <- 6-length(present_variables) #works out how many variables are meant to be empty/missing in the new order
+
+      for(i in 1:unused_variable_placements){
+        eval(parse(text = paste0("var", length(present_variables)+i, "_column <- quote(expr = )"))) #Sets the variable to missing
+      }
+    }
+  }
+
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The var1_column is not a column name in df - please input a string that is a column name in df, e.g. 'THIAmg'" = var1_column %in% colnames(df))

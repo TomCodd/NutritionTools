@@ -81,7 +81,8 @@ Original data.frame with a new \code{CHOAVLDFg_calculated} column, and
 \description{
 Calculates CHOAVLDFg_calculated = (100 - (WATERg + PROTg +
   FATg_combined + FBGTg + ASHg + ALCg)). Column names are case
-  sensitive and an error is returned if not found.
+  sensitive and an error is returned if not found. Non-numeric columns will
+  be converted if possible in function to be numeric.
 }
 \examples{
 # Two example data.frames have been prepared to illustrate the

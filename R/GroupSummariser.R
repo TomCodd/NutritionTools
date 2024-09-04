@@ -2,8 +2,10 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.3.2
+#Version: V1.3.3
 #Changelog:
+
+#v1.3.2 -> v1.3.3; Bug Fix - error where all rows had 'SUMMARY ROW - NA'; fixed
 #v1.3.1 -> v1.3.2; Bug Fix - error where, after the first item, the Summary rows couldn't find the correct group ID and so outputted 'SUMMARY ROW - NA' fixed
 #v1.3.0 -> v1.3.1; Bug Fix - error messages were only outputting the first group ID as the group with the issue, even if that group was fine. Fixed.
 #v1.2.4 -> v1.3.0; New Feature - Added the ability to introduce leniency to the 'weightings must equal 1' rule when pre-existing weightings are used.
@@ -16,6 +18,7 @@
 #V1.0.0 -> V1.1.0; New Feature - Added the ability to take preset weights into account
 #Github: https://github.com/TomCodd/NutritionTools
 #---
+
 
 #' Insert summary rows between groups of rows in a data frame
 #'
@@ -45,7 +48,16 @@
 #' @export
 
 
-Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighting_column, weighting_leniency = 0, blank_cols = c(), sep_row = F, seq_col = F, weighting_col = F, round_weighting = T){
+Group_Summariser <- function(df,
+                             group_ID_col,
+                             secondary_sort_col,
+                             input_weighting_column,
+                             weighting_leniency = 0,
+                             blank_cols = c(),
+                             sep_row = F,
+                             seq_col = F,
+                             weighting_col = F,
+                             round_weighting = T) {
 
   # Data input checking ----
 
@@ -133,6 +145,8 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
             } else {
               new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
             }
+          } else {
+            new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
           }
         }
       } else { #If there is more than one unique value the 'else' statement gets used, and the following happens
@@ -156,7 +170,7 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
 
   group_col_num <- which(colnames(sorted_table) == group_ID_col) #Finds the group column number
 
-  group_ID_value <- new_row[group_col_num] #assigns the group ID value based on the location of the group ID column through the group_col_num
+  group_ID_value <- new_row[[group_col_num]] #assigns the group ID value based on the location of the group ID column through the group_col_num
   new_row[group_col_num] <- paste0("SUMMARY ROW - ", group_ID_value) #Edits the group_col_num to include that this is a summary row for that group
   sorted_table <- rbind(sorted_table, new_row) #attaches this modified averages row to the data rows in the sorted_table
 
@@ -223,8 +237,10 @@ Group_Summariser <- function(df, group_ID_col, secondary_sort_col, input_weighti
               if(colnames(secondary_table)[j] == input_weighting_column){ #and this column in the loop is the input weighting column
                 new_row_entry <- 1 #then the total value is set to 1, which will be the total value of the weights, after the checks in the previous section
               } else {
-              new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+                new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
               }
+            } else {
+              new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
             }
           }
         } else { #If there is more than one unique value the 'else' statement gets used, and the following happens

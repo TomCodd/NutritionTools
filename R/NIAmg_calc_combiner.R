@@ -3,8 +3,10 @@
 # Title: Niacin Calculator and Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.0
+# Version: V1.0.1
 # Changelog:
+# V1.0.0 -> V1.0.1: Added conversion of character classes to numeric for key
+# columns, if needed.
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -20,17 +22,17 @@
 #'   Niacin Equivalents} - \code{(Tryptophan/60)}, 3rd: \code{Total Niacin
 #'   Equivalents} - \code{Niacin Equivalents from Tryptophan}.
 #' @param df Required - the data.frame the data is currently stored in.
-#' @param NIAmg_column Optional - default: \code{'NIAmg'} - The name of the
-#'   column containing Niacin (preformed) in mg per 100g of Edible Portion (EP).
-#'   If unavailable, set input to \code{NA}.
-#' @param TRPmg_column Optional - default: \code{'TRPmg'} - Tryptophan, in mg
-#'   per 100g of Edible Portion (EP). If unavailable, set input to \code{NA}.
 #' @param NIAEQmg_column Required - default: \code{'NIAEQmg'} - The name of the
 #'   column containing Niacin equivalents, total (preformed Niacin as well as
 #'   Niacin equivalents from Tryptophan) in mg per 100g of Edible Portion
 #'   (EP). The only required input as its impossible to get 2 or more ways of
 #'   calculating \code{NIAmg_combined} without it, which is required for
 #'   the function to work.
+#' @param NIAmg_column Optional - default: \code{'NIAmg'} - The name of the
+#'   column containing Niacin (preformed) in mg per 100g of Edible Portion (EP).
+#'   If unavailable, set input to \code{NA}.
+#' @param TRPmg_column Optional - default: \code{'TRPmg'} - Tryptophan, in mg
+#'   per 100g of Edible Portion (EP). If unavailable, set input to \code{NA}.
 #' @param NIATRPmg_column Optional - default: \code{'NIATRPmg'} - The name of the
 #'   column containing Niacin equivalents from Tryptophan, in mg per 100g of
 #'   Edible Portion (EP). If unavailable, set input to \code{NA}.
@@ -125,9 +127,9 @@
 
 
 NIAmg_calc_combiner <- function(df,
+                                NIAEQmg_column = "NIAEQmg",
                                 NIAmg_column = "NIAmg",
                                 TRPmg_column = "TRPmg",
-                                NIAEQmg_column = "NIAEQmg",
                                 NIATRPmg_column = "NIATRPmg",
                                 comment = TRUE,
                                 comment_col = "comments") {
@@ -141,6 +143,18 @@ NIAmg_calc_combiner <- function(df,
 
   #This block of checks throws an error if the entry for the columns is not present in the df.
   stopifnot("The NIAEQmg_column is not a column name in df - please input a string that is a column name in df, e.g. 'column one'." = NIAEQmg_column %in% colnames(df))
+
+  #This converts the columns to numeric, if needed
+
+  present_columns <- c(NIAEQmg_column, TRPmg_column, NIAmg_column, NIATRPmg_column)
+  present_columns <- present_columns[!is.na(present_columns)]
+
+  if("character" %in% sapply(df[, present_columns], class)){ #Checks to see if character class is detected
+    char_cols <- colnames(df[, sapply(df, class) == "character"]) #creates list of all character classes
+    input_char_cols <- char_cols[char_cols %in% present_columns] #selects character classes which are also input columns
+    message("Character class detected in input columns. Attempting to convert following columns to Numeric: ", paste0(input_char_cols, collapse = ", ")) #prints message, listing erroneous columns
+    df[, input_char_cols] <- sapply(df[, input_char_cols], as.numeric) #attempts to convert to numeric
+  }
 
   #This block of checks makes sure the columns that are meant to be numeric are numeric.
   stopifnot("The NIAEQmg_column is not numeric. Please ensure it is numeric." = is.numeric(df[[NIAEQmg_column]]))
