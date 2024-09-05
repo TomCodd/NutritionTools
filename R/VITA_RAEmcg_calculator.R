@@ -130,20 +130,21 @@ VITA_RAEmcg_calculator <- function(df,
 
   df$TEMPtwelthCARTBEQ <- NULL
 
+
   # Comments process
   if (comment == TRUE) {
     #Creates comments_message if comments are true
+    comment_message <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents"
 
     if(!(comment_col %in% colnames(df))){
-      df[[comment_col]] <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents" #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+      df[[comment_col]] <- comment_message #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+    } else {
+      #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
+      df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; ", comment_message)
+
+      #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
+      df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- paste0(comment_message)
     }
-
-    #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
-    df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col] <- paste0(df[!(df[[comment_col]] %in% "" | is.na(df[[comment_col]])), comment_col], "; VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents")
-
-    #If comment == TRUE and the comment_col is empty, then this becomes the first entry into the column.
-    df[df[[comment_col]] %in% "" | is.na(df[[comment_col]]), comment_col] <- "VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents"
-
   }
 
   return(df)

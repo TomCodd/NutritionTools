@@ -1,18 +1,19 @@
 #---
-#Title: CARTBEQ_standardised
+#Title: CARTBEQ_calc_combiner
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.0.0
+#Version: V1.1.0
 #Changelog:
+#V1.0.0 -> V1.1.0: Changed the name, changed output name, fixed error where NA
+# results could cause problems.
 #Github: https://github.com/TomCodd/NutritionTools
 #---
 
-#' Calculate a standardised CARTBEQ value from various inputs
+#' Calculate a combined CARTBEQ value from various inputs
 #'
-#' @description This function includes various ways of calculating a
-#'   standardised beta-carotene equivalents (CARTBEQ) value. The most
-#'   appropriate calculation is selected based on the availability of input
-#'   data.
+#' @description This function includes various ways of calculating or combining
+#'   a beta-carotene equivalents (CARTBEQ) value. The most appropriate
+#'   calculation is selected based on the availability of input data.
 #' @param df Required - the data.frame the data is currently stored in
 #' @param item_ID Required - default: \code{'fdc_id'} - The column which
 #'   contains the data for the ID column name
@@ -129,19 +130,34 @@
 #'#the comment column is named the default name (comments) and so even if left
 #'#out will still be valid.
 #'
-#'output_df <- CARTBEQ_standardised(df = test_df, item_ID = 'ID', CARTAmcg =
+#'output_df <- CARTBEQ_calc_combiner(df = test_df, item_ID = 'ID', CARTAmcg =
 #''CART A (mcg)', CARTBmcg = 'CART B (mcg)', CARTBEQmcg = 'CART B eq (mcg)',
 #'CARTBEQmcg_std = 'CART B eq (std) (mcg)',  CRYPXBmcg = 'CRYPXB (mcg)',
 #'VITAmcg = 'Vit A (mcg)',  VITA_RAEmcg = 'Vit A RAE (mcg)',  RETOLmcg =
 #''Retinol (mcg)')
 #'
 #'#The resulting output will have a modified comments column, and a new column -
-#'#recalculated_CARTBEQmcg_std
+#'#CARTBEQmcg_combined
 #'
 #' @export
 
 
-CARTBEQ_standardised <- function(df,
+# item_ID = 'fdc_id'
+# CARTAmcg = 'CARTAmcg'
+# CARTBmcg = 'CARTBmcg'
+# CARTBEQmcg = 'CARTBEQmcg'
+# CARTBEQmcg_std = 'CARTBEQmcg_std'
+# CRYPXBmcg = 'CRYPXBmcg'
+# VITAmcg = 'VITAmcg'
+# VITA_RAEmcg = 'VITA_RAEmcg'
+# RETOLmcg = 'RETOLmcg'
+# comment_col = 'comments'
+# compile = T
+# carotene = T
+# comment = T
+
+
+CARTBEQ_calc_combiner <- function(df,
                                  item_ID = 'fdc_id',
                                  CARTAmcg = 'CARTAmcg',
                                  CARTBmcg = 'CARTBmcg',
@@ -152,9 +168,10 @@ CARTBEQ_standardised <- function(df,
                                  VITA_RAEmcg = 'VITA_RAEmcg',
                                  RETOLmcg = 'RETOLmcg',
                                  comment_col = 'comments',
-                                 compile = T,
-                                 carotene = T,
-                                 comment = T) {
+                                 compile = TRUE,
+                                 carotene = TRUE,
+                                 comment = TRUE,
+                                 trackingcomment = FALSE) {
   #This block attributes the column names to the actual columns
 
   stopifnot(
@@ -312,31 +329,31 @@ CARTBEQ_standardised <- function(df,
         (
           as.numeric(CARTBmcg_value) + 0.5 * as.numeric(CARTAmcg_value) + 0.5 * as.numeric(CRYPXBmcg_value)
         ) #f they aren't, the following sum is performed to find a recalculated cartbeq standardised value
-      if (comment == T) {
+      if (comment == TRUE) {
         #if a comment is requested, a predefined comment is created, stating the equation used to find the recalculated_CARTBEQmcg_std value
         recorded_comment <-
           paste0("CARTBEQ_standardised calculated using standard equation")
       }
       #The following code is essentially repeats of the last section of code, with different criteria and different calculations used due to different input criteria
-    } else if (compile == T &
+    } else if (compile == TRUE &
                CARTBEQmcg_std_value != "" &
                !is.na(CARTBEQmcg_std_value)) {
       recalculated_CARTBEQmcg_std <- as.numeric(CARTBEQmcg_std_value)
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised compiled from previous CARTBEQmcg_std value")
       }
-    } else if (compile == T &
+    } else if (compile == TRUE &
                CARTBEQmcg_value != "" & !is.na(CARTBEQmcg_value)) {
       recalculated_CARTBEQmcg_std <- as.numeric(CARTBEQmcg_value)
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised compiled from previous CARTBEQmcg value")
       }
-    } else if (carotene == T &
+    } else if (carotene == TRUE &
                CARTBmcg_value != "" & !is.na(CARTBmcg_value)) {
       recalculated_CARTBEQmcg_std <- as.numeric(CARTBmcg_value)
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised compiled from previous CARTBmcg value")
       }
@@ -345,7 +362,7 @@ CARTBEQ_standardised <- function(df,
                RETOLmcg_value != "" & !is.na(RETOLmcg_value)) {
       recalculated_CARTBEQmcg_std <-
         (as.numeric(VITA_RAEmcg_value) - as.numeric(RETOLmcg_value)) * 12
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised calculated from VITA_RAE and RETOL")
       }
@@ -354,22 +371,22 @@ CARTBEQ_standardised <- function(df,
                RETOLmcg_value != "" & !is.na(RETOLmcg_value)) {
       recalculated_CARTBEQmcg_std <-
         (as.numeric(VITAmcg_value) - as.numeric(RETOLmcg_value)) * 6
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised calculated from VITA and RETOL")
       }
     } else {
       recalculated_CARTBEQmcg_std <- NA
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0("CARTBEQ_standardised could not be calculated")
       }
     }
     #Once the appropriate calculation is found and used, then checks are performed
-    if (recalculated_CARTBEQmcg_std < 0) {
+    if (!is.na(recalculated_CARTBEQmcg_std) & recalculated_CARTBEQmcg_std < 0) {
       #this checks to see if the value is less than zero, and resets it to zero if so, with a recorded comment if comments are on
       recalculated_CARTBEQmcg_std <- 0
-      if (comment == T) {
+      if (comment == TRUE) {
         recorded_comment <-
           paste0(
             recorded_comment,
@@ -391,24 +408,26 @@ CARTBEQ_standardised <- function(df,
       c(recalculated_CARTBEQmcg_std_list,
         recalculated_CARTBEQmcg_std) #results are added to the list
 
-    message(
-      #the recalculated values are then outputted as a message
-      paste0(
-        "Item ",
-        item_ID[i, ],
-        " CARTBEQ_standardised calculated to be ",
-        recalculated_CARTBEQmcg_std,
-        "mcg. ",
-        recorded_comment,
-        "."
+    if(trackingcomment == TRUE){
+      message(
+        #the recalculated values are then outputted as a message
+        paste0(
+          "Item ",
+          item_ID[i, ],
+          " CARTBEQ_standardised calculated to be ",
+          recalculated_CARTBEQmcg_std,
+          "mcg. ",
+          recorded_comment,
+          "."
+        )
       )
-    )
+    }
   }
 
   return_df <-
     df #the return data frame is created, a direct copy of the input df
 
-  if (comment == T) {
+  if (comment == TRUE) {
     #if comments are accepted, then comments are overwritten to add the new comments too
     prev_comment_col_name <-
       "comments" #the new comment column name is set
@@ -421,7 +440,7 @@ CARTBEQ_standardised <- function(df,
     )) #this writes the comments in the comments column
   }
 
-  return_df$recalculated_CARTBEQmcg_std <-
+  return_df$CARTBEQmcg_combined <-
     recalculated_CARTBEQmcg_std_list #A new column is created and its values are assigned as the calculated values this function has created.
   return(return_df)
 }
