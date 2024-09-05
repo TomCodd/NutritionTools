@@ -385,7 +385,7 @@ CARTBEQ_calc_combiner <- function(df,
     if (!missing(comment_col)) {
       comment_list <-
         c(comment_list,
-          paste0(comment_col_value, " - ", recorded_comment)) #this adds the recorded comments to the comment column with the existing comments from input
+          paste0(comment_col_value, "; ", recorded_comment)) #this adds the recorded comments to the comment column with the existing comments from input
     } else {
       comment_list <-
         c(comment_list, recorded_comment) #this adds the recorded comments to the comment column
