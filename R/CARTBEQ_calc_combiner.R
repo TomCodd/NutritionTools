@@ -54,7 +54,7 @@
 #'   compile is set to \code{TRUE} (as it is by default), then when the function is
 #'   run a description of the calculation used to find CARTBEQ_standardised is
 #'   added to the comment_col. If no comment_col is selected, and \code{comment
-#'   = T}, one is created, called \code{comments}.
+#'   = TRUE}, one is created, called \code{comments}.
 #' @param trackingcomment Optional - default: \code{FALSE} - \code{TRUE} or
 #'   \code{FALSE}. If set to \code{TRUE}, the function will output the CARTBEQ
 #'   calue for each row as it calculates it, to allow tracking of progress.
