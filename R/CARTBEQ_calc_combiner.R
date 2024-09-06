@@ -370,7 +370,7 @@ CARTBEQ_calc_combiner <- function(df,
       }
     }
     #Once the appropriate calculation is found and used, then checks are performed
-    if (!is.na(recalculated_CARTBEQmcg_std) & recalculated_CARTBEQmcg_std < 0) {
+    if (!is.na(recalculated_CARTBEQmcg_std) && recalculated_CARTBEQmcg_std < 0) {
       #this checks to see if the value is less than zero, and resets it to zero if so, with a recorded comment if comments are on
       recalculated_CARTBEQmcg_std <- 0
       if (comment == TRUE) {
@@ -385,7 +385,7 @@ CARTBEQ_calc_combiner <- function(df,
     if (!missing(comment_col)) {
       comment_list <-
         c(comment_list,
-          paste0(comment_col_value, " - ", recorded_comment)) #this adds the recorded comments to the comment column with the existing comments from input
+          paste0(comment_col_value, "; ", recorded_comment)) #this adds the recorded comments to the comment column with the existing comments from input
     } else {
       comment_list <-
         c(comment_list, recorded_comment) #this adds the recorded comments to the comment column
