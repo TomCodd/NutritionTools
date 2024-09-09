@@ -3,8 +3,10 @@
 # Title: Carbohydrates (calculated by difference) Calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.1
+# Version: V1.0.2
 # Changelog:
+#V1.0.1 -> V1.0.2: Accounted for potential tibble input; converted to df if
+#needed
 # V1.0.0 -> V1.0.1: Added conversion of character classes to numeric for key
 # columns, if needed.
 # Github: https://github.com/TomCodd/NutritionTools
@@ -156,6 +158,14 @@ CHOAVLDFg_calculator <- function(df,
                                  comment_col = "comments",
                                  NegativeValueReplacement = 0,
                                  NegativeValueDF = FALSE) {
+
+
+  #Converts tibbles to dataframes, if comments are enabled - method of adding
+  #comments doesn't work with tibbles
+
+  if("tbl" %in% class(df) && comment == TRUE){
+    df <- as.data.frame(df)
+  }
 
   # Check presence of required columns
 

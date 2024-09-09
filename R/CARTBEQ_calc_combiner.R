@@ -2,8 +2,10 @@
 #Title: CARTBEQ_calc_combiner
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.1.0
+#Version: V1.1.1
 #Changelog:
+#V1.1.0 -> V1.1.1: Accounted for potential tibble input; converted to df if
+#needed
 #V1.0.0 -> V1.1.0: Changed the name, changed output name, fixed error where NA
 # results could cause problems.
 #Github: https://github.com/TomCodd/NutritionTools
@@ -159,6 +161,14 @@ CARTBEQ_calc_combiner <- function(df,
                                  carotene = TRUE,
                                  comment = TRUE,
                                  trackingcomment = FALSE) {
+
+  #Converts tibbles to dataframes, if comments are enabled - method of adding
+  #comments doesn't work with tibbles
+
+  if("tbl" %in% class(df) && comment == TRUE){
+    df <- as.data.frame(df)
+  }
+
   #This block attributes the column names to the actual columns
 
   stopifnot(

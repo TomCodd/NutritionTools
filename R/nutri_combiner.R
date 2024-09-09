@@ -2,10 +2,13 @@
 # Title: Multi-column Nutrient Combiner
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.1.0
+# Version: V1.1.1
 # Changelog:
-# V1.0.0 -> V1.0.1: Changed due to error in the documentation examples.
+#V1.1.0 -> V1.1.1: Accounted for potential tibble input; converted to df if
+#needed
 # V1.0.1 -> V1.1.0: Added the fill_missing functionality.
+# V1.0.0 -> V1.0.1: Changed due to error in the documentation examples.
+#
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -123,6 +126,13 @@ nutri_combiner <-  function(df,
                             comment = TRUE,
                             comment_col = "comments") {
 
+
+  #Converts tibbles to dataframes, if comments are enabled - method of adding
+  #comments doesn't work with tibbles
+
+  if("tbl" %in% class(df) && comment == TRUE){
+    df <- as.data.frame(df)
+  }
 
   # This check makes sure the entered df is a data frame.
   stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df))

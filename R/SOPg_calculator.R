@@ -3,15 +3,18 @@
 # Title: SOPg Calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.1.1
+# Version: V1.1.2
 # Changelog:
+#V1.1.1 -> V1.1.2: Accounted for potential tibble input; converted to df if
+#needed
+# V1.1.0 -> V1.1.1: Added conversion of character classes to numeric for key
+# columns, if needed.
 # V1.0.0 -> V1.1.0: Change in default inputs from CHOAVLDFg_standardised to CHOAVLg;
 # from FAT_g_standardised to FAT_g_combined; from FIBTGg_standardised to FIBTGg_combined.
 # Change in input parameters to match these changes (e.g. FAT_g_standardised_column
 # to FAT_g_combined_column). Added a warning message if CHOAVLDFg_calculated used
 # as an input to CHOAVLg_column. Updated examples.
-# V1.1.0 -> V1.1.1: Added conversion of character classes to numeric for key
-# columns, if needed.
+#
 # Github: https://github.com/TomCodd/NutritionTools
 #---
 
@@ -178,6 +181,14 @@ SOPg_calculator <- function(df,
                             LowerBound = 93,
                             UpperBound = 107,
                             OutsideBoundsDF = FALSE) {
+
+
+  #Converts tibbles to dataframes, if comments are enabled - method of adding
+  #comments doesn't work with tibbles
+
+  if("tbl" %in% class(df) && comment == TRUE){
+    df <- as.data.frame(df)
+  }
 
   # Check presence of required columns
 

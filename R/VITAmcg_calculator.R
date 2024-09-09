@@ -2,8 +2,10 @@
 # Title: VITAmcg_calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.2
+# Version: V1.0.3
 # Changelog:
+#V1.0.2 -> V1.0.3: Accounted for potential tibble input; converted to df if
+#needed
 # V1.0.1 -> V1.0.2: Fixed comments issue where each item's comment covered every
 # comment in the df
 # V1.0.0 -> V1.0.1: Added conversion of character classes to numeric for key
@@ -84,6 +86,13 @@ VITAmcg_calculator <- function(df,
                                comment = TRUE,
                                comment_col = "comments") {
 
+
+  #Converts tibbles to dataframes, if comments are enabled - method of adding
+  #comments doesn't work with tibbles
+
+  if("tbl" %in% class(df) && comment == TRUE){
+    df <- as.data.frame(df)
+  }
 
   # Check presence of required columns
 
