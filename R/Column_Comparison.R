@@ -79,7 +79,7 @@ Column_Comparison <- function(df1, df2, Summary_Message = TRUE){
   df2_name <- deparse(substitute(df2)) #finds the input df name for df2
 
   df1 <- df1[1,] #We only need the column names, so this trims the df to the first row to make things faster
-  df2 <- df1[2,] #We only need the column names, so this trims the df to the first row to make things faster
+  df2 <- df2[1,] #We only need the column names, so this trims the df to the first row to make things faster
 
   number_of_cols_1 <- length(df1) - length(df2) #Finds the column difference - the number of extra columns df2 needs to meet df1's
   number_of_cols_2 <- length(df2) - length(df1) #Finds the column difference - the number of extra columns df1 needs to meet df2's
