@@ -213,36 +213,36 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Number of times column names match:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FALSE  TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    19     2 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Columns match</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Columns do not match</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">Col_Comparison</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      From_breakfast_df From_breakfast_df_nonstandard df1_equals_df2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1            food_code                     food_code           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            food_name                     food_name           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3               WATERg                        WATERg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4              PROCNTg                       PROCNTg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       FAT_g_combined                FAT_g_combined           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6              CHOAVLg                       CHOAVLg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      FIBTGg_combined               FIBTGg_combined           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                 ALCg                          ALCg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                 ASHg                          ASHg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10              THIAmg                        THIAmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11           THIAHCLmg                     THIAHCLmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12            RETOLmcg                      RETOLmcg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 CARTBEQmcg_combined           CARTBEQmcg_combined           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14               NIAmg                         NIAmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15               TRPmg                         TRPmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16             NIAEQmg                       NIAEQmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17            NIATRPmg                      NIATRPmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18                FATg                          FATg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19               FAT_g                         FAT_g           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20              FATCEg                        FATCEg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21            comments                      comments           TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      From_breakfast_df        From_breakfast_df_nonstandard df1_equals_df2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            food_code                            food_code           TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            food_name                            food_name           TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               WATERg                       Water_values_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4              PROCNTg                      PROCNT_values_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       FAT_g_combined                FAT_values_g_combined          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6              CHOAVLg                      CHOAVL_values_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      FIBTGg_combined              FIBTG_values_g_combined          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                 ALCg                         ALC_values_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                 ASHg                         ASH_values_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              THIAmg                  Thiamine_milligrams          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11           THIAHCLmg         Thiamine_from_HCL_milligrams          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12            RETOLmcg                   Retinol_micrograms          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 CARTBEQmcg_combined Beta_Carotene_Equivalents_micrograms          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14               NIAmg                    Niacin_milligrams          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15               TRPmg                Tryptophan_milligrams          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16             NIAEQmg                 Niacin_eq_milligrams          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17            NIATRPmg                  Niacine_from_TRP_mg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                FATg                             FAT_in_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19               FAT_g                   FAT_unknown_calc_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20              FATCEg          FAT_continuous_extraction_g          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21            comments                      comments_column          FALSE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Note how most of the columns do not match in their names, and the function</span></span></span>
 <span class="r-in"><span><span class="co"># tells you so.</span></span></span>
@@ -257,14 +257,15 @@
 <span class="r-in"><span><span class="va">breakfast_df_2</span><span class="op">$</span><span class="va">FAT_g</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">Col_Comparison</span> <span class="op">&lt;-</span> <span class="fu">Column_Comparison</span><span class="op">(</span><span class="va">breakfast_df</span>, <span class="va">breakfast_df_2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> breakfast_df is 3 columns wider than breakfast_df_2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Number of times column names match:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FALSE  TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    12     9 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Columns match</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Columns do not match</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ---------------------------</span>
 <span class="r-in"><span></span></span>
@@ -279,18 +280,18 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7      FIBTGg_combined     FIBTGg_combined           TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8                 ALCg                ALCg           TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9                 ASHg                ASHg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10              THIAmg              THIAmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11           THIAHCLmg           THIAHCLmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12            RETOLmcg            RETOLmcg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 CARTBEQmcg_combined CARTBEQmcg_combined           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14               NIAmg               NIAmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15               TRPmg               TRPmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16             NIAEQmg             NIAEQmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17            NIATRPmg            NIATRPmg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18                FATg                FATg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19               FAT_g               FAT_g           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20              FATCEg              FATCEg           TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21            comments            comments           TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              THIAmg           THIAHCLmg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11           THIAHCLmg            RETOLmcg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12            RETOLmcg CARTBEQmcg_combined          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 CARTBEQmcg_combined               NIAmg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14               NIAmg             NIAEQmg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15               TRPmg            NIATRPmg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16             NIAEQmg                FATg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17            NIATRPmg              FATCEg          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                FATg            comments          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19               FAT_g        filler_col_1          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20              FATCEg        filler_col_2          FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21            comments        filler_col_3          FALSE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Note how new columns are added to make up the numbers - however, these</span></span></span>
 <span class="r-in"><span><span class="co"># columns are added to the end of the data.frame, causing a shift.</span></span></span>
