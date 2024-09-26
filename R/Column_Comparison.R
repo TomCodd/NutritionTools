@@ -22,7 +22,7 @@
 #' # Column_Comparison to compare the column names.
 #'
 #' breakfast_df
-#'
+#' #
 #' breakfast_df_nonstandard
 #'
 #' # We will start with two data.frames who's names do not line up.
@@ -63,7 +63,7 @@
 #'
 #'
 #' Col_Comparison <- Column_Comparison(breakfast_df, breakfast_df_copy,
-#' Summary_Messages = FALSE)
+#' Summary_Message = FALSE)
 #'
 #' Col_Comparison
 #'
