@@ -17,7 +17,7 @@ CARTBEQ_calc_combiner(
   RETOLmcg = "RETOLmcg",
   comment_col = "comments",
   compile = TRUE,
-  carotene = TRUE,
+  carotene = FALSE,
   comment = TRUE,
   trackingcomment = FALSE
 )
@@ -67,10 +67,10 @@ compile is set to \code{TRUE} (as it is by default), then when Beta-Carotene
 (CARTBmcg) is not available then Beta-Carotene Eq. (CARTBEQ) is used as the
 value for Beta-Carotene equivalent (standardised).}
 
-\item{carotene}{Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
-If carotene is set to \code{TRUE} (as it is by default), then when
-Beta-Carotene (CARTBmcg) is available then it is used as the value for
-Beta-Carotene equivalent (standardised)}
+\item{carotene}{Optional - default: \code{FALSE} - \code{TRUE} or \code{FALSE}.
+If carotene is set to \code{TRUE}, then when Beta-Carotene (CARTBmcg) is
+available then it is used as the value forBeta-Carotene equivalent
+(standardised)}
 
 \item{comment}{Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}. If
 compile is set to \code{TRUE} (as it is by default), then when the function is

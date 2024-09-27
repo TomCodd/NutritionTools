@@ -48,10 +48,10 @@
 #'   compile is set to \code{TRUE} (as it is by default), then when Beta-Carotene
 #'   (CARTBmcg) is not available then Beta-Carotene Eq. (CARTBEQ) is used as the
 #'   value for Beta-Carotene equivalent (standardised).
-#' @param carotene Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}.
-#'   If carotene is set to \code{TRUE} (as it is by default), then when
-#'   Beta-Carotene (CARTBmcg) is available then it is used as the value for
-#'   Beta-Carotene equivalent (standardised)
+#' @param carotene Optional - default: \code{FALSE} - \code{TRUE} or \code{FALSE}.
+#'   If carotene is set to \code{TRUE}, then when Beta-Carotene (CARTBmcg) is
+#'   available then it is used as the value forBeta-Carotene equivalent
+#'   (standardised)
 #' @param comment Optional - default: \code{TRUE} - \code{TRUE} or \code{FALSE}. If
 #'   compile is set to \code{TRUE} (as it is by default), then when the function is
 #'   run a description of the calculation used to find CARTBEQ_standardised is
@@ -158,7 +158,7 @@ CARTBEQ_calc_combiner <- function(df,
                                  RETOLmcg = 'RETOLmcg',
                                  comment_col = 'comments',
                                  compile = TRUE,
-                                 carotene = TRUE,
+                                 carotene = FALSE,
                                  comment = TRUE,
                                  trackingcomment = FALSE) {
 
