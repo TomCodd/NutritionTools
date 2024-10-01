@@ -11,10 +11,11 @@ Group_Summariser(
   input_weighting_column,
   weighting_leniency = 0,
   blank_cols = c(),
-  sep_row = F,
-  seq_col = F,
-  weighting_col = F,
-  round_weighting = T
+  sep_row = FALSE,
+  seq_col = FALSE,
+  weighting_col = FALSE,
+  round_weighting = TRUE,
+  na_rm = TRUE
 )
 }
 \arguments{
@@ -30,13 +31,15 @@ Group_Summariser(
 
 \item{blank_cols}{Optional -  Specify a lits of column names that you wish to leave blank on the average rows (e.g. metadata). Recommended to run the function once, see the results, and then check which columns you want to list here.}
 
-\item{sep_row}{Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. \code{c("FCT Food Item Code", "FCT Food Name")} for the columns \code{FCT Food Item Code} and \code{FCT Food Name}.}
+\item{sep_row}{Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. \code{c("FCT Food Item Code", "FCT Food Name")} for the columns \code{FCT Food Item Code} and \code{FCT Food Name}.}
 
-\item{seq_col}{Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert a sequence column, numbering each item that goes into a summary row.}
+\item{seq_col}{Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert a sequence column, numbering each item that goes into a summary row.}
 
-\item{weighting_col}{Optional - default: \code{'F'} - if set to \code{TRUE}, The Summariser will insert a weighting factor for each item that goes into a summary row.}
+\item{weighting_col}{Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert a weighting factor for each item that goes into a summary row.}
 
-\item{round_weighting}{Optional - default: \code{'T'} - If set to \code{TRUE}, The Summariser will round each weighted value to 2 decimal places.}
+\item{round_weighting}{Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round each weighted value to 2 decimal places.}
+
+\item{na_rm}{Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round values even if an NA value is present. If set to \code{'FALSE'}, an NA value in the column will result in the Summary row for that column being NA as well.}
 }
 \value{
 A data.frame that mirrors \code{df}, but after each group a summary row is inserted, containing the mean of the data columns.
