@@ -15,7 +15,7 @@ A secondary option is for the sorting of items within their groups, using the se
 
     <a class="navbar-brand me-2" href="../index.html">NutritionTools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,10 +60,11 @@ of each item is listed. All the data columns that need to be averaged need to be
 <span>  <span class="va">input_weighting_column</span>,</span>
 <span>  weighting_leniency <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  blank_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  sep_row <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  seq_col <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  weighting_col <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  round_weighting <span class="op">=</span> <span class="cn">T</span></span>
+<span>  sep_row <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seq_col <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  weighting_col <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  round_weighting <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  na_rm <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,19 +97,23 @@ of each item is listed. All the data columns that need to be averaged need to be
 
 
 <dt id="arg-sep-row">sep_row<a class="anchor" aria-label="anchor" href="#arg-sep-row"></a></dt>
-<dd><p>Optional - default: <code>'F'</code> - if set to <code>TRUE</code>, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. <code>c("FCT Food Item Code", "FCT Food Name")</code> for the columns <code>FCT Food Item Code</code> and <code>FCT Food Name</code>.</p></dd>
+<dd><p>Optional - default: <code>'FALSE'</code> - if set to <code>TRUE</code>, The Summariser will insert an empty row after each summary row, to help reading and separation. The column names listed here must exactly match the columns you want excluded, in a character string; e.g. <code>c("FCT Food Item Code", "FCT Food Name")</code> for the columns <code>FCT Food Item Code</code> and <code>FCT Food Name</code>.</p></dd>
 
 
 <dt id="arg-seq-col">seq_col<a class="anchor" aria-label="anchor" href="#arg-seq-col"></a></dt>
-<dd><p>Optional - default: <code>'F'</code> - if set to <code>TRUE</code>, The Summariser will insert a sequence column, numbering each item that goes into a summary row.</p></dd>
+<dd><p>Optional - default: <code>'FALSE'</code> - if set to <code>TRUE</code>, The Summariser will insert a sequence column, numbering each item that goes into a summary row.</p></dd>
 
 
 <dt id="arg-weighting-col">weighting_col<a class="anchor" aria-label="anchor" href="#arg-weighting-col"></a></dt>
-<dd><p>Optional - default: <code>'F'</code> - if set to <code>TRUE</code>, The Summariser will insert a weighting factor for each item that goes into a summary row.</p></dd>
+<dd><p>Optional - default: <code>'FALSE'</code> - if set to <code>TRUE</code>, The Summariser will insert a weighting factor for each item that goes into a summary row.</p></dd>
 
 
 <dt id="arg-round-weighting">round_weighting<a class="anchor" aria-label="anchor" href="#arg-round-weighting"></a></dt>
-<dd><p>Optional - default: <code>'T'</code> - If set to <code>TRUE</code>, The Summariser will round each weighted value to 2 decimal places.</p></dd>
+<dd><p>Optional - default: <code>'TRUE'</code> - If set to <code>TRUE</code>, The Summariser will round each weighted value to 2 decimal places.</p></dd>
+
+
+<dt id="arg-na-rm">na_rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
+<dd><p>Optional - default: <code>'TRUE'</code> - If set to <code>TRUE</code>, The Summariser will round values even if an NA value is present. If set to <code>'FALSE'</code>, an NA value in the column will result in the Summary row for that column being NA as well.</p></dd>
 
 </dl></div>
     <div class="section level2">
