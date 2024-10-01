@@ -52,6 +52,26 @@
 #' @export
 
 
+### TESTING BLOCK ----
+
+# Useful for running datasets through block by block for error checking
+#
+# df = FAO_Table_recombined
+# group_ID_col = "Grouping_FAO_Code"
+# input_weighting_column = "Weighting factor"
+# weighting_leniency = 0.001
+# blank_cols = c("FAO Code", "CPC_Code")
+# sep_row = TRUE
+# round_averages = TRUE
+# seq_col = FALSE
+# weighting_col = FALSE
+# round_weighting = TRUE
+# na_rm = TRUE
+
+### ----
+
+
+
 Group_Summariser <- function(df,
                              group_ID_col,
                              secondary_sort_col,
@@ -178,8 +198,10 @@ Group_Summariser <- function(df,
     if(is.na(new_row_entry) | is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
       new_row_entry <- ""
     } else {
-      if(round_averages == TRUE){
-        new_row_entry <- round(new_row_entry, 2)
+      if(is.numeric(new_row_entry)){
+        if(round_averages == TRUE){
+          new_row_entry <- round(new_row_entry, 2)
+        }
       }
     }
     new_row <- append(new_row, new_row_entry) #Adds the new_row_entry to the list of new_row_entry's called new_row
@@ -276,8 +298,10 @@ Group_Summariser <- function(df,
       if(is.na(new_row_entry) | is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
         new_row_entry <- ""
       } else {
-        if(round_averages == TRUE){
-          new_row_entry <- round(new_row_entry, 2)
+        if(is.numeric(new_row_entry)){
+          if(round_averages == TRUE){
+            new_row_entry <- round(new_row_entry, 2)
+          }
         }
       }
       new_row <- append(new_row, new_row_entry) #Adds the new_row_entry to the list of new_row_entry's called new_row
