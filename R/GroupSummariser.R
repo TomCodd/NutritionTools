@@ -175,7 +175,7 @@ Group_Summariser <- function(df,
       }
     }
 
-    if(is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
+    if(is.na(new_row_entry) | is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
       new_row_entry <- ""
     } else {
       if(round_averages == TRUE){
@@ -273,7 +273,7 @@ Group_Summariser <- function(df,
         }
       }
 
-      if(is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
+      if(is.na(new_row_entry) | is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
         new_row_entry <- ""
       } else {
         if(round_averages == TRUE){
