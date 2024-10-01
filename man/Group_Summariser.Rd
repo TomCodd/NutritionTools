@@ -15,6 +15,7 @@ Group_Summariser(
   seq_col = FALSE,
   weighting_col = FALSE,
   round_weighting = TRUE,
+  round_averages = FALSE,
   na_rm = TRUE
 )
 }
@@ -38,6 +39,8 @@ Group_Summariser(
 \item{weighting_col}{Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert a weighting factor for each item that goes into a summary row.}
 
 \item{round_weighting}{Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round each weighted value to 2 decimal places.}
+
+\item{round_averages}{Optional - default: \code{'FALSE'} - If set to \code{TRUE}, The Summariser will round each summarised average to 2 decimal places.}
 
 \item{na_rm}{Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round values even if an NA value is present. If set to \code{'FALSE'}, an NA value in the column will result in the Summary row for that column being NA as well.}
 }

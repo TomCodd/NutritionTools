@@ -2,9 +2,10 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.3.4
+#Version: V1.3.5
 #Changelog:
 
+#v1.3.4 -> v1.3.5; Feature added - can round summarised values to 2 significant figures
 #v1.3.3 -> v1.3.4; Bug Fix - Fixed issue where a single NA in a column would result in NA in the summary row, by adding na_rm option
 #v1.3.2 -> v1.3.3; Bug Fix - error where all rows had 'SUMMARY ROW - NA'; fixed
 #v1.3.1 -> v1.3.2; Bug Fix - error where, after the first item, the Summary rows couldn't find the correct group ID and so outputted 'SUMMARY ROW - NA' fixed
@@ -41,6 +42,7 @@
 #' @param seq_col Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert a sequence column, numbering each item that goes into a summary row.
 #' @param weighting_col Optional - default: \code{'FALSE'} - if set to \code{TRUE}, The Summariser will insert a weighting factor for each item that goes into a summary row.
 #' @param round_weighting Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round each weighted value to 2 decimal places.
+#' @param round_averages Optional - default: \code{'FALSE'} - If set to \code{TRUE}, The Summariser will round each summarised average to 2 decimal places.
 #' @param na_rm Optional - default: \code{'TRUE'} - If set to \code{TRUE}, The Summariser will round values even if an NA value is present. If set to \code{'FALSE'}, an NA value in the column will result in the Summary row for that column being NA as well.
 #' @return A data.frame that mirrors \code{df}, but after each group a summary row is inserted, containing the mean of the data columns.
 #'
@@ -60,6 +62,7 @@ Group_Summariser <- function(df,
                              seq_col = FALSE,
                              weighting_col = FALSE,
                              round_weighting = TRUE,
+                             round_averages = FALSE,
                              na_rm = TRUE) {
 
   # Data input checking ----
@@ -89,6 +92,7 @@ Group_Summariser <- function(df,
   stopifnot("The seq_col input is not logical - please set it to TRUE or FALSE" = is.logical(seq_col)) #Checks to see if the seq_col input is logical
   stopifnot("The weighting_col input is not logical - please set it to TRUE or FALSE" = is.logical(weighting_col)) #Checks to see if the weighting_col input is logical
   stopifnot("The round_weighting input is not logical - please set it to TRUE or FALSE" = is.logical(round_weighting)) #Checks to see if the round_weighting input is logical
+  stopifnot("The round_averages input is not logical - please set it to TRUE or FALSE" = is.logical(round_weighting)) #Checks to see if the round_weighting input is logical
   stopifnot("The na_rm input is not logical - please set it to TRUE or FALSE" = is.logical(na_rm)) #Checks to see if the na_rm input is logical
 
 
@@ -173,6 +177,10 @@ Group_Summariser <- function(df,
 
     if(is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
       new_row_entry <- ""
+    } else {
+      if(round_averages == TRUE){
+        new_row_entry <- round(new_row_entry, 2)
+      }
     }
     new_row <- append(new_row, new_row_entry) #Adds the new_row_entry to the list of new_row_entry's called new_row
   }
@@ -183,8 +191,8 @@ Group_Summariser <- function(df,
   new_row[group_col_num] <- paste0("SUMMARY ROW - ", group_ID_value) #Edits the group_col_num to include that this is a summary row for that group
   sorted_table <- rbind(sorted_table, new_row) #attaches this modified averages row to the data rows in the sorted_table
 
-  if(weighting_col == T & weighting_col_present == F){ #Special case for if a weighting column is asked for, but a pre-existing one isn't present
-    if(round_weighting == T){ #if rounded weighting values are used, then
+  if(weighting_col == TRUE & weighting_col_present == FALSE){ #Special case for if a weighting column is asked for, but a pre-existing one isn't present
+    if(round_weighting == TRUE){ #if rounded weighting values are used, then
       sorted_table$Weighting_Factor <- c(replicate((nrow(sorted_table) - 1), round((1/(nrow(sorted_table) - 1)), 2)), 1) #the weighting is 1 divided by the number of rows, rounded to 2 decimal places
     } else { #if rounded weighting values aren't used, then
       sorted_table$Weighting_Factor <- c(replicate((nrow(sorted_table) - 1), (1/(nrow(sorted_table) - 1))), 1) #the weighting values is 1/the number of rows, without any rounding
@@ -267,6 +275,10 @@ Group_Summariser <- function(df,
 
       if(is.nan(new_row_entry)){ #If the new_row_entry is still NA after all these steps, it gets reset to be "", or blank.
         new_row_entry <- ""
+      } else {
+        if(round_averages == TRUE){
+          new_row_entry <- round(new_row_entry, 2)
+        }
       }
       new_row <- append(new_row, new_row_entry) #Adds the new_row_entry to the list of new_row_entry's called new_row
     }
