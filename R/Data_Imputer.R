@@ -99,18 +99,51 @@
 #'
 #' @examples
 #' #
-#' # Data_Imputer(
-#' #   df = data.df,
-#' #   receiver_title_column = "FAO.title",
-#' #   receiver_search_terms = c("goat", "offal"),
-#' #   receiver_desc_column = "food_desc",
-#' #   receiver_exclude_terms = "liver",
-#' #   receiver_id_column = "fdc_id.x",
-#' #   missing_nutrient_column = "VITB12mcg",
-#' #   donor_search_terms = c("raw", "lamb"),
-#' #   Assume_continue = TRUE
-#' # )
+#' # First we'll run through a demonstration of the Data_Imputer imputing from
+#' within the same dataset. Because this is the default setting, fewer inputs
+#' are needed.
+#' #
+#' # The dataset can be viewed using View(KE18_subset_modified)
+#' #
+#' # The dataset in question is missing some VITB12mcg values for 'Lamb liver,
+#' # raw' and 'Lamb, liver, boiled (without salt)'. However, within the same
+#' # dataset are some goat values which could be a good imputation value.
+#' #
+#'  Data_Imputer(
+#'    df = KE18_subset_modified,
+#'    receiver_title_column = "food_group",
+#'    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
+#'    receiver_desc_column = "food_desc",
+#'    receiver_exclude_terms = "lean", #We don't need to see any of the 'lean' results
+#'    receiver_id_column = "fdc_id",
+#'    missing_nutrient_column = "VITB12mcg",
+#'    donor_search_terms = c("goat"),
+#'    donor_fct_column = "source_fct"
+#'  )
 #'
+#'
+#' # In this example we'll impute values from a different data.frame - the West
+#' #Africa FCT subset, WA19_subset. This can be viewed using View(WA19_subset).
+#' #We also want to look at some extra columns when we want to choose an item, so
+#' #we've added two columns to the extra_info_columns option.
+#'
+#'  Data_Imputer(
+#'    df = KE18_subset_modified,
+#'    receiver_title_column = "food_group",
+#'    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
+#'    receiver_desc_column = "food_desc",
+#'    receiver_exclude_terms = "lean", #We don't need to see any of the 'lean' results
+#'    receiver_id_column = "fdc_id",
+#'    missing_nutrient_column = "VITB12mcg",
+#'    donor_search_terms = c("goat"),
+#'    water_column = "WATERg",
+#'    comment_col = "comments",
+#'    donor_fct_column = "source_fct",
+#'    donor_df = WA19_subset,
+#'    donor_id_column = "fdc_id",
+#'    donor_search_column = "food_desc",
+#'    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
+#'  )
 
 # Side function - User input check y/n ----
 
@@ -189,12 +222,11 @@ Data_Imputer <- function(df,
   stopifnot("The missing_nutrient_column is not a column name in the df - please input a string that is a column name in the df AND the donor_df, e.g. 'VITB12mcg'" = missing_nutrient_column %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
   stopifnot("The missing_nutrient_column is not a column name in the donor_df - please input a string that is a column name in the df AND the donor_df, e.g. 'VITB12mcg'" = missing_nutrient_column %in% colnames(donor_df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
-  stopifnot("The water_column is not a character or string - please input a character or string that is a column name in df, e.g. 'WATERg'" = is.character(WATERg)) #checks to see if the group_ID_col is a character string
-  stopifnot("The water_column is not a column name in the df - please input a string that is a column name in the df AND the donor_df, e.g. 'WATERg'" = WATERg %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
-  stopifnot("The water_column is not a column name in the donor_df - please input a string that is a column name in the df AND the donor_df, e.g. 'WATERg'" = WATERg %in% colnames(donor_df)) #Checks to see if the group_ID_col is in the list of column names for the df
+  stopifnot("The water_column is not a character or string - please input a character or string that is a column name in df, e.g. 'WATERg'" = is.character(water_column)) #checks to see if the group_ID_col is a character string
+  stopifnot("The water_column is not a column name in the df - please input a string that is a column name in the df AND the donor_df, e.g. 'WATERg'" = water_column %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
+  stopifnot("The water_column is not a column name in the donor_df - please input a string that is a column name in the df AND the donor_df, e.g. 'WATERg'" = water_column %in% colnames(donor_df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
   stopifnot("The comment_col is not a character or string - please input a character or string that is a column name in df, e.g. 'comments'" = is.character(comment_col)) #checks to see if the group_ID_col is a character string
-  stopifnot("The comment_col is not a column name in df - please input a string that is a column name in df, e.g. 'comments'" = comment_col %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
   stopifnot("The donor_fct_column is not a character or string - please input a character or string that is a column name in donor_df, e.g. 'Source'" = is.character(donor_fct_column)) #checks to see if the group_ID_col is a character string
   stopifnot("The donor_fct_column is not a column name in the donor_df - please input a string that is a column name in the donor_df, e.g. 'Source'" = donor_fct_column %in% colnames(donor_df)) #Checks to see if the group_ID_col is in the list of column names for the df
@@ -207,9 +239,11 @@ Data_Imputer <- function(df,
 
   stopifnot("The donor_search_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'goat', or c('goat', 'offal')" = is.character(donor_search_terms)) #checks to see if the group_ID_col is a character string
 
-  stopifnot("The extra_info_columns is not a character or string - please input a character list or string that you would like to search for, e.g. 'PROCNTg', or c('PROCNTg', 'CHOAVLDFg')" = is.character(extra_info_columns)) #checks to see if the group_ID_col is a character string
-  stopifnot("The extra_info_columns contains items which are not column names in the df - please input a set of strings that are all column names in the df AND the donor_df, e.g. 'PROCNTg'" = !(FALSE %in% (extra_info_columns %in% colnames(df)))) #Checks to see if the group_ID_col is in the list of column names for the df
-  stopifnot("The extra_info_columns contains items which are not column names in the donor_df - please input a set of strings that are all column names in the df AND the donor_df, e.g. 'PROCNTg'" = !(FALSE %in% (extra_info_columns %in% colnames(donor_df)))) #Checks to see if the group_ID_col is in the list of column names for the df
+  if(length(extra_info_columns[!extra_info_columns %in% ""])>0){
+    stopifnot("The extra_info_columns is not a character or string - please input a character list or string that you would like to search for, e.g. 'PROCNTg', or c('PROCNTg', 'CHOAVLDFg')" = is.character(extra_info_columns)) #checks to see if the group_ID_col is a character string
+    stopifnot("The extra_info_columns contains items which are not column names in the df - please input a set of strings that are all column names in the df AND the donor_df, e.g. 'PROCNTg'" = !(FALSE %in% (extra_info_columns %in% colnames(df)))) #Checks to see if the group_ID_col is in the list of column names for the df
+    stopifnot("The extra_info_columns contains items which are not column names in the donor_df - please input a set of strings that are all column names in the df AND the donor_df, e.g. 'PROCNTg'" = !(FALSE %in% (extra_info_columns %in% colnames(donor_df)))) #Checks to see if the group_ID_col is in the list of column names for the df
+  }
 
   stopifnot("The exclude_receiver_terms input is not logical - please set it to TRUE or FALSE" = is.logical(exclude_receiver_terms))
 
@@ -224,7 +258,7 @@ Data_Imputer <- function(df,
   term_search <- toupper(term_search) #Makes sure its all upper case
 
   stopifnot("The term_search is not a character or string - please input either 'AND' or 'OR'" = is.character(donor_id_column)) #checks to see if the group_ID_col is a character string
-  stopifnot("The term_search is not 'AND' or 'OR' - please input either 'AND' or 'OR'" = %in% c('AND', 'OR')) #Checks to see if the group_ID_col is in the list of column names for the df
+  stopifnot("The term_search is not 'AND' or 'OR' - please input either 'AND' or 'OR'" = term_search %in% c('AND', 'OR')) #Checks to see if the group_ID_col is in the list of column names for the df
 
   stopifnot("The water_balance input is not logical - please set it to TRUE or FALSE" = is.logical(water_balance))
 
