@@ -196,4 +196,6 @@ Data_Imputer(
    donor_search_column = "food_desc",
    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
  )
+
+ @export
 }
