@@ -67,16 +67,16 @@
 #' A subset of the West Africa 2019 FCT dataset.
 #'
 #' @format A data frame with 49 rows and 9 columns:
-#' \\describe{
-#'   \\item{source_fct}{The FCT that this data is sourced from}
-#'   \\item{fdc_id}{food item ID}
-#'   \\item{food_desc}{Food Description}
-#'   \\item{food_group}{Food Group the food item belongs to}
-#'   \\item{ENERCkcal}{Energy in Kcal per 100g food}
-#'   \\item{WATERg}{Water in grams per 100g food}
-#'   \\item{PROCNTg}{Protein in grams per 100g food}
-#'   \\item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
-#'   \\item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
+#' \describe{
+#'   \item{source_fct}{The FCT that this data is sourced from}
+#'   \item{fdc_id}{food item ID}
+#'   \item{food_desc}{Food Description}
+#'   \item{food_group}{Food Group the food item belongs to}
+#'   \item{ENERCkcal}{Energy in Kcal per 100g food}
+#'   \item{WATERg}{Water in grams per 100g food}
+#'   \item{PROCNTg}{Protein in grams per 100g food}
+#'   \item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
+#'   \item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
 #' }
 #' @source A subset of the West Africa Food Composition  Table 2018 - found here: https://www.fao.org/infoods/infoods/tables-and-databases/faoinfoods-databases/en/
 'WA19_subset'
@@ -88,16 +88,16 @@
 #' A subset of the Kenya 2018 FCT dataset, with some data removed.
 #'
 #' @format A data frame with 21 rows and 9 columns:
-#' \\describe{
-#'   \\item{source_fct}{The FCT that this data is sourced from}
-#'   \\item{fdc_id}{food item ID}
-#'   \\item{food_desc}{Food Description}
-#'   \\item{food_group}{Food Group the food item belongs to}
-#'   \\item{ENERCkcal}{Energy in Kcal per 100g food}
-#'   \\item{WATERg}{Water in grams per 100g food}
-#'   \\item{PROCNTg}{Protein in grams per 100g food}
-#'   \\item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
-#'   \\item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
+#' \describe{
+#'   \item{source_fct}{The FCT that this data is sourced from}
+#'   \item{fdc_id}{food item ID}
+#'   \item{food_desc}{Food Description}
+#'   \item{food_group}{Food Group the food item belongs to}
+#'   \item{ENERCkcal}{Energy in Kcal per 100g food}
+#'   \item{WATERg}{Water in grams per 100g food}
+#'   \item{PROCNTg}{Protein in grams per 100g food}
+#'   \item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
+#'   \item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
 #' }
 #' @source A modified subset of the Kenya 2018 FCT, available here: https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
 'KE18_subset_modified'
