@@ -100,8 +100,8 @@
 #' @examples
 #' #
 #' # First we'll run through a demonstration of the Data_Imputer imputing from
-#' within the same dataset. Because this is the default setting, fewer inputs
-#' are needed.
+#' # within the same dataset. Because this is the default setting, fewer inputs
+#' # are needed.
 #' #
 #' # The dataset can be viewed using View(KE18_subset_modified)
 #' #
@@ -126,9 +126,9 @@
 #'
 #'
 #' # In this example we'll impute values from a different data.frame - the West
-#' #Africa FCT subset, WA19_subset. This can be viewed using View(WA19_subset).
-#' #We also want to look at some extra columns when we want to choose an item, so
-#' #we've added two columns to the extra_info_columns option.
+#' # Africa FCT subset, WA19_subset. This can be viewed using View(WA19_subset).
+#' # We also want to look at some extra columns when we want to choose an item, so
+#' # we've added two columns to the extra_info_columns option.
 #'
 #'  Data_Imputer(
 #'    df = KE18_subset_modified,
