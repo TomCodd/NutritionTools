@@ -6,16 +6,16 @@
 \title{KE19 Subset, modified to contain missing data}
 \format{
 A data frame with 21 rows and 9 columns:
-\\describe{
-  \\item{source_fct}{The FCT that this data is sourced from}
-  \\item{fdc_id}{food item ID}
-  \\item{food_desc}{Food Description}
-  \\item{food_group}{Food Group the food item belongs to}
-  \\item{ENERCkcal}{Energy in Kcal per 100g food}
-  \\item{WATERg}{Water in grams per 100g food}
-  \\item{PROCNTg}{Protein in grams per 100g food}
-  \\item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
-  \\item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
+\describe{
+  \item{source_fct}{The FCT that this data is sourced from}
+  \item{fdc_id}{food item ID}
+  \item{food_desc}{Food Description}
+  \item{food_group}{Food Group the food item belongs to}
+  \item{ENERCkcal}{Energy in Kcal per 100g food}
+  \item{WATERg}{Water in grams per 100g food}
+  \item{PROCNTg}{Protein in grams per 100g food}
+  \item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
+  \item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
 }
 }
 \source{
