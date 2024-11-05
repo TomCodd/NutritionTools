@@ -146,7 +146,11 @@ The Data Imputer is an interactive function used to find
   data.frame with the changes implemented.
 }
 \examples{
+# Unfortunately due to the functions interactive nature these examples cannot
+# be run from within the package help - please copy them, uncomment them, and
+# run them manually.
 #
+#' #
 # First we'll run through a demonstration of the Data_Imputer imputing from
 # within the same dataset. Because this is the default setting, fewer inputs
 # are needed.
@@ -157,44 +161,48 @@ The Data Imputer is an interactive function used to find
 # raw' and 'Lamb, liver, boiled (without salt)'. However, within the same
 # dataset are some goat values which could be a good imputation value.
 #
-Data_Imputer(
-   df = KE18_subset_modified,
-   receiver_title_column = "food_group",
-   receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
-   receiver_desc_column = "food_desc",
-   receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
-   receiver_id_column = "fdc_id",
-   term_search = "OR",
-   missing_nutrient_column = "VITB12mcg",
-   donor_search_terms = c("goat"),
-   water_column = "WATERg",
-   comment_col = "comments",
-   donor_fct_column = "source_fct"
- )
+# Data_Imputer(
+#    df = KE18_subset_modified,
+#    receiver_title_column = "food_group",
+#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
+#    #using unique terms
+#    receiver_desc_column = "food_desc",
+#    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
+#    #of the 'lean' or 'blood' results
+#    receiver_id_column = "fdc_id",
+#    term_search = "OR",
+#    missing_nutrient_column = "VITB12mcg",
+#    donor_search_terms = c("goat"),
+#    water_column = "WATERg",
+#    comment_col = "comments",
+#    donor_fct_column = "source_fct"
+#  )
 
 
 # In this example we'll impute values from a different data.frame - the West
 # Africa FCT subset, WA19_subset. This can be viewed using View(WA19_subset).
-# We also want to look at some extra columns when we want to choose an item, so
-# we've added two columns to the extra_info_columns option.
+# We also want to look at some extra columns when we want to choose an item,
+# so we've added two columns to the extra_info_columns option.
 
- Data_Imputer(
-   df = KE18_subset_modified,
-   receiver_title_column = "food_group",
-   receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
-   receiver_desc_column = "food_desc",
-   receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
-   receiver_id_column = "fdc_id",
-   missing_nutrient_column = "VITB12mcg",
-   donor_search_terms = c("goat"),
-   water_column = "WATERg",
-   comment_col = "comments",
-   donor_fct_column = "source_fct",
-   donor_df = WA19_subset,
-   donor_id_column = "fdc_id",
-   term_search = "OR",
-   donor_search_column = "food_desc",
-   extra_info_columns = c("PROCNTg", "CHOAVLDFg")
- )
+#  Data_Imputer(
+#    df = KE18_subset_modified,
+#    receiver_title_column = "food_group",
+#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
+#    # using unique terms
+#    receiver_desc_column = "food_desc",
+#    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
+#    #of the 'lean' or 'blood' results
+#    receiver_id_column = "fdc_id",
+#    missing_nutrient_column = "VITB12mcg",
+#    donor_search_terms = c("goat"),
+#    water_column = "WATERg",
+#    comment_col = "comments",
+#    donor_fct_column = "source_fct",
+#    donor_df = WA19_subset,
+#    donor_id_column = "fdc_id",
+#    term_search = "OR",
+#    donor_search_column = "food_desc",
+#    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
+#  )
 
 }
