@@ -11,7 +11,7 @@
 
 **NutritionTools** is an R package of functions to help with a wide range of calculations and processes that commonly occur when working with nutrition datasets. The goal behind the development was not to automatically do the work, but rather to help nutritionists and data scientists to complete these tasks more quickly while remaining in full control of the decisions being made, with clear notation of the decisions made at every step.
 
-Currently **NutritionTools** offers 14 tools to help with 4 key areas; Nutritional Calculations, Food Matching, Food Dataset Management, and Output Summaries and Checks, although further functions are still in development and are set to be added at a later time.
+Currently **NutritionTools** offers 15 tools to help with 5 key areas; Nutritional Calculations, Food Matching, Food Dataset Management, Output Summaries and Checks, and Data Imputation - although further functions are still in development and are set to be added at a later time.
 
 ![](reference/figures/MAPS_logo_crop.jpg){width="150" style="float:right"} **NutritionTools** has been developed through work at the [Micronutrient Action Policy Support (MAPS)](https://www.micronutrient.support/) Project, although the use of these tools is widely encouraged by all who might find them useful and use is not exclusive to the MAPS project.
 
