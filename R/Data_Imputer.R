@@ -149,7 +149,7 @@
 #'    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #'  )
 #'
-#'  @export
+#'@export
 
 # Main function ----
 
