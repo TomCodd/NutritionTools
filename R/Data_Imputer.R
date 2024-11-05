@@ -285,7 +285,7 @@ Data_Imputer <- function(df,
   }
 
   if(Assume_continue == FALSE){
-    if(NutritionTools::Check_to_continue_YesNo("Are you happy to continue to impute values for the items above? (y/n): ") == "Stop"){
+    if(Check_to_continue_YesNo("Are you happy to continue to impute values for the items above? (y/n): ") == "Stop"){
       return(message(""))
     }
   }
@@ -345,7 +345,7 @@ Data_Imputer <- function(df,
 
       suppressWarnings({
 
-      potential_matches$match_level <- stringdist::stringdist(missing_data$extracted_search_terms[i], potential_matches[[donor_search_column]], method = 'jw')
+      potential_matches$match_level <- stringdist(missing_data$extracted_search_terms[i], potential_matches[[donor_search_column]], method = 'jw')
       potential_matches <- potential_matches[order(potential_matches$match_level),]
       potential_matches$match_level <- NULL
 
@@ -359,7 +359,7 @@ Data_Imputer <- function(df,
       if(Assume_continue == FALSE){
         if(nrow(potential_matches)>10){
           message("")
-        if(NutritionTools::Check_to_continue_YesNo(paste0(nrow(potential_matches), " items found that match ", missing_data$extracted_search_terms[i], ". Are you sure you wish to continue? (y/n): ")) == "Stop"){
+        if(Check_to_continue_YesNo(paste0(nrow(potential_matches), " items found that match ", missing_data$extracted_search_terms[i], ". Are you sure you wish to continue? (y/n): ")) == "Stop"){
           next
         }
         }
@@ -414,7 +414,7 @@ Data_Imputer <- function(df,
             print(potential_matches[Selection_chosen, donor_search_column])
             message("")
 
-            if(NutritionTools::Check_to_continue_YesNo("Would you like to continue with these items? (y/n): ") == "Stop"){ #Checks if the user wants to continue - if they do, then the break cause is given
+            if(Check_to_continue_YesNo("Would you like to continue with these items? (y/n): ") == "Stop"){ #Checks if the user wants to continue - if they do, then the break cause is given
             } else {
               break #Breaks the loop, and then continues
             }
