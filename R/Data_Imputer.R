@@ -560,13 +560,3 @@ Data_Imputer <- function(df,
     }
   }
 }
-
-
-# Imputations generated on 2024-11-05 at 15:52:53, Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/).
-
-# VITB12mcg value for 7018 imputed - changed from 'NA' to 82.29
-KE18_subset_modified[KE18_subset_modified$fdc_id %in% '7018', c('VITB12mcg', 'comments')] <- c(82.29, 'VITB12mcg value imputed using the water-balanced VITB12mcg value from KE18(7015)')
-
-# VITB12mcg value for 7048 imputed - changed from 'NA' to 0
-KE18_subset_modified[KE18_subset_modified$fdc_id %in% '7048', c('VITB12mcg', 'comments')] <- c(0, 'VITB12mcg value imputed using the water-balanced VITB12mcg value from KE18(7045)')
-
