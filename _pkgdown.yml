@@ -19,8 +19,11 @@ reference:
   - VITAmcg_calculator
   - nutri_combiner
   - Column_Comparison
+  - Data_Imputer
 
 - title: Built-in datasets
   contents:
   - breakfast_df
   - breakfast_df_nonstandard
+  - WA19_subset
+  - KE18_subset_modified

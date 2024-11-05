@@ -1,45 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/404.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/articles/my-vignette.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/index - Copy.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/index_MAPS_Links_working.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/CARTBEQ_standardised.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/Decimal_System_Checker.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/ENERCKcal_standardised.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/ENERCKj_standardised.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/Fuzzy_Matcher.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/Group_Summariser.html</loc>
-  </url>
-  <url>
-    <loc>https://tomcodd.github.io/NutritionTools/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://tomcodd.github.io/NutritionTools/404.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/articles/Fuzzy-Matcher-Guide.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/articles/index.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/articles/my-vignette.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/authors.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/index.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/breakfast_df.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/breakfast_df_nonstandard.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/CARTBEQ_calc_combiner.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/CARTBEQ_standardised.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/CHOAVLDFg_calculator.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/Column_Comparison.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/Data_Imputer.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/Decimal_System_Checker.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/ENERCKcal_standardised.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/ENERCKj_standardised.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/Fuzzy_Matcher.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/Group_Summariser.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/index.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/KE18_subset_modified.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/NIAmg_calc_combiner.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/nutri_combiner.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/SOPg_calculator.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/SOP_example_df.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/SOP_example_df_nonstandard.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/THIAmg_combiner.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/VITAmcg_calculator.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/VITA_RAEmcg_calculator.html</loc></url>
+<url><loc>https://tomcodd.github.io/NutritionTools/reference/WA19_subset.html</loc></url>
 </urlset>
+
