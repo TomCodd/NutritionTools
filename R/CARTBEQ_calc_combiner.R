@@ -252,63 +252,63 @@ CARTBEQ_calc_combiner <- function(df,
 
 
     CARTAmcg_value <- "" #sets the value to nothing
-    if (class(CARTAmcg) == 'data.frame') {
+    if (is(CARTAmcg, "data.frame")) {
       #Then if the column is present and has values
       CARTAmcg_value <-
         CARTAmcg[i, ] #The blank is overwritten with the actual value
     }
 
     CARTBmcg_value <- "" #sets the value to nothing
-    if (class(CARTBmcg) == 'data.frame') {
+    if (is(CARTBmcg, "data.frame")) {
       #Then if the column is present and has values
       CARTBmcg_value <-
         CARTBmcg[i, ] #The blank is overwritten with the actual value
     }
 
     CRYPXBmcg_value <- "" #sets the value to nothing
-    if (class(CRYPXBmcg) == 'data.frame') {
+    if (is(CRYPXBmcg, "data.frame")) {
       #Then if the column is present and has values
       CRYPXBmcg_value <-
         CRYPXBmcg[i, ] #The blank is overwritten with the actual value
     }
 
     CARTBEQmcg_value <- "" #sets the value to nothing
-    if (class(CARTBEQmcg) == 'data.frame') {
+    if (is(CARTBEQmcg, "data.frame")) {
       #Then if the column is present and has values
       CARTBEQmcg_value <-
         CARTBEQmcg[i, ] #The blank is overwritten with the actual value
     }
 
     CARTBEQmcg_std_value <- "" #sets the value to nothing
-    if (class(CARTBEQmcg_std) == 'data.frame') {
+    if (is(CARTBEQmcg_std, "data.frame")) {
       #Then if the column is present and has values
       CARTBEQmcg_std_value <-
         CARTBEQmcg_std[i, ] #The blank is overwritten with the actual value
     }
 
     VITAmcg_value <- "" #sets the value to nothing
-    if (class(VITAmcg) == 'data.frame') {
+    if (is(VITAmcg, "data.frame")) {
       #Then if the column is present and has values
       VITAmcg_value <-
         VITAmcg[i, ] #The blank is overwritten with the actual value
     }
 
     VITA_RAEmcg_value <- "" #sets the value to nothing
-    if (class(VITA_RAEmcg) == 'data.frame') {
+    if (is(VITA_RAEmcg, "data.frame")) {
       #Then if the column is present and has values
       VITA_RAEmcg_value <-
         VITA_RAEmcg[i, ] #The blank is overwritten with the actual value
     }
 
     RETOLmcg_value <- "" #sets the value to nothing
-    if (class(RETOLmcg) == 'data.frame') {
+    if (is(RETOLmcg, "data.frame")) {
       #Then if the column is present and has values
       RETOLmcg_value <-
         RETOLmcg[i, ] #The blank is overwritten with the actual value
     }
 
     comment_col_value <- "" #sets the value to nothing
-    if (class(comment_col) == 'data.frame') {
+    if (is(comment_col, "data.frame")) {
       #Then if the column is present and has values
       comment_col_value <-
         comment_col[i, ] #The blank is overwritten with the actual value
