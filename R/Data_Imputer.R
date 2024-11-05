@@ -109,16 +109,19 @@
 #' # raw' and 'Lamb, liver, boiled (without salt)'. However, within the same
 #' # dataset are some goat values which could be a good imputation value.
 #' #
-#'  Data_Imputer(
-#'    df = KE18_subset_modified,
-#'    receiver_title_column = "food_group",
-#'    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
-#'    receiver_desc_column = "food_desc",
-#'    receiver_exclude_terms = "lean", #We don't need to see any of the 'lean' results
-#'    receiver_id_column = "fdc_id",
-#'    missing_nutrient_column = "VITB12mcg",
-#'    donor_search_terms = c("goat"),
-#'    donor_fct_column = "source_fct"
+#' Data_Imputer(
+#'   df = KE18_subset_modified,
+#'   receiver_title_column = "food_group",
+#'   receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
+#'   receiver_desc_column = "food_desc",
+#'   receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
+#'   receiver_id_column = "fdc_id",
+#'   term_search = "OR",
+#'   missing_nutrient_column = "VITB12mcg",
+#'   donor_search_terms = c("goat"),
+#'   water_column = "WATERg",
+#'   comment_col = "comments",
+#'   donor_fct_column = "source_fct"
 #'  )
 #'
 #'
@@ -132,7 +135,7 @@
 #'    receiver_title_column = "food_group",
 #'    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
 #'    receiver_desc_column = "food_desc",
-#'    receiver_exclude_terms = "lean", #We don't need to see any of the 'lean' results
+#'    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
 #'    receiver_id_column = "fdc_id",
 #'    missing_nutrient_column = "VITB12mcg",
 #'    donor_search_terms = c("goat"),
@@ -141,6 +144,7 @@
 #'    donor_fct_column = "source_fct",
 #'    donor_df = WA19_subset,
 #'    donor_id_column = "fdc_id",
+#'    term_search = "OR",
 #'    donor_search_column = "food_desc",
 #'    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #'  )
@@ -247,10 +251,6 @@ Data_Imputer <- function(df,
 
   stopifnot("The exclude_receiver_terms input is not logical - please set it to TRUE or FALSE" = is.logical(exclude_receiver_terms))
 
-  if(missing(donor_search_collapse)){
-    donor_search_collapse <- ""
-  }
-
   stopifnot("The donor_search_collapse is not a character or string - please input a character list or string that you would like to use to collapse the searches. For example, using ',' will mean that donor_search_terms of 'lamb, raw' will look for 'lamb' and 'raw'. Leaving this blank (e.g. '') will mean that the search will be for 'lamb, raw' as a string, not the seperate words" = is.character(donor_search_collapse)) #checks to see if the group_ID_col is a character string
 
   stopifnot("The Assume_continue input is not logical - please set it to TRUE or FALSE" = is.logical(Assume_continue))
@@ -268,7 +268,9 @@ Data_Imputer <- function(df,
 
   stopifnot("The round_imputed_figure input is not logical - please set it to TRUE or FALSE" = is.logical(round_imputed_figure))
 
-  if(!(comment_col %in% colnames(df)) & isFALSE(code_output)){
+  deparsed_df_name <- deparse(substitute(df))
+
+  if(!(comment_col %in% colnames(df))){
     df[[comment_col]] <- NA #If the comment column isn't present yet in the data frame then this creates the comment column
   }
 
@@ -283,6 +285,7 @@ Data_Imputer <- function(df,
     message()
     message()
   }
+
 
   # First, taking the inputs and forming them into search queries within the dataset.
   formatting_search_terms <- paste0('grepl("', receiver_search_terms, '", df[[receiver_title_column]], ignore.case = TRUE)')
@@ -299,16 +302,17 @@ Data_Imputer <- function(df,
   eval(parse(text = paste("missing_data <- unique(df[!is.na(df[[receiver_title_column]]) & is.na(df[[missing_nutrient_column]]) & ", combined_grepl_search, ", c(receiver_id_column, receiver_desc_column, missing_nutrient_column, water_column, extra_info_columns)])")))
 
   # Stops if no missing_data present, or describes the next step.
-  if(length(missing_data) > 0){
+  if(nrow(missing_data) > 0){
     message("Recipient items found - please see below. If you would like to exclude any of these items, please identify a unique key word in that items description, and re-run the function with that key word in the 'receiver_exclude_terms' input.")
     print(missing_data)
   } else {
-    stop("No receiver items found. Please modify your inputs and try again.")
+
+    return(message("No receiver items found. Please modify your inputs and try again."))
   }
 
   if(Assume_continue == FALSE){
     if(Check_to_continue_YesNo("Are you happy to continue to impute values for the items above? (y/n): ") == "Stop"){
-      return()
+      return(message(""))
     }
   }
 
@@ -333,13 +337,20 @@ Data_Imputer <- function(df,
     donor_search_terms <- paste0(donor_search_terms, collapse = "|") #collapses search terms
     missing_data$extracted_search_terms <- paste0(missing_data$extracted_search_terms, "|", donor_search_terms) #adds them to the search query
   }
+
+
+  missing_data$extracted_search_terms <- strsplit(missing_data$extracted_search_terms, "\\|") #Splits out the search terms
+
+  for(i in 1:nrow(missing_data)){
+    missing_data$extracted_search_terms[i] <- paste0(unique(gsub("^.*?(?=[[:alnum:]])|(?<=[[:alnum:]])[[:space:]]*?$", "", missing_data$extracted_search_terms[i][[1]], perl = TRUE)), collapse = "|") #removes spaces from before or after it
+  }
   print(missing_data)
 
   #Looping through missing items ----
 
   if(code_output == TRUE){
-    Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n") #Creates a blank code output item
-  }
+    Code_output_text <- ""
+    }
 
 
   for(i in 1:nrow(missing_data)){
@@ -357,9 +368,14 @@ Data_Imputer <- function(df,
     if(nrow(potential_matches) > 0){
 
       # Finds the closest stringdist match, and orders them that way round
+
+      suppressWarnings({
+
       potential_matches$match_level <- stringdist::stringdist(missing_data$extracted_search_terms[i], potential_matches[[donor_search_column]], method = 'jw')
       potential_matches <- potential_matches[order(potential_matches$match_level),]
       potential_matches$match_level <- NULL
+
+      })
 
       # Resets row numbers
       rownames(potential_matches) <- NULL
@@ -368,6 +384,7 @@ Data_Imputer <- function(df,
 
       if(Assume_continue == FALSE){
         if(nrow(potential_matches)>10){
+          message("")
         if(Check_to_continue_YesNo(paste0(nrow(potential_matches), " items found that match ", missing_data$extracted_search_terms[i], ". Are you sure you wish to continue? (y/n): ")) == "Stop"){
           next
         }
@@ -486,9 +503,7 @@ Data_Imputer <- function(df,
         comment <- paste0(missing_nutrient_column, " value imputed using the ", missing_nutrient_column, " value from ", paste0(Selected_Imputations$full_id, collapse = ", "))
       }
 
-      #print(comment)
-
-      if(df[df[[receiver_id_column]] %in% Recipient[[receiver_id_column]], comment_col] %in% c("", NA)){
+      if(df[df[[receiver_id_column]] %in% Recipient[[receiver_id_column]][1], comment_col] %in% c("", NA)){
       } else {
         comment <- paste0(df[df[[receiver_id_column]] %in% Recipient[[receiver_id_column]], comment_col], "; ", comment)
       }
@@ -496,9 +511,10 @@ Data_Imputer <- function(df,
       # Code output ----
 
       if(isTRUE(code_output)){
+
         Code_output_text <- paste0(Code_output_text, " # ", missing_nutrient_column, " value for ", Recipient[[receiver_id_column]], " imputed - changed from '", Recipient[[missing_nutrient_column]], "' to ", imputed_value, " \n") #Creates comment in the code output
 
-        Code_output_text <- paste0(Code_output_text, deparse(substitute(df)), "[", deparse(substitute(df)), "$", receiver_id_column, " %in% '", Recipient[[receiver_id_column]], "', c('", missing_nutrient_column, "', '", comment_col, "')] <- c(", imputed_value, ", '", comment, "') \n \n ") #Creates the line of code that will do the change
+        Code_output_text <- paste0(Code_output_text, deparsed_df_name, "[", deparsed_df_name, "$", receiver_id_column, " %in% '", Recipient[[receiver_id_column]], "', c('", missing_nutrient_column, "', '", comment_col, "')] <- c(", imputed_value, ", '", comment, "') \n \n ") #Creates the line of code that will do the change
 
       } else {
 
@@ -526,15 +542,31 @@ Data_Imputer <- function(df,
     return(df)
   } else {
 
-    message("Please copy the code below into the script just above where the Data_Imputer was run: ")
-    message("")
+    if(exists("Code_output_text")){
 
-    cat(Code_output_text)
-    if(isTRUE(txt_output)){
+      message("Please copy the code below into the script just above where the Data_Imputer was run: ")
+      message("")
 
-      message(paste0(".txt file created at ", getwd(), " with the code to add the imputation to the script"))
-      filename <- paste0("Imputation_R_Script_", gsub("[^[:alnum:]\\-\\_]", "", Sys.time()), ".txt")
-      writeLines(Code_output_text, filename)
+      Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
+
+
+      cat(Code_output_text)
+      if(isTRUE(txt_output)){
+
+        message(paste0(".txt file created at ", getwd(), " with the code to add the imputation to the script"))
+        filename <- paste0("Imputation_R_Script_", gsub("[^[:alnum:]\\-\\_]", "", Sys.time()), ".txt")
+        writeLines(Code_output_text, filename)
+      }
     }
   }
 }
+
+
+# Imputations generated on 2024-11-05 at 15:52:53, Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/).
+
+# VITB12mcg value for 7018 imputed - changed from 'NA' to 82.29
+KE18_subset_modified[KE18_subset_modified$fdc_id %in% '7018', c('VITB12mcg', 'comments')] <- c(82.29, 'VITB12mcg value imputed using the water-balanced VITB12mcg value from KE18(7015)')
+
+# VITB12mcg value for 7048 imputed - changed from 'NA' to 0
+KE18_subset_modified[KE18_subset_modified$fdc_id %in% '7048', c('VITB12mcg', 'comments')] <- c(0, 'VITB12mcg value imputed using the water-balanced VITB12mcg value from KE18(7045)')
+
