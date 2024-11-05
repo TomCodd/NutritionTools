@@ -110,18 +110,18 @@
 #' # dataset are some goat values which could be a good imputation value.
 #' #
 #' Data_Imputer(
-#'   df = KE18_subset_modified,
-#'   receiver_title_column = "food_group",
-#'   receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
-#'   receiver_desc_column = "food_desc",
-#'   receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
-#'   receiver_id_column = "fdc_id",
-#'   term_search = "OR",
-#'   missing_nutrient_column = "VITB12mcg",
-#'   donor_search_terms = c("goat"),
-#'   water_column = "WATERg",
-#'   comment_col = "comments",
-#'   donor_fct_column = "source_fct"
+#'    df = KE18_subset_modified,
+#'    receiver_title_column = "food_group",
+#'    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group using unique terms
+#'    receiver_desc_column = "food_desc",
+#'    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any of the 'lean' or 'blood' results
+#'    receiver_id_column = "fdc_id",
+#'    term_search = "OR",
+#'    missing_nutrient_column = "VITB12mcg",
+#'    donor_search_terms = c("goat"),
+#'    water_column = "WATERg",
+#'    comment_col = "comments",
+#'    donor_fct_column = "source_fct"
 #'  )
 #'
 #'
@@ -148,34 +148,6 @@
 #'    donor_search_column = "food_desc",
 #'    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #'  )
-
-# Side function - User input check y/n ----
-
-Check_to_continue_YesNo <- function( #Function to check if user wants to continue - must end with 'y/n: '
-    Check_message
-){
-  # Takes user input, continues if they're happy with the items that are to be recipients of imputation
-  Continue_Check <- readline(Check_message)
-
-  # Takes the user input, and changes it to lower case, then converts it to logical if its understandable, and stops with a warning message if not.
-  Continue_Check <- tolower(Continue_Check)
-
-  if(Continue_Check %in% c("y", "yes")){ #converts yes or no into TRUE or FALSE.
-    Continue_Check <- TRUE
-  } else {
-    if(Continue_Check %in% c("n", "no")){
-      Continue_Check <- FALSE
-    }
-
-    if(!is.logical(Continue_Check)){ #input check
-      stop("Incorrect input detected. Please use 'y', or 'n', to represent 'yes' or 'no'.")
-    }
-    if(isFALSE(Continue_Check)){ #if stop detected, passes a message on that is picked up outside the function.
-      message("Stop input detected. Stopping.")
-      return("Stop")
-    }
-  }
-}
 
 # Main function ----
 
@@ -311,7 +283,7 @@ Data_Imputer <- function(df,
   }
 
   if(Assume_continue == FALSE){
-    if(Check_to_continue_YesNo("Are you happy to continue to impute values for the items above? (y/n): ") == "Stop"){
+    if(NutritionTools::Check_to_continue_YesNo("Are you happy to continue to impute values for the items above? (y/n): ") == "Stop"){
       return(message(""))
     }
   }
@@ -385,7 +357,7 @@ Data_Imputer <- function(df,
       if(Assume_continue == FALSE){
         if(nrow(potential_matches)>10){
           message("")
-        if(Check_to_continue_YesNo(paste0(nrow(potential_matches), " items found that match ", missing_data$extracted_search_terms[i], ". Are you sure you wish to continue? (y/n): ")) == "Stop"){
+        if(NutritionTools::Check_to_continue_YesNo(paste0(nrow(potential_matches), " items found that match ", missing_data$extracted_search_terms[i], ". Are you sure you wish to continue? (y/n): ")) == "Stop"){
           next
         }
         }
@@ -440,7 +412,7 @@ Data_Imputer <- function(df,
             print(potential_matches[Selection_chosen, donor_search_column])
             message("")
 
-            if(Check_to_continue_YesNo("Would you like to continue with these items? (y/n): ") == "Stop"){ #Checks if the user wants to continue - if they do, then the break cause is given
+            if(NutritionTools::Check_to_continue_YesNo("Would you like to continue with these items? (y/n): ") == "Stop"){ #Checks if the user wants to continue - if they do, then the break cause is given
             } else {
               break #Breaks the loop, and then continues
             }
@@ -560,3 +532,33 @@ Data_Imputer <- function(df,
     }
   }
 }
+
+
+# Side function - User input check y/n ----
+
+Check_to_continue_YesNo <- function( #Function to check if user wants to continue - must end with 'y/n: '
+  Check_message
+){
+  # Takes user input, continues if they're happy with the items that are to be recipients of imputation
+  Continue_Check <- readline(Check_message)
+
+  # Takes the user input, and changes it to lower case, then converts it to logical if its understandable, and stops with a warning message if not.
+  Continue_Check <- tolower(Continue_Check)
+
+  if(Continue_Check %in% c("y", "yes")){ #converts yes or no into TRUE or FALSE.
+    Continue_Check <- TRUE
+  } else {
+    if(Continue_Check %in% c("n", "no")){
+      Continue_Check <- FALSE
+    }
+
+    if(!is.logical(Continue_Check)){ #input check
+      stop("Incorrect input detected. Please use 'y', or 'n', to represent 'yes' or 'no'.")
+    }
+    if(isFALSE(Continue_Check)){ #if stop detected, passes a message on that is picked up outside the function.
+      message("Stop input detected. Stopping.")
+      return("Stop")
+    }
+  }
+}
+
