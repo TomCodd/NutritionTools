@@ -157,6 +157,8 @@
 #' #    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #' #  )
 #'
+#' @importFrom stringdist stringdist
+#'
 #'@export
 
 # Main function ----
@@ -252,7 +254,10 @@ Data_Imputer <- function(df,
 
   deparsed_df_name <- deparse(substitute(df))
 
+  comments_exist <- TRUE
+
   if(!(comment_col %in% colnames(df))){
+    comments_exist <- FALSE
     df[[comment_col]] <- NA #If the comment column isn't present yet in the data frame then this creates the comment column
   }
 
@@ -353,7 +358,7 @@ Data_Imputer <- function(df,
 
       suppressWarnings({
 
-      potential_matches$match_level <- stringdist(missing_data$extracted_search_terms[i], potential_matches[[donor_search_column]], method = 'jw')
+      potential_matches$match_level <- stringdist::stringdist(missing_data$extracted_search_terms[i], potential_matches[[donor_search_column]], method = 'jw')
       potential_matches <- potential_matches[order(potential_matches$match_level),]
       potential_matches$match_level <- NULL
 
@@ -529,7 +534,11 @@ Data_Imputer <- function(df,
       message("Please copy the code below into the script just above where the Data_Imputer was run: ")
       message("")
 
+
+
       Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
+
+
 
 
       cat(Code_output_text)
