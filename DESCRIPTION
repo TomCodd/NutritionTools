@@ -16,7 +16,8 @@ Imports: dplyr,
     shiny,
     stats,
     stringr,
-    tibble
+    tibble,
+    stringdist
 RoxygenNote: 7.3.2
 Suggests: 
     knitr,
