@@ -97,6 +97,8 @@
 #'   set to \code{TRUE}, as it is by default), or an altered data.frame with the
 #'   imputations applied.
 #'
+#' @importFrom stringdist stringdist
+#'
 #' @examples
 #' # Unfortunately due to the functions interactive nature these examples cannot
 #' # be run from within the package help - please copy them, uncomment them, and
@@ -157,9 +159,7 @@
 #' #    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #' #  )
 #'
-#' @importFrom stringdist stringdist
-#'
-#'@export
+#' @export
 
 # Main function ----
 
@@ -535,7 +535,9 @@ Data_Imputer <- function(df,
       message("")
 
 
+      if(isFALSE(comments_exist)){
 
+      }
       Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
 
 
