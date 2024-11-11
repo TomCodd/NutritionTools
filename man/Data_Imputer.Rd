@@ -7,7 +7,7 @@
 Data_Imputer(
   df,
   receiver_title_column,
-  receiver_search_terms = c(),
+  receiver_title,
   receiver_desc_column,
   receiver_exclude_terms = c(),
   receiver_id_column,
@@ -37,15 +37,17 @@ missing values.}
 \item{receiver_title_column}{Required - The name of the column in \code{df}
 which contains food groups or titles.}
 
-\item{receiver_search_terms}{Required - Search words to identify a specific
-food group or title from \code{receiver_title_column}. All items missing
-values from the \code{missing_nutrient_column} within this food group will
-be shortlisted for imputation.}
+\item{receiver_title}{Required - The name of the food group or title you wish
+to examine - must be an item in the \code{receiver_title_column} column.}
 
 \item{receiver_desc_column}{Required - The name of the column within
 \code{df} that contains detailed food names.}
 
-\item{receiver_exclude_terms}{Optional - = c() Optional -}
+\item{receiver_exclude_terms}{Optional - default: \code{c()} - Here you can
+enter the words you would liek to exclue from a match search - e.g. if
+searching for replacement values for 'goat liver' in 'animal offals', you
+might want to exclude 'cow' and focus on results from other anmials, such
+as sheep.}
 
 \item{receiver_id_column}{Required - The name of the column within \code{df}
 that contains the ID numbers of the food items.}
@@ -92,7 +94,7 @@ imputation.}
 \item{exclude_receiver_terms}{Required - default: \code{TRUE} - Either
 \code{TRUE} or \code{FALSE}. The donor search terms by default are
 generated from the food descriptions found in \code{receiver_desc_column}.
-If \code{TRUE} then key words present in \code{receiver_search_terms} will
+If \code{TRUE} then key words present in \code{receiver_title} will
 be excluded from these items. For example, if a food item is in a Food
 group 'Goat, Offal', and the food description is 'Goat, liver, raw'; if
 this option is set to \code{TRUE} then the search terms used will be
@@ -164,8 +166,7 @@ The Data Imputer is an interactive function used to find
 # Data_Imputer(
 #    df = KE18_subset_modified,
 #    receiver_title_column = "food_group",
-#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
-#    #using unique terms
+#    receiver_title = "MEAT, POULTRY AND EGGS",
 #    receiver_desc_column = "food_desc",
 #    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
 #    #of the 'lean' or 'blood' results
@@ -187,8 +188,7 @@ The Data Imputer is an interactive function used to find
 #  Data_Imputer(
 #    df = KE18_subset_modified,
 #    receiver_title_column = "food_group",
-#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
-#    # using unique terms
+#    receiver_title = "MEAT, POULTRY AND EGGS",
 #    receiver_desc_column = "food_desc",
 #    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
 #    #of the 'lean' or 'blood' results

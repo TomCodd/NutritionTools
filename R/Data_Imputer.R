@@ -19,13 +19,15 @@
 #'   missing values.
 #' @param receiver_title_column Required - The name of the column in \code{df}
 #'   which contains food groups or titles.
-#' @param receiver_search_terms Required - Search words to identify a specific
-#'   food group or title from \code{receiver_title_column}. All items missing
-#'   values from the \code{missing_nutrient_column} within this food group will
-#'   be shortlisted for imputation.
+#' @param receiver_title Required - The name of the food group or title you wish
+#'   to examine - must be an item in the \code{receiver_title_column} column.
 #' @param receiver_desc_column Required - The name of the column within
 #'   \code{df} that contains detailed food names.
-#' @param receiver_exclude_terms Optional - = c() Optional -
+#' @param receiver_exclude_terms Optional - default: \code{c()} - Here you can
+#'   enter the words you would liek to exclue from a match search - e.g. if
+#'   searching for replacement values for 'goat liver' in 'animal offals', you
+#'   might want to exclude 'cow' and focus on results from other anmials, such
+#'   as sheep.
 #' @param receiver_id_column Required - The name of the column within \code{df}
 #'   that contains the ID numbers of the food items.
 #' @param missing_nutrient_column Required - The name of the column within
@@ -61,7 +63,7 @@
 #' @param exclude_receiver_terms Required - default: \code{TRUE} - Either
 #'   \code{TRUE} or \code{FALSE}. The donor search terms by default are
 #'   generated from the food descriptions found in \code{receiver_desc_column}.
-#'   If \code{TRUE} then key words present in \code{receiver_search_terms} will
+#'   If \code{TRUE} then key words present in \code{receiver_title} will
 #'   be excluded from these items. For example, if a food item is in a Food
 #'   group 'Goat, Offal', and the food description is 'Goat, liver, raw'; if
 #'   this option is set to \code{TRUE} then the search terms used will be
@@ -118,8 +120,7 @@
 #' # Data_Imputer(
 #' #    df = KE18_subset_modified,
 #' #    receiver_title_column = "food_group",
-#' #    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
-#' #    #using unique terms
+#' #    receiver_title = "MEAT, POULTRY AND EGGS",
 #' #    receiver_desc_column = "food_desc",
 #' #    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
 #' #    #of the 'lean' or 'blood' results
@@ -141,8 +142,7 @@
 #' #  Data_Imputer(
 #' #    df = KE18_subset_modified,
 #' #    receiver_title_column = "food_group",
-#' #    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group
-#' #    # using unique terms
+#' #    receiver_title = "MEAT, POULTRY AND EGGS",
 #' #    receiver_desc_column = "food_desc",
 #' #    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any
 #' #    #of the 'lean' or 'blood' results
@@ -163,7 +163,7 @@
 
 Data_Imputer <- function(df,
                          receiver_title_column,
-                         receiver_search_terms = c(),
+                         receiver_title,
                          receiver_desc_column,
                          receiver_exclude_terms = c(),
                          receiver_id_column,
@@ -194,12 +194,15 @@ Data_Imputer <- function(df,
   stopifnot("The receiver_title_column is not a character or string - please input a character or string that is a column name in df, e.g. 'FAO.Title'" = is.character(receiver_title_column)) #checks to see if the group_ID_col is a character string
   stopifnot("The receiver_title_column is not a column name in df - please input a string that is a column name in df, e.g. 'FAO.Title'" = receiver_title_column %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
-  stopifnot("The receiver_search_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'goat', or c('goat', 'offal')" = is.character(receiver_search_terms)) #checks to see if the group_ID_col is a character string
+  stopifnot("The receiver_title is not a character or string - please input a character list or string that you would like to search for, e.g. 'goat', or c('goat', 'offal')" = is.character(receiver_title)) #checks to see if the group_ID_col is a character string
+  stopifnot("The receiver_title does not match any entries in the receiver_title_column - please enter the name of the food group you wish to examine, as it appears in the receiver_title_column" = receiver_title %in% unique(df[[receiver_title_column]]))
 
   stopifnot("The receiver_desc_column is not a character or string - please input a character or string that is a column name in df, e.g. 'food_description'" = is.character(receiver_desc_column)) #checks to see if the group_ID_col is a character string
   stopifnot("The receiver_desc_column is not a column name in df - please input a string that is a column name in df, e.g. 'food_description'" = receiver_desc_column %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
-  stopifnot("The receiver_exclude_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'liver', or c('liver', 'kidneys')" = is.character(receiver_exclude_terms)) #checks to see if the group_ID_col is a character string
+  if(!is.null(receiver_exclude_terms)){
+    stopifnot("The receiver_exclude_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'liver', or c('liver', 'kidneys')" = is.character(receiver_exclude_terms)) #checks to see if the group_ID_col is a character string
+  }
 
   stopifnot("The receiver_id_column is not a character or string - please input a character or string that is a column name in df, e.g. 'food_id'" = is.character(receiver_id_column)) #checks to see if the group_ID_col is a character string
   stopifnot("The receiver_id_column is not a column name in df - please input a string that is a column name in df, e.g. 'food_id'" = receiver_id_column %in% colnames(df)) #Checks to see if the group_ID_col is in the list of column names for the df
@@ -223,7 +226,9 @@ Data_Imputer <- function(df,
   stopifnot("The donor_search_column is not a character or string - please input a character or string that is a column name in donor_df, e.g. 'food_description'" = is.character(donor_search_column)) #checks to see if the group_ID_col is a character string
   stopifnot("The donor_search_column is not a column name in the donor_df - please input a string that is a column name in the donor_df, e.g. 'food_description'" = donor_search_column %in% colnames(donor_df)) #Checks to see if the group_ID_col is in the list of column names for the df
 
-  stopifnot("The donor_search_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'goat', or c('goat', 'offal')" = is.character(donor_search_terms)) #checks to see if the group_ID_col is a character string
+  if(!is.null(donor_search_terms)){
+    stopifnot("The donor_search_terms is not a character or string - please input a character list or string that you would like to search for, e.g. 'goat', or c('goat', 'offal')" = is.character(donor_search_terms)) #checks to see if the group_ID_col is a character string
+  }
 
   if(length(extra_info_columns[!extra_info_columns %in% ""])>0){
     stopifnot("The extra_info_columns is not a character or string - please input a character list or string that you would like to search for, e.g. 'PROCNTg', or c('PROCNTg', 'CHOAVLDFg')" = is.character(extra_info_columns)) #checks to see if the group_ID_col is a character string
@@ -273,14 +278,14 @@ Data_Imputer <- function(df,
 
 
   # First, taking the inputs and forming them into search queries within the dataset.
-  formatting_search_terms <- paste0('grepl("', receiver_search_terms, '", df[[receiver_title_column]], ignore.case = TRUE)')
+  Food_Group_Name_Filter <- paste0('df[[receiver_title_column]] %in% "', receiver_title, '"')
 
   # Creates a series of grepl queries, combining both search and exclusion queries if relevant.
   if(length(receiver_exclude_terms) > 0){
     formatting_exclude_terms <- paste0('!grepl("', receiver_exclude_terms, '", df[[receiver_desc_column]], ignore.case = TRUE)')
-    combined_grepl_search <- paste(paste0(formatting_search_terms, collapse = " & "), paste(formatting_exclude_terms, collapse = " & "), sep = " & ")
+    combined_grepl_search <- paste(Food_Group_Name_Filter, paste(formatting_exclude_terms, collapse = " & "), sep = " & ")
   } else {
-    combined_grepl_search <- paste(paste(formatting_search_terms, collapse = " & "))
+    combined_grepl_search <- paste(Food_Group_Name_Filter)
   }
 
   # Evaluates the combined search, creating missing_data from it
@@ -304,7 +309,7 @@ Data_Imputer <- function(df,
   # Creating Donor Search Terms ----
 
   # First, formatting the original items to extract useful terms, not specific to the item family being searched (e.g. "goat, liver" would extract "liver" if "goat" was in the main title)
-  receiver_search_terms_2 <- paste0(receiver_search_terms, collapse = "|")
+  receiver_search_terms_2 <- paste0(receiver_title, collapse = "|")
 
   missing_data$extracted_search_terms <- missing_data[[receiver_desc_column]]
 
@@ -348,6 +353,12 @@ Data_Imputer <- function(df,
       #If Or is selected, keeps it as-is instead
       potential_matches <- donor_df[grepl(missing_data$extracted_search_terms[i], donor_df[[donor_search_column]], ignore.case = TRUE)  & !is.na(donor_df[[missing_nutrient_column]]), c(donor_id_column, donor_search_column, missing_nutrient_column, water_column, extra_info_columns)]
     }
+
+    #Removes duplicated entries from potential_matches
+    potential_matches <- potential_matches[!duplicated(potential_matches), ]
+
+    #Removes duplicate ID's
+    potential_matches <- potential_matches[!duplicated(potential_matches[c(donor_id_column)]), ]
 
     # Loops through each item in the list
     if(nrow(potential_matches) > 0){
@@ -497,9 +508,9 @@ Data_Imputer <- function(df,
 
       if(isTRUE(code_output)){
 
-        Code_output_text <- paste0(Code_output_text, " # ", missing_nutrient_column, " value for ", Recipient[[receiver_id_column]], " imputed - changed from '", Recipient[[missing_nutrient_column]], "' to ", imputed_value, " \n") #Creates comment in the code output
+        Code_output_text <- paste0(Code_output_text, "# ", missing_nutrient_column, " value for ", Recipient[[receiver_id_column]], " imputed - changed from '", Recipient[[missing_nutrient_column]], "' to ", imputed_value, " \n") #Creates comment in the code output
 
-        Code_output_text <- paste0(Code_output_text, deparsed_df_name, "[", deparsed_df_name, "$", receiver_id_column, " %in% '", Recipient[[receiver_id_column]], "', c('", missing_nutrient_column, "', '", comment_col, "')] <- c(", imputed_value, ", '", comment, "') \n \n ") #Creates the line of code that will do the change
+        Code_output_text <- paste0(Code_output_text, deparsed_df_name, "[", deparsed_df_name, "$", receiver_id_column, " %in% '", Recipient[[receiver_id_column]], "', c('", missing_nutrient_column, "', '", comment_col, "')] <- c(", imputed_value, ", '", comment, "') \n \n") #Creates the line of code that will do the change
 
       } else {
 
@@ -534,9 +545,10 @@ Data_Imputer <- function(df,
 
 
       if(isFALSE(comments_exist)){
-
+        Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n# Code to create comment column, as it is missing \n", deparsed_df_name, "$", comment_col, " <- NA \n \n", Code_output_text) #Creates a blank code output item
+      } else {
+        Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
       }
-      Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
 
 
 
