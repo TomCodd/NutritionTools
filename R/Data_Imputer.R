@@ -96,7 +96,7 @@
 #' @return Either code that applies the imputations (if \code{code_output} is
 #'   set to \code{TRUE}, as it is by default), or an altered data.frame with the
 #'   imputations applied.
-#'
+#' @export
 #' @importFrom stringdist stringdist
 #'
 #' @examples
@@ -158,8 +158,6 @@
 #' #    donor_search_column = "food_desc",
 #' #    extra_info_columns = c("PROCNTg", "CHOAVLDFg")
 #' #  )
-#'
-#' @export
 
 # Main function ----
 
@@ -555,7 +553,7 @@ Data_Imputer <- function(df,
 }
 
 
-# Side function - User input check y/n ----
+# Helper function - User input check y/n ----
 
 Check_to_continue_YesNo <- function( #Function to check if user wants to continue - must end with 'y/n: '
   Check_message
