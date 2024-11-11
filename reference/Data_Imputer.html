@@ -59,7 +59,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Data_Imputer</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
 <span>  <span class="va">receiver_title_column</span>,</span>
-<span>  receiver_search_terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">receiver_title</span>,</span>
 <span>  <span class="va">receiver_desc_column</span>,</span>
 <span>  receiver_exclude_terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">receiver_id_column</span>,</span>
@@ -97,11 +97,9 @@ missing values.</p></dd>
 which contains food groups or titles.</p></dd>
 
 
-<dt id="arg-receiver-search-terms">receiver_search_terms<a class="anchor" aria-label="anchor" href="#arg-receiver-search-terms"></a></dt>
-<dd><p>Required - Search words to identify a specific
-food group or title from <code>receiver_title_column</code>. All items missing
-values from the <code>missing_nutrient_column</code> within this food group will
-be shortlisted for imputation.</p></dd>
+<dt id="arg-receiver-title">receiver_title<a class="anchor" aria-label="anchor" href="#arg-receiver-title"></a></dt>
+<dd><p>Required - The name of the food group or title you wish
+to examine - must be an item in the <code>receiver_title_column</code> column.</p></dd>
 
 
 <dt id="arg-receiver-desc-column">receiver_desc_column<a class="anchor" aria-label="anchor" href="#arg-receiver-desc-column"></a></dt>
@@ -110,7 +108,11 @@ be shortlisted for imputation.</p></dd>
 
 
 <dt id="arg-receiver-exclude-terms">receiver_exclude_terms<a class="anchor" aria-label="anchor" href="#arg-receiver-exclude-terms"></a></dt>
-<dd><p>Optional - = c() Optional -</p></dd>
+<dd><p>Optional - default: <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> - Here you can
+enter the words you would liek to exclue from a match search - e.g. if
+searching for replacement values for 'goat liver' in 'animal offals', you
+might want to exclude 'cow' and focus on results from other anmials, such
+as sheep.</p></dd>
 
 
 <dt id="arg-receiver-id-column">receiver_id_column<a class="anchor" aria-label="anchor" href="#arg-receiver-id-column"></a></dt>
@@ -179,7 +181,7 @@ imputation.</p></dd>
 <dd><p>Required - default: <code>TRUE</code> - Either
 <code>TRUE</code> or <code>FALSE</code>. The donor search terms by default are
 generated from the food descriptions found in <code>receiver_desc_column</code>.
-If <code>TRUE</code> then key words present in <code>receiver_search_terms</code> will
+If <code>TRUE</code> then key words present in <code>receiver_title</code> will
 be excluded from these items. For example, if a food item is in a Food
 group 'Goat, Offal', and the food description is 'Goat, liver, raw'; if
 this option is set to <code>TRUE</code> then the search terms used will be
@@ -261,8 +263,7 @@ rounded to 2 decimal places.</p></dd>
 <span class="r-in"><span><span class="co"># Data_Imputer(</span></span></span>
 <span class="r-in"><span><span class="co">#    df = KE18_subset_modified,</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_title_column = "food_group",</span></span></span>
-<span class="r-in"><span><span class="co">#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group</span></span></span>
-<span class="r-in"><span><span class="co">#    #using unique terms</span></span></span>
+<span class="r-in"><span><span class="co">#    receiver_title = "MEAT, POULTRY AND EGGS",</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_desc_column = "food_desc",</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any</span></span></span>
 <span class="r-in"><span><span class="co">#    #of the 'lean' or 'blood' results</span></span></span>
@@ -284,8 +285,7 @@ rounded to 2 decimal places.</p></dd>
 <span class="r-in"><span><span class="co">#  Data_Imputer(</span></span></span>
 <span class="r-in"><span><span class="co">#    df = KE18_subset_modified,</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_title_column = "food_group",</span></span></span>
-<span class="r-in"><span><span class="co">#    receiver_search_terms = c("MEAT", "POULTRY"), #Identifies the food group</span></span></span>
-<span class="r-in"><span><span class="co">#    # using unique terms</span></span></span>
+<span class="r-in"><span><span class="co">#    receiver_title = "MEAT, POULTRY AND EGGS",</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_desc_column = "food_desc",</span></span></span>
 <span class="r-in"><span><span class="co">#    receiver_exclude_terms = c("lean", "blood"), #We don't need to see any</span></span></span>
 <span class="r-in"><span><span class="co">#    #of the 'lean' or 'blood' results</span></span></span>
