@@ -20,6 +20,7 @@ reference:
   - nutri_combiner
   - Column_Comparison
   - Data_Imputer
+  - Change_Summary
 
 - title: Built-in datasets
   contents:

@@ -2,6 +2,7 @@
 
 export(CARTBEQ_calc_combiner)
 export(CHOAVLDFg_calculator)
+export(Change_Summary)
 export(Column_Comparison)
 export(Data_Imputer)
 export(Decimal_System_Checker)
