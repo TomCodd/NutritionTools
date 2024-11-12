@@ -10,7 +10,12 @@
 
 #' @title Change Summary
 #' @description
-#' @param df
+#' This function is designed to be run on a data frame after other functions
+#' from the NutritionTools package have been run on it. This function scans the
+#' comments column for the preset comments left by other functions from the
+#' package, and produces a summary of them, and how often they appear.
+#' @param df Required - the data.frame which contains the food items that have
+#'   been changed by functions from NutritionTools.
 #' @param comment_col Required - default: \code{'comments'} - The name of the
 #'   column within \code{df} that contains comments.
 #' @param detailed Required - default: \code{FALSE} - \code{TRUE} or
@@ -49,15 +54,40 @@ Change_Summary <- function(df, comment_col = "comments", detailed = FALSE){
   comment_column <- df[[comment_col]] #pulls out comment column
   seperated_comments <- unlist(strsplit(comment_column, "; ")) #unlists it
 
+  #Need to filter to only comments from NutritionTools items:
+  # - Data_Imputer will have ' value imputed using the '
+  # - CHOAVLDFg calc wll have 'CHOAVLDFg_calculated calculated from 100-\\[constituents\\]'
+  # - CARTBEQ_calc_comb wil have 'CARTBEQ_standardised '
+  # - NIA will either have 'No suitable value for NIAmg_combined found' or 'NIAmg_combined equal to '
+  # - nutri_combiner will either have 'No suitable value for ' or ' equal to '
+  # - SOP will have 'SOPg_calculated calculated from adding constituents'
+  # - THIA will have 'No suitable value for THIAmg_combined found' or 'THIAmg_combined equal to '
+  # - VITA_RAE have 'VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents'
+  # - VITA will have 'VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents'
+
+  seperated_comments <- seperated_comments[grepl(" value imputed using the ", seperated_comments) |
+                                             grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) |
+                                             grepl("CARTBEQ_standardised ", seperated_comments) |
+                                             grepl("No suitable value for ", seperated_comments) |
+                                             grepl(" equal to ", seperated_comments) |
+                                             grepl("SOPg_calculated calculated from adding constituents", seperated_comments) |
+                                             grepl("VITA_RAEmcg_calculated value calculated from Retinol + 1/12 Beta-Carotene Equivalents", seperated_comments) |
+                                             grepl("VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents", seperated_comments)]
+
   if(isFALSE(detailed)){ #Goes through the simplification process where relevant
+
     # Need to simplify the unique markers in comments - for the imputer, its everything after the last 'from'
     seperated_comments[grepl(" value imputed using the ", seperated_comments)] <- sapply(seperated_comments[grepl(" value imputed using the ", seperated_comments)], function(x)
       gsub("(?<=from).*", " [specific FCT(ID)]", as.character(x), perl = TRUE))
 
     # Next is the CHOAVLDFg values. They all have 'CHOAVLDFg_calculated calculated from 100-[constituents]', and the relevant ones will have ' - Original value of ', [value], ' reset to '
     # Removes the negative number (everything after 'Original value of ' and before ' reset to 0' or ' reset to NA'
-    seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments)] <- sapply(seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)], function(x)
+    seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)] <- sapply(seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)], function(x)
       gsub("(?<= - Original value of ).*(?= reset to )", "[Negative Value]", as.character(x), perl = TRUE))
+
+    # SOPg has a similar setup to CHOAVLDF, but without constant reset values (like NA and 0 for CHOAVLDFg)
+    seperated_comments[grepl("SOPg_calculated calculated from adding constituents", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)] <- sapply(seperated_comments[grepl("SOPg_calculated calculated from adding constituents", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)], function(x)
+      gsub("(?<= - Original value of ).*(?= reset to).*$", "[OoB value] reset to [Set Boundary]", as.character(x), perl = TRUE))
   }
 
   # Prints output

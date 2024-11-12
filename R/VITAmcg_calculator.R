@@ -2,8 +2,10 @@
 # Title: VITAmcg_calculator
 # Author: Thomas Codd - https://github.com/TomCodd
 # Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-# Version: V1.0.3
+# Version: V1.0.4
 # Changelog:
+#V1.0.3 -> V1.0.4: Stopped creation of comment column setting all comments to
+#the VITA calculated comment
 #V1.0.2 -> V1.0.3: Accounted for potential tibble input; converted to df if
 #needed
 # V1.0.1 -> V1.0.2: Fixed comments issue where each item's comment covered every
@@ -145,7 +147,7 @@ VITAmcg_calculator <- function(df,
     #Creates comments_message if comments are true
 
     if(!(comment_col %in% colnames(df))){
-      df[[comment_col]] <- "VITAmcg_calculated value calculated from Retinol + 1/6 Beta-Carotene Equivalents" #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
+      df[[comment_col]] <- NA #If the comment column isn't present yet, but comments are set to True, then it creates the comment column
     }
 
     #If comment == TRUE and there is already a comment in the df, then this appends the message to the existing comments.
