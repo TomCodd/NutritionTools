@@ -24,9 +24,9 @@
 #' @param receiver_desc_column Required - The name of the column within
 #'   \code{df} that contains detailed food names.
 #' @param receiver_exclude_terms Optional - default: \code{c()} - Here you can
-#'   enter the words you would liek to exclue from a match search - e.g. if
+#'   enter the words you would like to exclude from a match search - e.g. if
 #'   searching for replacement values for 'goat liver' in 'animal offals', you
-#'   might want to exclude 'cow' and focus on results from other anmials, such
+#'   might want to exclude 'cow' and focus on results from other animals, such
 #'   as sheep.
 #' @param receiver_id_column Required - The name of the column within \code{df}
 #'   that contains the ID numbers of the food items.

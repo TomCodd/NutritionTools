@@ -44,9 +44,9 @@ to examine - must be an item in the \code{receiver_title_column} column.}
 \code{df} that contains detailed food names.}
 
 \item{receiver_exclude_terms}{Optional - default: \code{c()} - Here you can
-enter the words you would liek to exclue from a match search - e.g. if
+enter the words you would like to exclude from a match search - e.g. if
 searching for replacement values for 'goat liver' in 'animal offals', you
-might want to exclude 'cow' and focus on results from other anmials, such
+might want to exclude 'cow' and focus on results from other animals, such
 as sheep.}
 
 \item{receiver_id_column}{Required - The name of the column within \code{df}
