@@ -18,21 +18,26 @@ reference:
   - nutri_combiner
 
 - subtitle: Food Matching
+  contents:
   - Fuzzy_Matcher
 
 - subtitle: Food Dataset Management
+  contents:
   - Decimal_System_Checker
 
 - subtitle: Output Summaries and Checks
+  contents:
   - Absence_Check
   - Change_Summary
   - Column_Comparison
   - Group_Summariser
 
 - subtitle: Data Imputation
+  contents:
   - Data_Imputer
 
 - subtitle: Package helper functions
+  contents:
   - Description_Generator
   - Table_Creator
 
@@ -42,3 +47,4 @@ reference:
   - breakfast_df_nonstandard
   - WA19_subset
   - KE18_subset_modified
+  - Absence_Table
