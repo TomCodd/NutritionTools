@@ -4,13 +4,11 @@ template:
 
 reference:
 - title: Functions
+- subtitle: Nutritional Calculators
   contents:
   - CARTBEQ_calc_combiner
-  - Decimal_System_Checker
   - ENERCKcal_standardised
   - ENERCKj_standardised
-  - Fuzzy_Matcher
-  - Group_Summariser
   - SOPg_calculator
   - CHOAVLDFg_calculator
   - NIAmg_calc_combiner
@@ -18,9 +16,25 @@ reference:
   - VITA_RAEmcg_calculator
   - VITAmcg_calculator
   - nutri_combiner
-  - Column_Comparison
-  - Data_Imputer
+
+- subtitle: Food Matching
+  - Fuzzy_Matcher
+
+- subtitle: Food Dataset Management
+  - Decimal_System_Checker
+
+- subtitle: Output Summaries and Checks
+  - Absence_Check
   - Change_Summary
+  - Column_Comparison
+  - Group_Summariser
+
+- subtitle: Data Imputation
+  - Data_Imputer
+
+- subtitle: Package helper functions
+  - Description_Generator
+  - Table_Creator
 
 - title: Built-in datasets
   contents:

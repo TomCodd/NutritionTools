@@ -101,3 +101,36 @@
 #' }
 #' @source A modified subset of the Kenya 2018 FCT, available here: https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
 'KE18_subset_modified'
+
+
+#' Absence Table
+#'
+#' A data.frame describing which food groups should have 0 values for certain
+#' nutrients, because those nutrients do not occur in that food group. Created
+#' by https://github.com/LuciaSegovia based on FAO INFOODS Guidelines
+#'
+#' @format A data frame with 460 rows and 20 columns:
+#' \describe{
+#'   \item{II}{Column_Description}
+#'   \item{product}{Food Product Group}
+#'   \item{III}{Column_Description}
+#'   \item{category}{Food Category}
+#'   \item{fbs_desc}{Food Balance Sheet description}
+#'   \item{fbs_id}{Food Balance Sheet ID}
+#'   \item{FCL}{Column_Description}
+#'   \item{CPC_Code}{CPC ID Code}
+#'   \item{CPC_Description}{CPC Food Description}
+#'   \item{WATERg}{Whether Water should be absent or not}
+#'   \item{CHOAVLg}{Whether CHOAVLg should be absent or not}
+#'   \item{CHOAVLDFg_standardised}{Whether CHOAVLDFg_standardised should be absent or not}
+#'   \item{ALCg}{Whether ALCg should be absent or not}
+#'   \item{FIBGg}{Whether FIBGg should be absent or not}
+#'   \item{NIAmg}{Whether NIAmg should be absent or not}
+#'   \item{VITB12mg}{Whether VITB12mg should be absent or not}
+#'   \item{VITB6_mg_standardised}{Whether VITB6_mg_standardised should be absent or not}
+#'   \item{CUmg}{Whether CUmg should be absent or not}
+#'   \item{F22D6N3g}{Whether F22D6N3g should be absent or not}
+#'   \item{F20D5N3g}{Whether F20D5N3g should be absent or not}
+#' }
+#' @source [Description_Of_Source]
+'Absence_Table'
