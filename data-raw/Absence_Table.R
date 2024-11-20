@@ -4028,7 +4028,7 @@ Absence_Table <- data.frame(
     "cocoa powder and cake [only calories]",
     "chocolate products nes",
     "tea leaves",
-    "matÃ© leaves",
+    "matac leaves",
     "extracts, essences and concentrates of tea or mate, and preparations with a basis thereof or with a basis of tea or matÃ©",
     "Tea nes",
     "pepper (piper spp.), raw",
