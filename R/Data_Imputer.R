@@ -448,11 +448,9 @@ Data_Imputer <- function(df,
 
       if(TRUE %in% (Selection_chosen == "ESCAPE")){
         next
-      }
+      } # Skips if the input is to escape the current item.
 
       Chosen_IDs <- potential_matches[Selection_chosen, donor_id_column]
-
-      #print(Chosen_IDs)
 
       Selected_Imputations <- donor_df[donor_df[[donor_id_column]] %in% Chosen_IDs, c(donor_id_column, donor_search_column, missing_nutrient_column, water_column, donor_fct_column)]
 
@@ -483,12 +481,15 @@ Data_Imputer <- function(df,
         }
       }
 
+      # Applies rounding if selected
+
       if(isTRUE(round_imputed_figure)){
         imputed_value <- round(imputed_value, 2)
       }
 
       # Creating comment ----
 
+      # The comment will be different depending on what options are selected - this sorts those options out, selecting the right one
       if(nrow(Selected_Imputations) > 1 & isTRUE(water_balance)){
         comment <- paste0(missing_nutrient_column, " value imputed using the averaged, water-balanced ", missing_nutrient_column, " values from (", paste0(Selected_Imputations$full_id, collapse = ", "), ")")
       } else if(nrow(Selected_Imputations) > 1 & isFALSE(water_balance)){
@@ -499,6 +500,7 @@ Data_Imputer <- function(df,
         comment <- paste0(missing_nutrient_column, " value imputed using the ", missing_nutrient_column, " value from ", paste0(Selected_Imputations$full_id, collapse = ", "))
       }
 
+      # Expands comment to include existing comment, if there is one.
       if(df[df[[receiver_id_column]] %in% Recipient[[receiver_id_column]][1], comment_col] %in% c("", NA)){
       } else {
         comment <- paste0(df[df[[receiver_id_column]] %in% Recipient[[receiver_id_column]], comment_col], "; ", comment)
@@ -538,23 +540,23 @@ Data_Imputer <- function(df,
     return(df)
   } else {
 
-    if(exists("Code_output_text")){
+    if(exists("Code_output_text")){ #Checks if output as code is selected
 
-      message("Please copy the code below into the script just above where the Data_Imputer was run: ")
+      message("Please copy the code below into the script just above where the Data_Imputer was run: ") #prints description message
       message("")
 
 
-      if(isFALSE(comments_exist)){
+      if(isFALSE(comments_exist)){ #prints description of when and how the code was generated - and to create a comment column if needed
         Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n# Code to create comment column, as it is missing \n", deparsed_df_name, "$", comment_col, " <- NA \n \n", Code_output_text) #Creates a blank code output item
-      } else {
+      } else { #Or a version without comment column if it already exists
         Code_output_text <- paste0("# Imputations generated on ", Sys.Date(), " at ", format(Sys.time(), "%X"), ", Using the Data_Imputer (V1.0.0) function from the NutritionTools Package (https://tomcodd.github.io/NutritionTools/). \n \n", Code_output_text) #Creates a blank code output item
       }
 
-
-
-
+      #Then the actual code output
       cat(Code_output_text)
       if(isTRUE(txt_output)){
+
+        # And the txt option if selected too
 
         message(paste0(".txt file created at ", getwd(), " with the code to add the imputation to the script"))
         filename <- paste0("Imputation_R_Script_", gsub("[^[:alnum:]\\-\\_]", "", Sys.time()), ".txt")

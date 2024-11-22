@@ -157,6 +157,9 @@ Decimal_System_Checker <- function(df, first, second, third, fourth) {
       }
     }
 
+    #This block checks various values against each other, and prints the error
+    #message if an issue is found.
+
     if(secondary_value_split[1] != primary_value){
       print(df[[fourth]][i])
       message(paste0("The first part of the secondary code (", secondary_value_split[1], ") does not match the primary code (", primary_value, "); ", secondary_value, " vs. ", primary_value, "."))

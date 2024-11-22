@@ -37,17 +37,17 @@ Description_Generator <- function(R_function_file,
                                     "\n",
                                     "#Github: https://github.com/TomCodd/NutritionTools\n",
                                     "#---\n",
-                                    "\n")) {
-
+                                    "\n"
+                                  )) {
   R_function_file_read <- read.delim2(R_function_file, quote = "", header = FALSE)
 
-  Function_Name <- R_function_file_read[grepl(" <- function\\(", R_function_file_read[[1]]),][1]
+  Function_Name <- R_function_file_read[grepl(" <- function\\(", R_function_file_read[[1]]), ][1]
   Function_Name <- trimws(gsub("\\<.*", "", Function_Name, perl = TRUE)) #Removes everything before the first <
   Function_Name_spaces <- gsub("_", " ", Function_Name, perl = TRUE) #Replaces Underscores with a space
 
   # Looking for " <- function(" as this is the start
 
-  first_row <- which(R_function_file_read == R_function_file_read[grepl(" <- function\\(", R_function_file_read[[1]]),][1])
+  first_row <- which(R_function_file_read == R_function_file_read[grepl(" <- function\\(", R_function_file_read[[1]]), ][1])
 
 
   # Now looking for first {
@@ -59,7 +59,7 @@ Description_Generator <- function(R_function_file,
   # So, we have the first and last rows
   # Now we can remove the rest, and sort out formatting
 
-  R_function_file_cleaned <- paste0(R_function_file_read[c(first_row:last_row),], collapse = "")
+  R_function_file_cleaned <- paste0(R_function_file_read[c(first_row:last_row), ], collapse = "")
 
   R_function_file_cleaned <- gsub("\\)[^\\)]+$", "", R_function_file_cleaned, perl = TRUE) #Removes everything after the last )
   R_function_file_cleaned <- gsub("^[^\\(]+\\(", "", R_function_file_cleaned, perl = TRUE) #Removes everything before the first (
@@ -70,26 +70,35 @@ Description_Generator <- function(R_function_file,
   open_bracket_split_inputs <- which(grepl("\\(", split_inputs)) #identifies open brackets
   closed_bracket_split_inputs <- which(grepl("\\)", split_inputs)) #identifies closed brackets
 
-  if(length(open_bracket_split_inputs) != length(closed_bracket_split_inputs)){ #Error message if brackets are uneven
-    message("ERROR: function inputs contain unmatched opening and closing brackets. Description_Generator cannot proceed. Please correct this issue and try again.")
+  if (length(open_bracket_split_inputs) != length(closed_bracket_split_inputs)) {
+    #Error message if brackets are uneven
+    message(
+      "ERROR: function inputs contain unmatched opening and closing brackets. Description_Generator cannot proceed. Please correct this issue and try again."
+    )
     return()
   }
 
-  if(length(open_bracket_split_inputs) > 0){
+  if (length(open_bracket_split_inputs) > 0) {
+    #If there is an open bracket, loops through them
 
-    for(i in 1:length(closed_bracket_split_inputs)){ #loops through closed brackets
+    for (i in 1:length(closed_bracket_split_inputs)) {
+      #loops through closed brackets
       closed_bracket_of_interest <- closed_bracket_split_inputs[i]
-      matched_opening_bracket <- max(open_bracket_split_inputs[open_bracket_split_inputs < closed_bracket_of_interest])
+      matched_opening_bracket <- max(open_bracket_split_inputs[open_bracket_split_inputs < closed_bracket_of_interest]) #finding the matching opening bracket
 
-      #Need to remove the opening bracket now its been accounted for
+      #Need to remove the opening bracket from the list now its been accounted for
       open_bracket_split_inputs <- open_bracket_split_inputs[open_bracket_split_inputs != matched_opening_bracket]
 
-      change_in_length <- closed_bracket_of_interest - matched_opening_bracket
+      change_in_length <- closed_bracket_of_interest - matched_opening_bracket #need to see how this changes the list
 
-      if(closed_bracket_of_interest == length(split_inputs)){
-        split_inputs <- c(split_inputs[c(1:matched_opening_bracket-1)], paste0(split_inputs[c(matched_opening_bracket:closed_bracket_of_interest)], collapse = ", "))
+      if (closed_bracket_of_interest == length(split_inputs)) {
+        #See's if its the last one or not
+        split_inputs <- c(split_inputs[c(1:matched_opening_bracket - 1)], paste0(split_inputs[c(matched_opening_bracket:closed_bracket_of_interest)], collapse = ", ")) #If it is, just collapses
       } else {
-        split_inputs <- c(split_inputs[c(1:matched_opening_bracket-1)], paste0(split_inputs[c(matched_opening_bracket:closed_bracket_of_interest)], collapse = ", "), split_inputs[c((closed_bracket_of_interest+1):length(split_inputs))])
+        #if it isn't, it needs to add the rest of the list after it
+        split_inputs <- c(split_inputs[c(1:matched_opening_bracket - 1)],
+                          paste0(split_inputs[c(matched_opening_bracket:closed_bracket_of_interest)], collapse = ", "),
+                          split_inputs[c((closed_bracket_of_interest + 1):length(split_inputs))])
       }
 
 
@@ -101,32 +110,38 @@ Description_Generator <- function(R_function_file,
   }
 
 
-  output_item <- c( #Puts in the boilerplate of the function
+  output_item <- c(
+    #Puts in the boilerplate of the function
     boilerplate,
     paste0("#' @title ", Function_Name_spaces, "\n"),
     "#' @description [Function_Description]\n"
   )
 
-  for(i in 1:length(split_inputs)){ #Goes through each input
+  for (i in 1:length(split_inputs)) {
+    #Goes through each input
 
     parameter_name <- split_inputs[i] #identifies the individual parameters
 
-    if(grepl("=", parameter_name)){ #Sees if theres a preset, reacts accordingly
+    if (grepl("=", parameter_name)) {
+      #Sees if theres a preset, reacts accordingly
       split_parameter <- trimws(unlist(strsplit(parameter_name, "=")))
       split_parameter_name <- split_parameter[1]
       split_parameter_preset <- split_parameter[2]
-      if(split_parameter_preset %in% c("TRUE", "FALSE")){ #If true or false goes through special process
+      if (split_parameter_preset %in% c("TRUE", "FALSE")) {
+        #If true or false goes through special process
         output_item <- c(
           output_item,
           paste0(
             "#' @param ",
             split_parameter_name,
-            " Required - default: \\code{", # four backslashes produces two backslashes in result, we want 1
+            " Required - default: \\code{",
+            # four backslashes produces two backslashes in result, we want 1
             split_parameter_preset,
             "} - Either \\code{TRUE} or \\code{FALSE}. param_details\n"
           )
         )
-      } else { #if not true or false doesn't need the true or false bits
+      } else {
+        #if not true or false doesn't need the true or false bits
         output_item <- c(
           output_item,
           paste0(
@@ -138,13 +153,28 @@ Description_Generator <- function(R_function_file,
           )
         )
       }
-    } else { #if no preset, its simple
-      output_item <- c(output_item, paste0("#' @param ", parameter_name, " Required/Optional - param_details\n"))
+    } else {
+      #if no preset, its simple
+      output_item <- c(
+        output_item,
+        paste0(
+          "#' @param ",
+          parameter_name,
+          " Required/Optional - param_details\n"
+        )
+      )
     }
   }
 
   # Once done, need to do the final detail bit
-  output_item <- c(output_item, "#' @return return_info\n", "#' @export\n", "#' @importFrom import_details_here\n", "#' \n", "#' @examples\n")
+  output_item <- c(
+    output_item,
+    "#' @return return_info\n",
+    "#' @export\n",
+    "#' @importFrom import_details_here\n",
+    "#' \n",
+    "#' @examples\n"
+  )
 
   # Prints it out for copying and pasting above the function
   cat(output_item)
