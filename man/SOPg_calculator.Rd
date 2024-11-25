@@ -94,15 +94,17 @@ bounds, for manual inspection.}
 }
 \value{
 Original data.frame with a new \code{SOPg_calculated} column, and
-  (depending on the options selected) an additional comment/comments column
-  and comment.
+(depending on the options selected) an additional comment/comments column
+and comment.
 }
 \description{
 Calculates SOPg_calculated = (WATERg + PROCNTg +
-  FAT_g_combined + CHOAVLg + FIBTGg_combined
-  + ALCg +ASHg). Column names are case sensitive and an error is returned
-  if not found. Non-numeric columns will be converted if possible in function
-  to be numeric.
+FAT_g_combined + CHOAVLg + FIBTGg_combined
+\itemize{
+\item ALCg +ASHg). Column names are case sensitive and an error is returned
+if not found. Non-numeric columns will be converted if possible in function
+to be numeric.
+}
 }
 \examples{
 # Two example data.frames have been prepared to illustrate the

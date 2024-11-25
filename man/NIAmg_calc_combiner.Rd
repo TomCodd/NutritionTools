@@ -52,18 +52,18 @@ food item in question. Not required if \code{comment} is set to
 }
 \value{
 Original data.frame with a new \code{NIAmg_combined} column, and
-  (depending on the options selected) an additional comment/comments column
-  and comment.
+(depending on the options selected) an additional comment/comments column
+and comment.
 }
 \description{
 This function calculates potential values for Niacin, and then
-  combines the most appropriate ones for each item into a new value. Inputs must
-  cover at least two of the following combinations: NIAmg_column,
-  NIAEQmg_column + NIATRPmg_column, NIAEQmg_column + TRPmg_column. This is
-  because the function can then find Niacin values in multiple ways, and
-  select the most appropriate.
+combines the most appropriate ones for each item into a new value. Inputs must
+cover at least two of the following combinations: NIAmg_column,
+NIAEQmg_column + NIATRPmg_column, NIAEQmg_column + TRPmg_column. This is
+because the function can then find Niacin values in multiple ways, and
+select the most appropriate.
 
-  The priority for use is 1st:  \code{Niacin}, 2nd: \code{Total
+The priority for use is 1st:  \code{Niacin}, 2nd: \code{Total
   Niacin Equivalents} - \code{(Tryptophan/60)}, 3rd: \code{Total Niacin
   Equivalents} - \code{Niacin Equivalents from Tryptophan}.
 }

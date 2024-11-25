@@ -16,13 +16,13 @@ Column_Comparison(df1, df2, Summary_Message = TRUE)
 }
 \value{
 A comparison data.frame, listing the names of the columns from df1
-  and df2.
+and df2.
 }
 \description{
 Compares the column names of the two input data.frames,
-  \code{df1} and \code{df2}, and displays whether they are the same or not.
-  Useful ahead of an rbind function. If the columns are uneven, the function
-  will create dummy columns to make up the numbers for the comparison.
+\code{df1} and \code{df2}, and displays whether they are the same or not.
+Useful ahead of an rbind function. If the columns are uneven, the function
+will create dummy columns to make up the numbers for the comparison.
 }
 \examples{
 # Example data.frames have been created to give an example of using the

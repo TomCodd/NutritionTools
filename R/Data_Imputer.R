@@ -9,7 +9,13 @@
 #---
 
 #' @title Data Imputer
-#' @description The Data Imputer is an interactive function used to find
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' This function is experimental, and may change. Any feedback would be greatly
+#' appreciated - https://github.com/TomCodd/NutritionTools/issues
+#'
+#'
+#'   The Data Imputer is an interactive function used to find
 #'   suitable imputations for food items, either from the same dataset (by
 #'   default) or from a different dataset. The output by default is a console
 #'   output and a .txt file containing the lines of code needed to implement the

@@ -38,8 +38,8 @@ food item in question. Not required if \code{comment} is set to
 }
 \value{
 Original data.frame with a new \code{VITA_RAEmcg_calculated} column, and
-  (depending on the options selected) an additional comment/comments column
-  and comment.
+(depending on the options selected) an additional comment/comments column
+and comment.
 }
 \description{
 Calculates VITA_RAEmcg_calculated = (RETOLmcg + (CARTBEQmcg_std/12)).

@@ -54,7 +54,7 @@ Description_Generator <- function(R_function_file,
 
   rows_with_open_curly <- which(grepl("\\{", R_function_file_read[[1]]))
 
-  last_row <- rows_with_open_curly[1]
+  last_row <- rows_with_open_curly[rows_with_open_curly >= first_row][1]
 
   # So, we have the first and last rows
   # Now we can remove the rest, and sort out formatting

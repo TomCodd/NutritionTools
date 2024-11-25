@@ -9,7 +9,13 @@
 
 #' A function used to calculate standardized Energy values in kJ
 #'
-#' @description This function works as a basic calculator - The values for Total
+#' @description
+#' `r lifecycle::badge("superseded")`
+#' Development on 'ENERCKj_standardised()' is completed, and has been
+#' superceeded by 'ENERCKj_calculator()'. It is recommended to switch to
+#' 'ENERCKj_calculator()'.
+#'
+#'  This function works as a basic calculator - The values for Total
 #'   Protein in grams \code{'PROTg'}, Total Fat in grams (ideally standardised)
 #'   \code{'FATg_standardised'}, Available Carbohydrate in grams
 #'   \code{'CHOAVLDFg'}, Fibre, Total Dietary in grams \code{'FIBTGg'} and

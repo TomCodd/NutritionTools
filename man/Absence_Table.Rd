@@ -7,30 +7,30 @@
 \format{
 A data frame with 460 rows and 20 columns:
 \describe{
-  \item{II}{Column_Description}
-  \item{product}{Food Product Group}
-  \item{III}{Column_Description}
-  \item{category}{Food Category}
-  \item{fbs_desc}{Food Balance Sheet description}
-  \item{fbs_id}{Food Balance Sheet ID}
-  \item{FCL}{Column_Description}
-  \item{CPC_Code}{CPC ID Code}
-  \item{CPC_Description}{CPC Food Description}
-  \item{WATERg}{Whether Water should be absent or not}
-  \item{CHOAVLg}{Whether CHOAVLg should be absent or not}
-  \item{CHOAVLDFg_standardised}{Whether CHOAVLDFg_standardised should be absent or not}
-  \item{ALCg}{Whether ALCg should be absent or not}
-  \item{FIBGg}{Whether FIBGg should be absent or not}
-  \item{NIAmg}{Whether NIAmg should be absent or not}
-  \item{VITB12mg}{Whether VITB12mg should be absent or not}
-  \item{VITB6_mg_standardised}{Whether VITB6_mg_standardised should be absent or not}
-  \item{CUmg}{Whether CUmg should be absent or not}
-  \item{F22D6N3g}{Whether F22D6N3g should be absent or not}
-  \item{F20D5N3g}{Whether F20D5N3g should be absent or not}
+\item{II}{Column_Description}
+\item{product}{Food Product Group}
+\item{III}{Column_Description}
+\item{category}{Food Category}
+\item{fbs_desc}{Food Balance Sheet description}
+\item{fbs_id}{Food Balance Sheet ID}
+\item{FCL}{Column_Description}
+\item{CPC_Code}{CPC ID Code}
+\item{CPC_Description}{CPC Food Description}
+\item{WATERg}{Whether Water should be absent or not}
+\item{CHOAVLg}{Whether CHOAVLg should be absent or not}
+\item{CHOAVLDFg_standardised}{Whether CHOAVLDFg_standardised should be absent or not}
+\item{ALCg}{Whether ALCg should be absent or not}
+\item{FIBGg}{Whether FIBGg should be absent or not}
+\item{NIAmg}{Whether NIAmg should be absent or not}
+\item{VITB12mg}{Whether VITB12mg should be absent or not}
+\item{VITB6_mg_standardised}{Whether VITB6_mg_standardised should be absent or not}
+\item{CUmg}{Whether CUmg should be absent or not}
+\item{F22D6N3g}{Whether F22D6N3g should be absent or not}
+\item{F20D5N3g}{Whether F20D5N3g should be absent or not}
 }
 }
 \source{
-[Description_Of_Source]
+\link{Description_Of_Source}
 }
 \usage{
 Absence_Table

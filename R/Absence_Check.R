@@ -2,8 +2,11 @@
 #Title: Absence_Check
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.0.0
+#Version: V1.0.1
 #Changelog:
+#V1.0.0 -> V1.0.1: Introduced some checks to allow data.frames that don't have
+#all the nutrients Absence_Table does to be used, if the missing nutrients
+#aren't checked by the function.
 
 #Github: https://github.com/TomCodd/NutritionTools
 #---
@@ -297,325 +300,629 @@ Absence_Check <- function(df,
                           No_VITB12_CPC_Codes = c(""),
                           No_F22D6N3_CPC_Codes = c(""),
                           No_F20D5N3_CPC_Codes = c(""),
-                          No_CU_CPC_Codes = c("")
-                          ) {
+                          No_CU_CPC_Codes = c("")) {
+  # Input Checks ----
 
-  if(!is.data.frame(df)){ #Checks if the df input is correct or not
+  if (!is.data.frame(df)) {
+    #Checks if the df input is correct or not
     message("df is not a data.frame. Please enter a data.frame.")
     return()
   }
 
-  # The next block is all checking if the logical inputs are true or false, and stopping if they aren't.
+  # The next block is all checking if the logical inputs are true or false, and
+  # stopping if they aren't.
 
-  if(!is.logical(comments)){
+  if (!is.logical(comments)) {
     message("comments input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(Water_check)){
+  if (!is.logical(Water_check)) {
     message("Water_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(CHOAVL_check)){
+  if (!is.logical(CHOAVL_check)) {
     message("CHOAVL_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(CHOAVLDF_check)){
+  if (!is.logical(CHOAVLDF_check)) {
     message("CHOAVLDF_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(ALC_check)){
+  if (!is.logical(ALC_check)) {
     message("ALC_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(FIBG_check)){
+  if (!is.logical(FIBG_check)) {
     message("FIBG_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(NIA_check)){
+  if (!is.logical(NIA_check)) {
     message("NIA_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(VITB12_check)){
+  if (!is.logical(VITB12_check)) {
     message("VITB12_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(VITB6_check)){
+  if (!is.logical(VITB6_check)) {
     message("VITB6_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(CU_check)){
+  if (!is.logical(CU_check)) {
     message("CU_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(F22D6N3_check)){
+  if (!is.logical(F22D6N3_check)) {
     message("F22D6N3_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
-  if(!is.logical(F20D5N3_check)){
+  if (!is.logical(F20D5N3_check)) {
     message("F20D5N3_check input is not logical. Please enter TRUE or FALSE.")
     return()
   }
 
   # Then the specific assumed_zero_table checks
 
-  if(!is.data.frame(assumed_zero_table) & !isFALSE(assumed_zero_table)){ #Checks if the assume zero table input is correct or not
+  if (!is.data.frame(assumed_zero_table) &
+      !isFALSE(assumed_zero_table)) {
+    #Checks if the assume zero table input is correct or not
     message(
-      "assumed_zero_table is not either a data.frame or FALSE. If using the assume_zero_table, please set the input to the name of the dataframe containing the relevant information (e.g. Absence_Table). If not using this ability, please set to FALSE."
+      "assumed_zero_table is neither a data.frame or FALSE. If using the assume_zero_table, please set the input to the name of the dataframe containing the relevant information (e.g. Absence_Table). If not using this ability, please set to FALSE."
     )
     return()
   }
 
-  if(is.data.frame(assumed_zero_table)){ #Checks if the input is a df
+  if (is.data.frame(assumed_zero_table)) {
+    #Checks if the input is a df
 
-    #Noticed some CPC codes are formatted weirdly on import - this finds the ones with more than 2 decimal places, converts them to a number, rounds them back to 2, then converts back to a character, and overwrites the original.
-    #I think there was a weird floating point number problem on import, that this fixes.
+    #Noticed some CPC codes are formatted weirdly on import - this finds the
+    #ones with more than 2 decimal places, converts them to a number, rounds
+    #them back to 2, then converts back to a character, and overwrites the
+    #original. I think there was a weird floating point number problem on
+    #import, that this fixes.
 
     assumed_zero_table[[assumed_zero_CPC_column]][grepl("\\.[0-9][0-9][0-9]", assumed_zero_table[[assumed_zero_CPC_column]])] <- as.character(round(as.numeric(assumed_zero_table[[assumed_zero_CPC_column]][grepl("\\.[0-9][0-9][0-9]", assumed_zero_table[[assumed_zero_CPC_column]])]), 2))
 
 
-    #Proceeds with a set of checks to make sure that the inputs are correct if using the assume zero df
+    #Proceeds with a set of checks to make sure that the inputs are correct if
+    #using the assume zero df
 
-    if(isTRUE(Water_check) && !(assumed_zero_water_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_water_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(Water_check) &&
+        !(assumed_zero_water_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_water_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(CHOAVL_check) && !(assumed_zero_CHOAVL_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_CHOAVL_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(CHOAVL_check) &&
+        !(assumed_zero_CHOAVL_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_CHOAVL_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(CHOAVLDF_check) && !(assumed_zero_CHOAVLDF_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_CHOAVLDF_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(CHOAVLDF_check) &&
+        !(assumed_zero_CHOAVLDF_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_CHOAVLDF_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(ALC_check) && !(assumed_zero_ALC_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_ALC_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(ALC_check) &&
+        !(assumed_zero_ALC_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_ALC_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(FIBG_check) && !(assumed_zero_FIBG_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_FIBG_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(FIBG_check) &&
+        !(assumed_zero_FIBG_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_FIBG_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(NIA_check) && !(assumed_zero_NIA_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_NIA_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(NIA_check) &&
+        !(assumed_zero_NIA_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_NIA_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(VITB12_check) && !(assumed_zero_VITB12_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_VITB12_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(VITB12_check) &&
+        !(assumed_zero_VITB12_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_VITB12_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(VITB6_check) && !(assumed_zero_VITB6_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_VITB6_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(VITB6_check) &&
+        !(assumed_zero_VITB6_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_VITB6_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(CU_check) && !(assumed_zero_CU_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_CU_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(CU_check) &&
+        !(assumed_zero_CU_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_CU_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(F22D6N3_check) && !(assumed_zero_F22D6N3_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_F22D6N3_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(F22D6N3_check) &&
+        !(assumed_zero_F22D6N3_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_F22D6N3_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
 
-    if(isTRUE(F20D5N3_check) && !(assumed_zero_F20D5N3_col %in% colnames(assumed_zero_table))){
-      message("assumed_zero_F20D5N3_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table.")
+    if (isTRUE(F20D5N3_check) &&
+        !(assumed_zero_F20D5N3_col %in% colnames(assumed_zero_table))) {
+      message(
+        "assumed_zero_F20D5N3_col is not a column name in assumed_zero_table. Please input a valid column name from assumed_zero_table."
+      )
       return()
     }
   } else {
-
     #If the inputs are correct, and assume zero df isn't present, then the user must be inputting the codes manually.
     # This block makes sure the manual inputs are correct.
 
-    if(isTRUE(Water_check) && !length(No_Water_CPC_Codes[!No_Water_CPC_Codes %in% ""]) > 0){
-      message("Water_check is selected, but no items are present in No_Water_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain water.")
+    if (isTRUE(Water_check) &&
+        !length(No_Water_CPC_Codes[!No_Water_CPC_Codes %in% ""]) > 0) {
+      message(
+        "Water_check is selected, but no items are present in No_Water_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain water."
+      )
       return()
     }
 
-    if(isTRUE(CHOAVL_check) && !length(No_CHOAVL_CPC_Codes[!No_CHOAVL_CPC_Codes %in% ""]) > 0){
-      message("CHOAVL_check is selected, but no items are present in No_CHOAVL_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain CHOAVL.")
+    if (isTRUE(CHOAVL_check) &&
+        !length(No_CHOAVL_CPC_Codes[!No_CHOAVL_CPC_Codes %in% ""]) > 0) {
+      message(
+        "CHOAVL_check is selected, but no items are present in No_CHOAVL_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain CHOAVL."
+      )
       return()
     }
 
-    if(isTRUE(CHOAVLDF_check) && !length(No_CHOAVLDFg_standardised_CPC_Codes[!No_CHOAVLDFg_standardised_CPC_Codes %in% ""]) > 0){
-      message("CHOAVLDF_check is selected, but no items are present in No_CHOAVLDFg_standardised_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain CHOAVLDF.")
+    if (isTRUE(CHOAVLDF_check) &&
+        !length(No_CHOAVLDFg_standardised_CPC_Codes[!No_CHOAVLDFg_standardised_CPC_Codes %in% ""]) > 0) {
+      message(
+        "CHOAVLDF_check is selected, but no items are present in No_CHOAVLDFg_standardised_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain CHOAVLDF."
+      )
       return()
     }
 
-    if(isTRUE(ALC_check) && !length(No_ALC_CPC_Codes[!No_ALC_CPC_Codes %in% ""]) > 0){
-      message("ALC_check is selected, but no items are present in No_ALC_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain ALC.")
+    if (isTRUE(ALC_check) &&
+        !length(No_ALC_CPC_Codes[!No_ALC_CPC_Codes %in% ""]) > 0) {
+      message(
+        "ALC_check is selected, but no items are present in No_ALC_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain ALC."
+      )
       return()
     }
 
-    if(isTRUE(FIBG_check) && !length(No_FIBG_CPC_Codes[!No_FIBG_CPC_Codes %in% ""]) > 0){
-      message("FIBG_check is selected, but no items are present in No_FIBG_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain FIBG.")
+    if (isTRUE(FIBG_check) &&
+        !length(No_FIBG_CPC_Codes[!No_FIBG_CPC_Codes %in% ""]) > 0) {
+      message(
+        "FIBG_check is selected, but no items are present in No_FIBG_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain FIBG."
+      )
       return()
     }
 
-    if(isTRUE(NIA_check) && !length(No_NIA_CPC_Codes[!No_NIA_CPC_Codes %in% ""]) > 0){
-      message("NIA_check is selected, but no items are present in No_NIA_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain NIA.")
+    if (isTRUE(NIA_check) &&
+        !length(No_NIA_CPC_Codes[!No_NIA_CPC_Codes %in% ""]) > 0) {
+      message(
+        "NIA_check is selected, but no items are present in No_NIA_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain NIA."
+      )
       return()
     }
 
-    if(isTRUE(VITB12_check) && !length(No_VITB12_CPC_Codes[!No_VITB12_CPC_Codes %in% ""]) > 0){
-      message("VITB12_check is selected, but no items are present in No_VITB12_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain VITB12.")
+    if (isTRUE(VITB12_check) &&
+        !length(No_VITB12_CPC_Codes[!No_VITB12_CPC_Codes %in% ""]) > 0) {
+      message(
+        "VITB12_check is selected, but no items are present in No_VITB12_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain VITB12."
+      )
       return()
     }
 
-    if(isTRUE(VITB6_check) && !length(No_VITB6_CPC_Codes[!No_VITB6_CPC_Codes %in% ""]) > 0){
-      message("VITB6_check is selected, but no items are present in No_VITB6_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain VITB6.")
+    if (isTRUE(VITB6_check) &&
+        !length(No_VITB6_CPC_Codes[!No_VITB6_CPC_Codes %in% ""]) > 0) {
+      message(
+        "VITB6_check is selected, but no items are present in No_VITB6_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain VITB6."
+      )
       return()
     }
 
-    if(isTRUE(CU_check) && !length(No_CU_CPC_Codes[!No_CU_CPC_Codes %in% ""]) > 0){
-      message("CU_check is selected, but no items are present in No_CU_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain CU.")
+    if (isTRUE(CU_check) &&
+        !length(No_CU_CPC_Codes[!No_CU_CPC_Codes %in% ""]) > 0) {
+      message(
+        "CU_check is selected, but no items are present in No_CU_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain CU."
+      )
       return()
     }
 
-    if(isTRUE(F22D6N3_check) && !length(No_F22D6N3_CPC_Codes[!No_F22D6N3_CPC_Codes %in% ""]) > 0){
-      message("F22D6N3_check is selected, but no items are present in No_F22D6N3_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain F22D6N3.")
+    if (isTRUE(F22D6N3_check) &&
+        !length(No_F22D6N3_CPC_Codes[!No_F22D6N3_CPC_Codes %in% ""]) > 0) {
+      message(
+        "F22D6N3_check is selected, but no items are present in No_F22D6N3_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain F22D6N3."
+      )
       return()
     }
 
-    if(isTRUE(F20D5N3_check) && !length(No_F20D5N3_CPC_Codes[!No_F20D5N3_CPC_Codes %in% ""]) > 0){
-      message("F20D5N3_check is selected, but no items are present in No_F20D5N3_CPC_Codes Please input the CPC codes you would like to mark as those that aren't supposed to contain F20D5N3.")
+    if (isTRUE(F20D5N3_check) &&
+        !length(No_F20D5N3_CPC_Codes[!No_F20D5N3_CPC_Codes %in% ""]) > 0) {
+      message(
+        "F20D5N3_check is selected, but no items are present in No_F20D5N3_CPC_Codes. Please input the CPC codes you would like to mark as those that aren't supposed to contain F20D5N3."
+      )
       return()
     }
   }
 
-  if(is.data.frame(assumed_zero_table)){
+  # Using assumed_zero_table ----
 
-    # Converts the table into the inputs. Between this and the above block, should ensure all the selected tests have an input.
+  if (is.data.frame(assumed_zero_table)) {
 
-    No_Water_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_water_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_CHOAVL_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVL_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_CHOAVLDFg_standardised_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVLDF_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_ALC_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_ALC_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_FIBG_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_FIBG_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_NIA_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_NIA_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_VITB12_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB12_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_F22D6N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F22D6N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_F20D5N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F20D5N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_CU_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CU_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
-    No_VITB6_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB6_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    # Converts the table into the inputs. Between this and the above block,
+    # should ensure all the selected tests have an input.
+
+    # However, if using a modified assume_zero_table, it might not have all the
+    # columns. So checks are introduced to make sure that they have the columns
+    # if the right check is ticked.
+
+    #Each block is the same structure:
+    if (isTRUE(Water_check) && #Checks that the check is going through, and that there's a column name for it
+        assumed_zero_water_col %in% colnames(assumed_zero_table)) {
+      #Then pulls the data from the table into the No_Water_CPC_Codes variable
+      No_Water_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_water_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(CHOAVL_check) &&
+        assumed_zero_CHOAVL_col %in% colnames(assumed_zero_table)) {
+      No_CHOAVL_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVL_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(CHOAVLDF_check) &&
+        assumed_zero_CHOAVLDF_col %in% colnames(assumed_zero_table)) {
+      No_CHOAVLDFg_standardised_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVLDF_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(ALC_check) &&
+        assumed_zero_ALC_col %in% colnames(assumed_zero_table)) {
+      No_ALC_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_ALC_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(FIBG_check) &&
+        assumed_zero_FIBG_col %in% colnames(assumed_zero_table)) {
+      No_FIBG_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_FIBG_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(NIA_check) &&
+        assumed_zero_NIA_col %in% colnames(assumed_zero_table)) {
+      No_NIA_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_NIA_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(VITB6_check) &&
+        assumed_zero_VITB6_col %in% colnames(assumed_zero_table)) {
+      No_VITB6_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB6_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(VITB12_check) &&
+        assumed_zero_VITB12_col %in% colnames(assumed_zero_table)) {
+      No_VITB12_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB12_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(CU_check) &&
+        assumed_zero_CU_col %in% colnames(assumed_zero_table)) {
+      No_CU_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CU_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(F22D6N3_check) &&
+        assumed_zero_F22D6N3_col %in% colnames(assumed_zero_table)) {
+      No_F22D6N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F22D6N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
+
+    if (isTRUE(F20D5N3_check) &&
+        assumed_zero_F20D5N3_col %in% colnames(assumed_zero_table)) {
+      No_F20D5N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F20D5N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+    }
   }
 
+  # Calling functions for Check ----
 
-  #Need to round the CPC codes! -----------------------
-  #Only if they have a decimal point though
-
-
-  # Calling functions ----
-
-  # Check functions mean we can't have an output
+  # Check functions mean we can't have an output, so requires a different instruction
+  # Essentially relays the inputs into each of the relevant functions
 
   if (tolower(method) %in% "check") {
-    if(Water_check == TRUE){
-      Absence_Check_Water(df = df, water_column = water_column, method = method, CPC_Code_Column = CPC_Code_Column, No_Water_CPC_Codes = No_Water_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (Water_check == TRUE) {
+      Absence_Check_Water(
+        df = df,
+        water_column = water_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_Water_CPC_Codes = No_Water_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CHOAVL_check == TRUE){
-      Absence_Check_CHOAVLg(df = df, CHOAVL_column = CHOAVL_column, No_CHOAVL_CPC_Codes = No_CHOAVL_CPC_Codes, method = method, CPC_Code_Column = CPC_Code_Column, comments = comments, comment_col = comment_col)
+    if (CHOAVL_check == TRUE) {
+      Absence_Check_CHOAVLg(
+        df = df,
+        CHOAVL_column = CHOAVL_column,
+        No_CHOAVL_CPC_Codes = No_CHOAVL_CPC_Codes,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CHOAVLDF_check == TRUE){
-      Absence_Check_CHOAVLDFg_std(df = df, CHOAVLDFg_std_column = CHOAVLDFg_std_column, No_CHOAVLDFg_standardised_CPC_Codes = No_CHOAVLDFg_standardised_CPC_Codes, method = method, CPC_Code_Column = CPC_Code_Column, comments = comments, comment_col = comment_col)
+    if (CHOAVLDF_check == TRUE) {
+      Absence_Check_CHOAVLDFg_std(
+        df = df,
+        CHOAVLDFg_std_column = CHOAVLDFg_std_column,
+        No_CHOAVLDFg_standardised_CPC_Codes = No_CHOAVLDFg_standardised_CPC_Codes,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(ALC_check == TRUE){
-      Absence_Check_ALC(df = df, ALC_column = ALC_column, method = method, CPC_Code_Column = CPC_Code_Column, No_ALC_CPC_Codes = No_ALC_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (ALC_check == TRUE) {
+      Absence_Check_ALC(
+        df = df,
+        ALC_column = ALC_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_ALC_CPC_Codes = No_ALC_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(FIBG_check == TRUE){
-      Absence_Check_FIBG(df = df, FIBG_column = FIBG_column, method = method, CPC_Code_Column = CPC_Code_Column, No_FIBG_CPC_Codes = No_FIBG_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (FIBG_check == TRUE) {
+      Absence_Check_FIBG(
+        df = df,
+        FIBG_column = FIBG_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_FIBG_CPC_Codes = No_FIBG_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(NIA_check == TRUE){
-      Absence_Check_NIA(df = df, NIA_column = NIA_column, method = method, CPC_Code_Column = CPC_Code_Column, No_NIA_CPC_Codes = No_NIA_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (NIA_check == TRUE) {
+      Absence_Check_NIA(
+        df = df,
+        NIA_column = NIA_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_NIA_CPC_Codes = No_NIA_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(VITB12_check == TRUE){
-      Absence_Check_VITB12(df = df, VITB12_column = VITB12_column, method = method, CPC_Code_Column = CPC_Code_Column, No_VITB12_CPC_Codes = No_VITB12_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (VITB12_check == TRUE) {
+      Absence_Check_VITB12(
+        df = df,
+        VITB12_column = VITB12_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_VITB12_CPC_Codes = No_VITB12_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(VITB6_check == TRUE){
-      Absence_Check_VITB6(df = df, VITB6_column = VITB6_column, method = method, CPC_Code_Column = CPC_Code_Column, No_VITB6_CPC_Codes = No_VITB6_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (VITB6_check == TRUE) {
+      Absence_Check_VITB6(
+        df = df,
+        VITB6_column = VITB6_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_VITB6_CPC_Codes = No_VITB6_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CU_check == TRUE){
-      Absence_Check_CU(df = df, CU_column = CU_column, method = method, CPC_Code_Column = CPC_Code_Column, No_CU_CPC_Codes = No_CU_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (CU_check == TRUE) {
+      Absence_Check_CU(
+        df = df,
+        CU_column = CU_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_CU_CPC_Codes = No_CU_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(F20D5N3_check == TRUE){
-      Absence_Check_F20D5N3(df = df, F20D5N3_column = F20D5N3_column, method = method, CPC_Code_Column = CPC_Code_Column, No_F20D5N3_CPC_Codes = No_F20D5N3_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (F20D5N3_check == TRUE) {
+      Absence_Check_F20D5N3(
+        df = df,
+        F20D5N3_column = F20D5N3_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_F20D5N3_CPC_Codes = No_F20D5N3_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(F22D6N3_check == TRUE){
-      Absence_Check_F22D6N3(df = df, F22D6N3_column = F22D6N3_column, method = method, CPC_Code_Column = CPC_Code_Column, No_F22D6N3_CPC_Codes = No_F22D6N3_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (F22D6N3_check == TRUE) {
+      Absence_Check_F22D6N3(
+        df = df,
+        F22D6N3_column = F22D6N3_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_F22D6N3_CPC_Codes = No_F22D6N3_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
+
+    # Calling functions for fill ----
+
+    #Same as above (relaying the inputs into each function) but this time the
+    #functions can have an output
+
   } else {
     output_df <- df #rename to output - then run output, adding to itself each time.
 
-    if(Water_check == TRUE){
-      output_df <- Absence_Check_Water(df = output_df, water_column = water_column, method = method, CPC_Code_Column = CPC_Code_Column, No_Water_CPC_Codes = No_Water_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (Water_check == TRUE) {
+      output_df <- Absence_Check_Water(
+        df = output_df,
+        water_column = water_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_Water_CPC_Codes = No_Water_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CHOAVL_check == TRUE){
-      output_df <- Absence_Check_CHOAVLg(df = output_df, CHOAVL_column = CHOAVL_column, No_CHOAVL_CPC_Codes = No_CHOAVL_CPC_Codes, method = method, CPC_Code_Column = CPC_Code_Column, comments = comments, comment_col = comment_col)
+    if (CHOAVL_check == TRUE) {
+      output_df <- Absence_Check_CHOAVLg(
+        df = output_df,
+        CHOAVL_column = CHOAVL_column,
+        No_CHOAVL_CPC_Codes = No_CHOAVL_CPC_Codes,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CHOAVLDF_check == TRUE){
-      output_df <- Absence_Check_CHOAVLDFg_std(df = output_df, CHOAVLDFg_std_column = CHOAVLDFg_std_column, No_CHOAVLDFg_standardised_CPC_Codes = No_CHOAVLDFg_standardised_CPC_Codes, method = method, CPC_Code_Column = CPC_Code_Column, comments = comments, comment_col = comment_col)
+    if (CHOAVLDF_check == TRUE) {
+      output_df <- Absence_Check_CHOAVLDFg_std(
+        df = output_df,
+        CHOAVLDFg_std_column = CHOAVLDFg_std_column,
+        No_CHOAVLDFg_standardised_CPC_Codes = No_CHOAVLDFg_standardised_CPC_Codes,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(ALC_check == TRUE){
-      output_df <- Absence_Check_ALC(df = output_df, ALC_column = ALC_column, method = method, CPC_Code_Column = CPC_Code_Column, No_ALC_CPC_Codes = No_ALC_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (ALC_check == TRUE) {
+      output_df <- Absence_Check_ALC(
+        df = output_df,
+        ALC_column = ALC_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_ALC_CPC_Codes = No_ALC_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(FIBG_check == TRUE){
-      output_df <- Absence_Check_FIBG(df = output_df, FIBG_column = FIBG_column, method = method, CPC_Code_Column = CPC_Code_Column, No_FIBG_CPC_Codes = No_FIBG_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (FIBG_check == TRUE) {
+      output_df <- Absence_Check_FIBG(
+        df = output_df,
+        FIBG_column = FIBG_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_FIBG_CPC_Codes = No_FIBG_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(NIA_check == TRUE){
-      output_df <- Absence_Check_NIA(df = output_df, NIA_column = NIA_column, method = method, CPC_Code_Column = CPC_Code_Column, No_NIA_CPC_Codes = No_NIA_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (NIA_check == TRUE) {
+      output_df <- Absence_Check_NIA(
+        df = output_df,
+        NIA_column = NIA_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_NIA_CPC_Codes = No_NIA_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(VITB12_check == TRUE){
-      output_df <- Absence_Check_VITB12(df = output_df, VITB12_column = VITB12_column, method = method, CPC_Code_Column = CPC_Code_Column, No_VITB12_CPC_Codes = No_VITB12_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (VITB12_check == TRUE) {
+      output_df <- Absence_Check_VITB12(
+        df = output_df,
+        VITB12_column = VITB12_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_VITB12_CPC_Codes = No_VITB12_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(VITB6_check == TRUE){
-      output_df <- Absence_Check_VITB6(df = output_df, VITB6_column = VITB6_column, method = method, CPC_Code_Column = CPC_Code_Column, No_VITB6_CPC_Codes = No_VITB6_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (VITB6_check == TRUE) {
+      output_df <- Absence_Check_VITB6(
+        df = output_df,
+        VITB6_column = VITB6_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_VITB6_CPC_Codes = No_VITB6_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(CU_check == TRUE){
-      output_df <- Absence_Check_CU(df = output_df, CU_column = CU_column, method = method, CPC_Code_Column = CPC_Code_Column, No_CU_CPC_Codes = No_CU_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (CU_check == TRUE) {
+      output_df <- Absence_Check_CU(
+        df = output_df,
+        CU_column = CU_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_CU_CPC_Codes = No_CU_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(F20D5N3_check == TRUE){
-      output_df <- Absence_Check_F20D5N3(df = output_df, F20D5N3_column = F20D5N3_column, method = method, CPC_Code_Column = CPC_Code_Column, No_F20D5N3_CPC_Codes = No_F20D5N3_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (F20D5N3_check == TRUE) {
+      output_df <- Absence_Check_F20D5N3(
+        df = output_df,
+        F20D5N3_column = F20D5N3_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_F20D5N3_CPC_Codes = No_F20D5N3_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
-    if(F22D6N3_check == TRUE){
-      output_df <- Absence_Check_F22D6N3(df = output_df, F22D6N3_column = F22D6N3_column, method = method, CPC_Code_Column = CPC_Code_Column, No_F22D6N3_CPC_Codes = No_F22D6N3_CPC_Codes, comments = comments, comment_col = comment_col)
+    if (F22D6N3_check == TRUE) {
+      output_df <- Absence_Check_F22D6N3(
+        df = output_df,
+        F22D6N3_column = F22D6N3_column,
+        method = method,
+        CPC_Code_Column = CPC_Code_Column,
+        No_F22D6N3_CPC_Codes = No_F22D6N3_CPC_Codes,
+        comments = comments,
+        comment_col = comment_col
+      )
     }
 
     return(output_df)
@@ -645,11 +952,7 @@ Absence_Check_Water <- function(df,
     "The water_column is not a column name in df - please input a string that is a column name in df." = water_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_Water_CPC_Codes)
   )
 
@@ -694,13 +997,13 @@ Absence_Check_Water <- function(df,
 
   # method - Checks ----
 
-  if(nrow(Water_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(Water_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(Water_not_0), function(i) {
         message(
           paste(
@@ -756,7 +1059,8 @@ Absence_Check_Water <- function(df,
   if (method_type == 3) {
     Water_blank <- df[df[[CPC_Code_Column]] %in% No_Water_CPC_Codes &
                         df[[water_column]] %in% c(NA, ""), ] #Creates a df of Water values which are either blank or NA
-    if(nrow(Water_blank) == 0){
+    if (nrow(Water_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -809,11 +1113,7 @@ Absence_Check_CHOAVLg <- function(df,
     "The CHOAVL_column is not a column name in df - please input a string that is a column name in df." = CHOAVL_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_CHOAVL_CPC_Codes)
   )
 
@@ -859,14 +1159,13 @@ Absence_Check_CHOAVLg <- function(df,
 
   # method - Checks ----
 
-  if(nrow(CHOAVL_not_0) == 0){
+  if (nrow(CHOAVL_not_0) == 0) {
     #Does nothing if no relevant rows
-    if(method_type == 2){
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(CHOAVL_not_0), function(i) {
         message(
           paste(
@@ -917,7 +1216,7 @@ Absence_Check_CHOAVLg <- function(df,
   if (method_type == 3) {
     CHOAVL_blank <- df[df[[CPC_Code_Column]] %in% No_CHOAVL_CPC_Codes &
                          df[[CHOAVL_column]] %in% c(NA, ""), ] #Creates a df of CHOAVL values which are either blank or NA
-    if(nrow(CHOAVL_blank) == 0){
+    if (nrow(CHOAVL_blank) == 0) {
       #Does nothing if no relevant rows
     } else {
       if (comments == TRUE) {
@@ -969,11 +1268,7 @@ Absence_Check_CHOAVLDFg_std <- function(df,
     "The CHOAVLDFg_std_column is not a column name in df - please input a string that is a column name in df." = CHOAVLDFg_std_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_CHOAVLDFg_standardised_CPC_Codes)
   )
 
@@ -1021,14 +1316,13 @@ Absence_Check_CHOAVLDFg_std <- function(df,
 
   # method - Checks ----
 
-  if(nrow(CHOAVLDFg_standardised_not_0) == 0){
+  if (nrow(CHOAVLDFg_standardised_not_0) == 0) {
     # Does nothing if no relevant rows
-    if(method_type == 2){
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(CHOAVLDFg_standardised_not_0), function(i) {
         message(
           paste(
@@ -1055,7 +1349,7 @@ Absence_Check_CHOAVLDFg_std <- function(df,
     # Method -  Fill All ----
 
     if (method_type == 2) {
-      if(nrow(CHOAVLDFg_standardised_not_0) == 0){
+      if (nrow(CHOAVLDFg_standardised_not_0) == 0) {
         stop()
       }
       if (comments == TRUE) {
@@ -1090,7 +1384,7 @@ Absence_Check_CHOAVLDFg_std <- function(df,
   if (method_type == 3) {
     CHOAVLDFg_standardised_blank <- df[df[[CPC_Code_Column]] %in% No_CHOAVLDFg_standardised_CPC_Codes &
                                          df[[CHOAVLDFg_std_column]] %in% c(NA, ""), ] #Creates a df of CHOAVLDFg_standardised values which are either blank or NA
-    if(nrow(CHOAVLDFg_standardised_blank) == 0){
+    if (nrow(CHOAVLDFg_standardised_blank) == 0) {
       #Does nothing
     } else {
       if (comments == TRUE) {
@@ -1144,11 +1438,7 @@ Absence_Check_ALC <- function(df,
     "The ALC_column is not a column name in df - please input a string that is a column name in df." = ALC_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_ALC_CPC_Codes)
   )
 
@@ -1193,13 +1483,13 @@ Absence_Check_ALC <- function(df,
 
   # method - Checks ----
 
-  if(nrow(ALC_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(ALC_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(ALC_not_0), function(i) {
         message(
           paste(
@@ -1228,10 +1518,7 @@ Absence_Check_ALC <- function(df,
         #Checks if comments are enabled
         for (i in 1:nrow(ALC_not_0)) {
           #If so, loops through all items where ALC isn't 0, but should be
-          new_comment <- paste0(ALC_column,
-                                " value changed from ",
-                                ALC_not_0[[ALC_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(ALC_column, " value changed from ", ALC_not_0[[ALC_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(ALC_not_0[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -1255,16 +1542,14 @@ Absence_Check_ALC <- function(df,
   if (method_type == 3) {
     ALC_blank <- df[df[[CPC_Code_Column]] %in% No_ALC_CPC_Codes &
                       df[[ALC_column]] %in% c(NA, ""), ] #Creates a df of ALC values which are either blank or NA
-    if(nrow(ALC_blank) == 0){
+    if (nrow(ALC_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
         for (i in 1:nrow(ALC_blank)) {
           #If so, loops through all items where ALC isn't 0, but should be
-          new_comment <- paste0(ALC_column,
-                                " value changed from ",
-                                ALC_blank[[ALC_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(ALC_column, " value changed from ", ALC_blank[[ALC_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(ALC_blank[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -1304,11 +1589,7 @@ Absence_Check_FIBG <- function(df,
     "The FIBG_column is not a column name in df - please input a string that is a column name in df." = FIBG_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_FIBG_CPC_Codes)
   )
 
@@ -1353,13 +1634,13 @@ Absence_Check_FIBG <- function(df,
 
   # method - Checks ----
 
-  if(nrow(FIBG_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(FIBG_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(FIBG_not_0), function(i) {
         message(
           paste(
@@ -1415,7 +1696,8 @@ Absence_Check_FIBG <- function(df,
   if (method_type == 3) {
     FIBG_blank <- df[df[[CPC_Code_Column]] %in% No_FIBG_CPC_Codes &
                        df[[FIBG_column]] %in% c(NA, ""), ] #Creates a df of FIBG values which are either blank or NA
-    if(nrow(FIBG_blank) == 0){
+    if (nrow(FIBG_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -1463,11 +1745,7 @@ Absence_Check_NIA <- function(df,
     "The NIA_column is not a column name in df - please input a string that is a column name in df." = NIA_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_NIA_CPC_Codes)
   )
 
@@ -1512,13 +1790,13 @@ Absence_Check_NIA <- function(df,
 
   # method - Checks ----
 
-  if(nrow(NIA_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(NIA_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(NIA_not_0), function(i) {
         message(
           paste(
@@ -1548,10 +1826,7 @@ Absence_Check_NIA <- function(df,
         #Checks if comments are enabled
         for (i in 1:nrow(NIA_not_0)) {
           #If so, loops through all items where NIA isn't 0, but should be
-          new_comment <- paste0(NIA_column,
-                                " value changed from ",
-                                NIA_not_0[[NIA_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(NIA_column, " value changed from ", NIA_not_0[[NIA_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(NIA_not_0[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -1575,16 +1850,14 @@ Absence_Check_NIA <- function(df,
   if (method_type == 3) {
     NIA_blank <- df[df[[CPC_Code_Column]] %in% No_NIA_CPC_Codes &
                       df[[NIA_column]] %in% c(NA, ""), ] #Creates a df of NIA values which are either blank or NA
-    if(nrow(NIA_blank) == 0){
+    if (nrow(NIA_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
         for (i in 1:nrow(NIA_blank)) {
           #If so, loops through all items where NIA isn't 0, but should be
-          new_comment <- paste0(NIA_column,
-                                " value changed from ",
-                                NIA_blank[[NIA_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(NIA_column, " value changed from ", NIA_blank[[NIA_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(NIA_blank[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -1626,11 +1899,7 @@ Absence_Check_RETOL <- function(df,
     "The RETOL_column is not a column name in df - please input a string that is a column name in df." = RETOL_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_RETOL_CPC_Codes)
   )
 
@@ -1677,13 +1946,13 @@ Absence_Check_RETOL <- function(df,
 
   # method - Checks ----
 
-  if(nrow(RETOL_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(RETOL_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(RETOL_not_0), function(i) {
         message(
           paste(
@@ -1739,7 +2008,8 @@ Absence_Check_RETOL <- function(df,
   if (method_type == 3) {
     RETOL_blank <- df[df[[CPC_Code_Column]] %in% No_RETOL_CPC_Codes &
                         df[[RETOL_column]] %in% c(NA, ""), ] #Creates a df of RETOL values which are either blank or NA
-    if(nrow(RETOL_blank) == 0){
+    if (nrow(RETOL_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -1788,11 +2058,7 @@ Absence_Check_VITB12 <- function(df,
     "The VITB12_column is not a column name in df - please input a string that is a column name in df." = VITB12_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_VITB12_CPC_Codes)
   )
 
@@ -1837,13 +2103,13 @@ Absence_Check_VITB12 <- function(df,
 
   # method - Checks ----
 
-  if(nrow(VITB12_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(VITB12_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(VITB12_not_0), function(i) {
         message(
           paste(
@@ -1899,7 +2165,8 @@ Absence_Check_VITB12 <- function(df,
   if (method_type == 3) {
     VITB12_blank <- df[df[[CPC_Code_Column]] %in% No_VITB12_CPC_Codes &
                          df[[VITB12_column]] %in% c(NA, ""), ] #Creates a df of VITB12 values which are either blank or NA
-    if(nrow(VITB12_blank) == 0){
+    if (nrow(VITB12_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -1955,11 +2222,7 @@ Absence_Check_VITB12_2 <- function(df,
     "The VITB12_column is not a column name in df - please input a string that is a column name in df." = VITB12_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_VITB12_CPC_Codes)
   )
 
@@ -2004,13 +2267,13 @@ Absence_Check_VITB12_2 <- function(df,
 
   # method - Checks ----
 
-  if(nrow(VITB12_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(VITB12_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(VITB12_not_0), function(i) {
         message(
           paste(
@@ -2035,17 +2298,12 @@ Absence_Check_VITB12_2 <- function(df,
     # Method -  Fill All ----
 
     if (method_type == 2) {
-
       df$TEMP_VITB12_comment <- NA
 
-      if(comments == TRUE){
-
+      if (comments == TRUE) {
         df[df[[CPC_Code_Column]] %in% No_VITB12_CPC_Codes &
-             !(df[[VITB12_column]] %in% "0"), "TEMP_VITB12_comment"]  <- paste0(VITB12_column,
-                                                                                " value changed from ",
-                                                                                df[[VITB12_column]][df[[CPC_Code_Column]] %in% No_VITB12_CPC_Codes &
-                                                                                                      !(df[[VITB12_column]] %in% "0")],
-                                                                                " to 0") #Creates the new comment
+             !(df[[VITB12_column]] %in% "0"), "TEMP_VITB12_comment"]  <- paste0(VITB12_column, " value changed from ", df[[VITB12_column]][df[[CPC_Code_Column]] %in% No_VITB12_CPC_Codes &
+                                                                                                                                             !(df[[VITB12_column]] %in% "0")], " to 0") #Creates the new comment
 
         df[[comment_col]][!is.na(df$TEMP_VITB12_comment) &
                             is.na(df[[comment_col]]) |
@@ -2061,12 +2319,10 @@ Absence_Check_VITB12_2 <- function(df,
                             !(df[[comment_col]] %in% "")] <- paste0(df[[comment_col]][!is.na(df$TEMP_VITB12_comment) &
                                                                                         !is.na(df[[comment_col]]) |
                                                                                         !is.na(df$TEMP_VITB12_comment) &
-                                                                                        !df[[comment_col]] %in% ""],
-                                                                    "; ",
-                                                                    df$TEMP_VITB12_comment[!is.na(df$TEMP_VITB12_comment) &
-                                                                                             !is.na(df[[comment_col]]) |
-                                                                                             !is.na(df$TEMP_VITB12_comment) &
-                                                                                             !df[[comment_col]] %in% ""])
+                                                                                        !df[[comment_col]] %in% ""], "; ", df$TEMP_VITB12_comment[!is.na(df$TEMP_VITB12_comment) &
+                                                                                                                                                    !is.na(df[[comment_col]]) |
+                                                                                                                                                    !is.na(df$TEMP_VITB12_comment) &
+                                                                                                                                                    !df[[comment_col]] %in% ""])
 
       }
 
@@ -2108,7 +2364,8 @@ Absence_Check_VITB12_2 <- function(df,
   if (method_type == 3) {
     VITB12_blank <- df[df[[CPC_Code_Column]] %in% No_VITB12_CPC_Codes &
                          df[[VITB12_column]] %in% c(NA, ""), ] #Creates a df of VITB12 values which are either blank or NA
-    if(nrow(VITB12_blank) == 0){
+    if (nrow(VITB12_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -2158,11 +2415,7 @@ Absence_Check_VITB6 <- function(df,
     "The VITB6_column is not a column name in df - please input a string that is a column name in df." = VITB6_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_VITB6_CPC_Codes)
   )
 
@@ -2207,13 +2460,13 @@ Absence_Check_VITB6 <- function(df,
 
   # method - Checks ----
 
-  if(nrow(VITB6_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(VITB6_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(VITB6_not_0), function(i) {
         message(
           paste(
@@ -2269,7 +2522,8 @@ Absence_Check_VITB6 <- function(df,
   if (method_type == 3) {
     VITB6_blank <- df[df[[CPC_Code_Column]] %in% No_VITB6_CPC_Codes &
                         df[[VITB6_column]] %in% c(NA, ""), ] #Creates a df of VITB6 values which are either blank or NA
-    if(nrow(VITB6_blank) == 0){
+    if (nrow(VITB6_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -2319,11 +2573,7 @@ Absence_Check_CU <- function(df,
     "The CU_column is not a column name in df - please input a string that is a column name in df." = CU_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_CU_CPC_Codes)
   )
 
@@ -2368,13 +2618,13 @@ Absence_Check_CU <- function(df,
 
   # method - Checks ----
 
-  if(nrow(CU_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(CU_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(CU_not_0), function(i) {
         message(
           paste(
@@ -2403,10 +2653,7 @@ Absence_Check_CU <- function(df,
         #Checks if comments are enabled
         for (i in 1:nrow(CU_not_0)) {
           #If so, loops through all items where CU isn't 0, but should be
-          new_comment <- paste0(CU_column,
-                                " value changed from ",
-                                CU_not_0[[CU_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(CU_column, " value changed from ", CU_not_0[[CU_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(CU_not_0[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -2430,16 +2677,14 @@ Absence_Check_CU <- function(df,
   if (method_type == 3) {
     CU_blank <- df[df[[CPC_Code_Column]] %in% No_CU_CPC_Codes &
                      df[[CU_column]] %in% c(NA, ""), ] #Creates a df of CU values which are either blank or NA
-    if(nrow(CU_blank) == 0){
+    if (nrow(CU_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
         for (i in 1:nrow(CU_blank)) {
           #If so, loops through all items where CU isn't 0, but should be
-          new_comment <- paste0(CU_column,
-                                " value changed from ",
-                                CU_blank[[CU_column]][i],
-                                " to 0") #Creates the new comment
+          new_comment <- paste0(CU_column, " value changed from ", CU_blank[[CU_column]][i], " to 0") #Creates the new comment
           row_number <- rownames(CU_blank[i, ]) #Finds the rownumber
           existing_comment <- df[rownames(df) %in% row_number, ][[comment_col]] #Checks if there's an existing comment
           if (!is.na(existing_comment)) {
@@ -2480,11 +2725,7 @@ Absence_Check_F22D6N3 <- function(df,
     "The F22D6N3_column is not a column name in df - please input a string that is a column name in df." = F22D6N3_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_F22D6N3_CPC_Codes)
   )
 
@@ -2529,13 +2770,13 @@ Absence_Check_F22D6N3 <- function(df,
 
   # method - Checks ----
 
-  if(nrow(F22D6N3_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(F22D6N3_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(F22D6N3_not_0), function(i) {
         message(
           paste(
@@ -2591,7 +2832,8 @@ Absence_Check_F22D6N3 <- function(df,
   if (method_type == 3) {
     F22D6N3_blank <- df[df[[CPC_Code_Column]] %in% No_F22D6N3_CPC_Codes &
                           df[[F22D6N3_column]] %in% c(NA, ""), ] #Creates a df of F22D6N3 values which are either blank or NA
-    if(nrow(F22D6N3_blank) == 0){
+    if (nrow(F22D6N3_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled
@@ -2639,11 +2881,7 @@ Absence_Check_F20D5N3 <- function(df,
     "The F20D5N3_column is not a column name in df - please input a string that is a column name in df." = F20D5N3_column %in% colnames(df),
     #Checks if the column names are actually columns in the df
     "The CPC_Code_Column is not a column name in df - please input a string that is a column name in df." = CPC_Code_Column %in% colnames(df),
-    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c(
-      "check",
-      "fill_all",
-      "fill_blank"
-    ),
+    "method option is not valid - please choose between 'Check', 'Fill_all', 'Fill_blank'." = tolower(method) %in% c("check", "fill_all", "fill_blank"),
     "No flagged CPC Codes present in the CPC Code column. Function stopped." = TRUE %in% (unique(df[[CPC_Code_Column]]) %in% No_F20D5N3_CPC_Codes)
   )
 
@@ -2689,13 +2927,13 @@ Absence_Check_F20D5N3 <- function(df,
 
   # method - Checks ----
 
-  if(nrow(F20D5N3_not_0) == 0){ #Does nothing if there are no relevant rows
-    if (method_type == 2){
+  if (nrow(F20D5N3_not_0) == 0) {
+    #Does nothing if there are no relevant rows
+    if (method_type == 2) {
       return(df)
     }
   } else {
     if (method_type == 1) {
-
       lapply(1:nrow(F20D5N3_not_0), function(i) {
         message(
           paste(
@@ -2751,7 +2989,8 @@ Absence_Check_F20D5N3 <- function(df,
   if (method_type == 3) {
     F20D5N3_blank <- df[df[[CPC_Code_Column]] %in% No_F20D5N3_CPC_Codes &
                           df[[F20D5N3_column]] %in% c(NA, ""), ] #Creates a df of F20D5N3 values which are either blank or NA
-    if(nrow(F20D5N3_blank) == 0){
+    if (nrow(F20D5N3_blank) == 0) {
+
     } else {
       if (comments == TRUE) {
         #Checks if comments are enabled

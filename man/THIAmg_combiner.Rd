@@ -37,13 +37,13 @@ the df, it will create a column with the name of the entry.}
 }
 \value{
 Original data.frame with a new \code{THIAmg_combined} column, and
-  (depending on the options selected) an additional comment/comments column
-  and comment.
+(depending on the options selected) an additional comment/comments column
+and comment.
 }
 \description{
 Combines possible values for Thiamine heirachically so the
-  most suitable is the one used. Considers Thiamine and Thiamine
-  Hydrochloride.
+most suitable is the one used. Considers Thiamine and Thiamine
+Hydrochloride.
 }
 \examples{
  #' # Two example data.frames have been created to give an example of

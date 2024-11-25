@@ -25,15 +25,15 @@ first subdivision from the third ID; e.g. 01.005.03.01 .}
 }
 \value{
 An R dataframe detailing the errors found for each item in the
-  decimal system.
+decimal system.
 }
 \description{
 This function reads in a dataframe, as well as the names of 2-4
-  columns which comprise the decimal system within that dataframe. It then
-  checks the integrity of each series of decimal identities in each row
-  against the rest of the decimal identities within that row, picking up any
-  inconsistencies. Any inconsistencies are reported, eith in console messages
-  or in a error report dataframe.
+columns which comprise the decimal system within that dataframe. It then
+checks the integrity of each series of decimal identities in each row
+against the rest of the decimal identities within that row, picking up any
+inconsistencies. Any inconsistencies are reported, eith in console messages
+or in a error report dataframe.
 }
 \examples{
 #Two examples will be covered - one that results in the output error table,

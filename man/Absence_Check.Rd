@@ -68,11 +68,13 @@ whether to use the supplied preset table which contains information on
 which CPC code shouldn't contain certain nutrients.}
 
 \item{assume_zero_absence_inputs}{Optional - default: \code{c("a")}
-- If using the default \code{assumed_zero_table}, this allows you to pick
+\itemize{
+\item If using the default \code{assumed_zero_table}, this allows you to pick
 which options for selection you want. Choosing \code{c("a")} only applies
 corrections that are certain, \code{c("a", "b")} results in corrections
 being applied to a broader selection of checks and food groups, with high
-certainty, but less certain than just using \code{c("a")}.}
+certainty, but less certain than just using \code{c("a")}.
+}}
 
 \item{method}{Required - default: \code{"check"} - Either \code{"check"},
 \code{"fill_all"},  or \code{"fill_blank"}. If set to \code{"check"}, the
@@ -328,22 +330,22 @@ Copper.}
 }
 \value{
 If \code{method = "check"}, the function will output a list of
-  problematic entries in the data.frame to the console for manual
-  investigation. If \code{method = "fill_all"}, the output will be a
-  data.frame that mimics the input \code{df}, but with nutrient values
-  changed where an error is detected - e.g. if a food item is in a CPC group
-  that shouldn't contain water, and it does, then the water value for that
-  item will be changed to 0. If \code{method = "fill_blank"}, the output will
-  be a data.frame that mimics the input \code{df}, but with nutrient values
-  changed where blank value is detect where we can assume the value to be 0 -
-  e.g. if a food item is in a CPC group that shouldn't contain water, and the
-  water value for that item is NA, or "", then the water value for that item
-  will be changed to 0.
+problematic entries in the data.frame to the console for manual
+investigation. If \code{method = "fill_all"}, the output will be a
+data.frame that mimics the input \code{df}, but with nutrient values
+changed where an error is detected - e.g. if a food item is in a CPC group
+that shouldn't contain water, and it does, then the water value for that
+item will be changed to 0. If \code{method = "fill_blank"}, the output will
+be a data.frame that mimics the input \code{df}, but with nutrient values
+changed where blank value is detect where we can assume the value to be 0 -
+e.g. if a food item is in a CPC group that shouldn't contain water, and the
+water value for that item is NA, or "", then the water value for that item
+will be changed to 0.
 }
 \description{
 The Absence Checker runs over a data.frame containing food items
-  with CPC codes, and checks those food items and the nutrients they contain
-  against a list. If a nutrient is showing as present when that food item
-  shouldn't contain that nutrient, the Absence_Check function will sort those
-  values, depending on the user input.
+with CPC codes, and checks those food items and the nutrients they contain
+against a list. If a nutrient is showing as present when that food item
+shouldn't contain that nutrient, the Absence_Check function will sort those
+values, depending on the user input.
 }

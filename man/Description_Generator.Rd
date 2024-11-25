@@ -19,20 +19,20 @@ the function you wish to generate the Description and Documentation for.
 Only the first function in the file will have its description generated.}
 
 \item{boilerplate}{Optional - default: \code{c("#---\n", paste0("#Title: ",
-Function_Name, "\n"), "#Author: Thomas Codd -
-https://github.com/TomCodd\n", "#Contributor: Lucia Segovia de la Revilla
-- https://github.com/LuciaSegovia\n", "#Version: V1.0.0\n",
-"#Changelog:\n", "\n", "#Github:
-https://github.com/TomCodd/NutritionTools\n", "#---\n", "\n")} - Please
+  Function_Name, "\n"), "#Author: Thomas Codd -
+  https://github.com/TomCodd\n", "#Contributor: Lucia Segovia de la Revilla
+  - https://github.com/LuciaSegovia\n", "#Version: V1.0.0\n",
+  "#Changelog:\n", "\n", "#Github:
+  https://github.com/TomCodd/NutritionTools\n", "#---\n", "\n")} - Please
 enter any message or further information you would like to include at the
 top of the function.}
 }
 \value{
 A pre-formatted set of lines of code, ready to be copied and pasted
-  above the function in the function file specified in
-  \code{R_function_file}.
+above the function in the function file specified in
+\code{R_function_file}.
 }
 \description{
 This is a function designed to speed up the writing of function
-  documentation, and make a regular 'style' of function easier to repeat.
+documentation, and make a regular 'style' of function easier to repeat.
 }

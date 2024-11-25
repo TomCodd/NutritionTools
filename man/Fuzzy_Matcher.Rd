@@ -35,8 +35,8 @@ suggestions and human confirmation using the GUI interface.
 }
 \details{
 Because of the GUI nature of the Fuzzy Matcher, an R-based
-  description or example is not able to help guide using this function as
-  it might with a more standard R function. Because of this a quick guide has
-  been created which I encourage you to examine, which can be found at
-  https://tomcodd.github.io/NutritionTools/articles/Fuzzy-Matcher-Guide.html
+description or example is not able to help guide using this function as
+it might with a more standard R function. Because of this a quick guide has
+been created which I encourage you to examine, which can be found at
+https://tomcodd.github.io/NutritionTools/articles/Fuzzy-Matcher-Guide.html
 }

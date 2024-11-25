@@ -136,16 +136,20 @@ rounded to 2 decimal places.}
 }
 \value{
 Either code that applies the imputations (if \code{code_output} is
-  set to \code{TRUE}, as it is by default), or an altered data.frame with the
-  imputations applied.
+set to \code{TRUE}, as it is by default), or an altered data.frame with the
+imputations applied.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+This function is experimental, and may change. Any feedback would be greatly
+appreciated - https://github.com/TomCodd/NutritionTools/issues
+
 The Data Imputer is an interactive function used to find
-  suitable imputations for food items, either from the same dataset (by
-  default) or from a different dataset. The output by default is a console
-  output and a .txt file containing the lines of code needed to implement the
-  imputations that the user has picked, however this can be changed to a
-  data.frame with the changes implemented.
+suitable imputations for food items, either from the same dataset (by
+default) or from a different dataset. The output by default is a console
+output and a .txt file containing the lines of code needed to implement the
+imputations that the user has picked, however this can be changed to a
+data.frame with the changes implemented.
 }
 \examples{
 # Unfortunately due to the functions interactive nature these examples cannot

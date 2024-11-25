@@ -7,8 +7,8 @@ reference:
 - subtitle: Nutritional Calculators
   contents:
   - CARTBEQ_calc_combiner
-  - ENERCKcal_standardised
-  - ENERCKj_standardised
+  - ENERCKcal_calculator
+  - ENERCKj_calculator
   - SOPg_calculator
   - CHOAVLDFg_calculator
   - NIAmg_calc_combiner
@@ -40,6 +40,11 @@ reference:
   contents:
   - Description_Generator
   - Table_Creator
+
+- subtitle: Superceeded functions
+  contents:
+  - ENERCKcal_standardised
+  - ENERCKj_standardised
 
 - title: Built-in datasets
   contents:

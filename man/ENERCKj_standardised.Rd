@@ -26,13 +26,18 @@ being examined.}
 The calculated Energy value in kJ.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+Development on 'ENERCKj_standardised()' is completed, and has been
+superceeded by 'ENERCKj_calculator()'. It is recommended to switch to
+'ENERCKj_calculator()'.
+
 This function works as a basic calculator - The values for Total
-  Protein in grams \code{'PROTg'}, Total Fat in grams (ideally standardised)
-  \code{'FATg_standardised'}, Available Carbohydrate in grams
-  \code{'CHOAVLDFg'}, Fibre, Total Dietary in grams \code{'FIBTGg'} and
-  Alcohol in grams \code{'ALCg'} are combined to fins the Energy in kj.
-  Alcohol is optional, whereas the other inputs are required - if Alcohol is
-  missing it is assumed to be 0.
+Protein in grams \code{'PROTg'}, Total Fat in grams (ideally standardised)
+\code{'FATg_standardised'}, Available Carbohydrate in grams
+\code{'CHOAVLDFg'}, Fibre, Total Dietary in grams \code{'FIBTGg'} and
+Alcohol in grams \code{'ALCg'} are combined to fins the Energy in kj.
+Alcohol is optional, whereas the other inputs are required - if Alcohol is
+missing it is assumed to be 0.
 }
 \examples{
 #Three examples will be covered - two variants for a one-off

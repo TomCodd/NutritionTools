@@ -16,10 +16,10 @@ file of the package.}
 }
 \value{
 The code required to recreate a pre-existing table, and (optionally)
-  the description framework of the data.frame to be inserted into a packages
-  data.R file.
+the description framework of the data.frame to be inserted into a packages
+data.R file.
 }
 \description{
 This function generates the code needed to create a pre-existing
-  data.frame from scratch.
+data.frame from scratch.
 }

@@ -63,7 +63,7 @@ variables in the correct order out of the remaining valid column names.}
 If comment is set to \code{TRUE} (as it is by default), when the function
 is run a comment describing the source of \code{new_var} column is added
 to the comment_col. If no comment_col is selected, and \code{comment =
-TRUE}, one is created.}
+  TRUE}, one is created.}
 
 \item{comment_col}{Optional - default: \code{'comments'} - A potential
 input variable; the column which contains the metadata comments for the
@@ -73,22 +73,22 @@ the df, it will create a column with the name of the entry.}
 }
 \value{
 Original data.frame with a new \code{_combined} column, and
-  (depending on the options selected) an additional comment/comments column
-  and comment.
+(depending on the options selected) an additional comment/comments column
+and comment.
 }
 \description{
 Combines nutrients or variables that are spread out over
-  multiple columns into a single new column \code{new_var}, depending on a
-  user-set hierarchy. The hierarchy is set so that \code{var1_column} is
-  the main variable, and the priority. If no values for \code{var1_column}
-  are available (i.e. the \code{var1_column} has blanks, or NA values),
-  then values from \code{var2_column} are used instead. If there are still
-  blanks, then values from \code{var3_column} are used, then
-  \code{var4_column}, then \code{var5_column} and finally
-  \code{var6_column}. Please note - the use of \code{var3_column} -
-  \code{var6_column} are optional, however \code{var1_column} and
-  \code{var2_column} must be present. Comments can also be used to record
-  the origin of these values.
+multiple columns into a single new column \code{new_var}, depending on a
+user-set hierarchy. The hierarchy is set so that \code{var1_column} is
+the main variable, and the priority. If no values for \code{var1_column}
+are available (i.e. the \code{var1_column} has blanks, or NA values),
+then values from \code{var2_column} are used instead. If there are still
+blanks, then values from \code{var3_column} are used, then
+\code{var4_column}, then \code{var5_column} and finally
+\code{var6_column}. Please note - the use of \code{var3_column} -
+\code{var6_column} are optional, however \code{var1_column} and
+\code{var2_column} must be present. Comments can also be used to record
+the origin of these values.
 }
 \examples{
 # An example data.frame has been created to give an example of using the

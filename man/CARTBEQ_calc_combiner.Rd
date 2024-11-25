@@ -76,7 +76,7 @@ available then it is used as the value forBeta-Carotene equivalent
 compile is set to \code{TRUE} (as it is by default), then when the function is
 run a description of the calculation used to find CARTBEQ_standardised is
 added to the comment_col. If no comment_col is selected, and \code{comment
-= TRUE}, one is created, called \code{comments}.}
+  = TRUE}, one is created, called \code{comments}.}
 
 \item{trackingcomment}{Optional - default: \code{FALSE} - \code{TRUE} or
 \code{FALSE}. If set to \code{TRUE}, the function will output the CARTBEQ
@@ -84,57 +84,57 @@ calue for each row as it calculates it, to allow tracking of progress.}
 }
 \value{
 A data.frame that mirrors \code{df}, but with a new column -
-  \code{recalculated_CARTBEQmcg_std} - added. New comments may also be added.
+\code{recalculated_CARTBEQmcg_std} - added. New comments may also be added.
 }
 \description{
 This function includes various ways of calculating or combining
-  a beta-carotene equivalents (CARTBEQ) value. The most appropriate
-  calculation is selected based on the availability of input data.
+a beta-carotene equivalents (CARTBEQ) value. The most appropriate
+calculation is selected based on the availability of input data.
 }
 \details{
 The Standardiser can use 6 different ways of calculating
-  Beta-Carotene, on a case-by-case (or row-by-row) basis to ensure that each
-  item has the most appropriate calculation used on it. If the most
-  appropriate calculation cannot be completed (due to incomplete input data)
-  then the next most appropriate calculation is used, and so on. The
-  calculations and their position in the hierarchy is shown below:
-  \itemize{
-  \item 1. \code{recalculated_CARTBEQmcg_std = CARTBmcg_value + 0.5*CARTAmcg_value
+Beta-Carotene, on a case-by-case (or row-by-row) basis to ensure that each
+item has the most appropriate calculation used on it. If the most
+appropriate calculation cannot be completed (due to incomplete input data)
+then the next most appropriate calculation is used, and so on. The
+calculations and their position in the hierarchy is shown below:
+\itemize{
+\item 1. \code{recalculated_CARTBEQmcg_std = CARTBmcg_value + 0.5*CARTAmcg_value
       + 0.5*CRYPXBmcg_value}. Beta-Carotene Equivalents (standardised) value
-      (CARTBEQ_std) is calculated from its base elements, dependent on valid
-      Alpha-Carotene (CARTA), Beta-Carotene (CARTB), and Beta-Cryptoxanthin
-      CRYPXB) values.
-  \item 2. \code{recalculated_CARTBEQmcg_std = CARTBEQmcg_std_value}. If the
-      base elements for the calculation are unavailable, but a standardised
-      CARTBEQ value already exists, it is used.
-  \item 3. \code{recalculated_CARTBEQmcg_std = CARTBEQmcg _value}. If neither
-      the base elements for the calculation or a standardised CARTBEQ value
-      are unavailable then the non-standardised CARTBEQ value is used
-      instead, if it exists.
-  \item 4. \code{recalculated_CARTBEQmcg_std = CARTBmcg _value}. If neither the
-      base elements for the calculation, or a CARTBEQ value (standardised or
-      otherwise) exist, then the Beta-Carotene (CARTB) value is used if
-      available.
-  \item 5. \code{recalculated_CARTBEQmcg_std = (VITA_RAEmcg_value -
+(CARTBEQ_std) is calculated from its base elements, dependent on valid
+Alpha-Carotene (CARTA), Beta-Carotene (CARTB), and Beta-Cryptoxanthin
+CRYPXB) values.
+\item 2. \code{recalculated_CARTBEQmcg_std = CARTBEQmcg_std_value}. If the
+base elements for the calculation are unavailable, but a standardised
+CARTBEQ value already exists, it is used.
+\item 3. \code{recalculated_CARTBEQmcg_std = CARTBEQmcg _value}. If neither
+the base elements for the calculation or a standardised CARTBEQ value
+are unavailable then the non-standardised CARTBEQ value is used
+instead, if it exists.
+\item 4. \code{recalculated_CARTBEQmcg_std = CARTBmcg _value}. If neither the
+base elements for the calculation, or a CARTBEQ value (standardised or
+otherwise) exist, then the Beta-Carotene (CARTB) value is used if
+available.
+\item 5. \code{recalculated_CARTBEQmcg_std = (VITA_RAEmcg_value -
       RETOLmcg_value)*12}. If none of the above are available, then
-      CATBEQ_std is calculated from Vitamin A Retinol Activity Equivalent
-      (VITA_RAE) and Retinol (RETOL).
-  \item 6. \code{recalculated_CARTBEQmcg_std = (VITAmcg_value -
+CATBEQ_std is calculated from Vitamin A Retinol Activity Equivalent
+(VITA_RAE) and Retinol (RETOL).
+\item 6. \code{recalculated_CARTBEQmcg_std = (VITAmcg_value -
       RETOLmcg_value)*6}. If none of the above are available, then CATBEQ_std
-      is calculated from Vitamin A (VITA) and Retinol (RETOL).
-  }
+is calculated from Vitamin A (VITA) and Retinol (RETOL).
+}
 
-  This hierarchy remains unchanged – however, the equations in the hierarchy
-  can be altered depending on the compile and carotene input options. If both
-  are set to True, then the full list of 6 equations are made available. If
-  compile == F, then options 2 and 3 (to use pre-existing CARTBEQ_std or
-  CARTBEQ values) are removed, meaning that the only options 1, 4, 5, 6 are
-  available in the Hierarchy. Similarly, if carotene == F, then option 4 (to
-  use a pre-existing CARTB value) is removed, leaving only options 1, 5, 6 if
-  both are set to false.
-  If none of those options are available (i.e. the data is incomplete, and no
-  value can be calculated and no fill-in value used) then the CARTBEQ_std
-  value is set to NA.
+This hierarchy remains unchanged – however, the equations in the hierarchy
+can be altered depending on the compile and carotene input options. If both
+are set to True, then the full list of 6 equations are made available. If
+compile == F, then options 2 and 3 (to use pre-existing CARTBEQ_std or
+CARTBEQ values) are removed, meaning that the only options 1, 4, 5, 6 are
+available in the Hierarchy. Similarly, if carotene == F, then option 4 (to
+use a pre-existing CARTB value) is removed, leaving only options 1, 5, 6 if
+both are set to false.
+If none of those options are available (i.e. the data is incomplete, and no
+value can be calculated and no fill-in value used) then the CARTBEQ_std
+value is set to NA.
 }
 \examples{
 #The most common usage scenario will be covered. First we will create a test
