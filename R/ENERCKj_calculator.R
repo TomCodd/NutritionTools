@@ -82,11 +82,12 @@
 #' # data.frame calculation: ----
 #'
 #' # For this example, we will use the breakfast_df example dataset. However,
-#' that dataset has been designed to test a range of functions, and in its raw
-#' form is incompatable with ENERCKj_calculator - therefore some changes will
-#' have to be made before it can be used.
+#' # that dataset has been designed to test a range of functions, and in its raw
+#' # form is incompatable with ENERCKj_calculator - therefore some changes will
+#' # have to be made before it can be used.
 #'
-#' modified_breakfast_df <- breakfast_df[c(1:2, 4:8),] # removing rows with many empty nutrient values
+#' # removing rows with many empty nutrient values
+#' modified_breakfast_df <- breakfast_df[c(1:2, 4:8),]
 #'
 #' modified_breakfast_df
 #'
