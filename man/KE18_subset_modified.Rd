@@ -19,7 +19,8 @@ A data frame with 21 rows and 9 columns:
 }
 }
 \source{
-A modified subset of the Kenya 2018 FCT, available here: https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
+A modified subset of the Kenya 2018 FCT, available here:
+https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
 }
 \usage{
 KE18_subset_modified

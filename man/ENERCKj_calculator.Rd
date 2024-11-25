@@ -61,6 +61,12 @@ take place instead.}
 isn't one present, then the function will create one to record the
 calculation details.}
 
+\item{Stop_If_Missing}{Required - default: \code{TRUE} - Either \code{TRUE}
+or \code{FALSE}. If set to \code{TRUE}, then the function will stop if it
+detects missing values in any of the columns or input values. If set to
+\code{FALSE}, then the function will not stop if it detects missing values.
+Missing values will lead to NA ENERCKj_calculated values.}
+
 \item{Assume_Zero_Alcohol}{Required - default: \code{FALSE} - Either
 \code{TRUE} or \code{FALSE}. If set to \code{TRUE}, and
 \code{'Stop_If_Missing'} is set to \code{FALSE}, then missing alcohol
@@ -68,7 +74,7 @@ values will be set to 0, and a comment added if running the data.frame
 calculation. if set to \code{FALSE}, then the Alcohol value will not
 change.}
 
-\item{Show_NA_Outputs}{Required - default: \code{TRUE} - Either \code{TRUE}
+\item{Show_NA_outputs}{Required - default: \code{TRUE} - Either \code{TRUE}
 or \code{FALSE}. If set to \code{TRUE} then if any NA values are generated
 for ENERCKj_calculated, a data.frame of these values will be shown.}
 }
@@ -219,23 +225,28 @@ ENERCKj_calculated_2
 
 # Or, for multiple values (secondary values are fictional):
 
-ENERCKj_calculated_3 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1))
+ENERCKj_calculated_3 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+51.5), c(2.9, 5), c(0, 1))
 
 ENERCKj_calculated_3
 
 # However, if there are blank values, then the function will not work
 
-ENERCKj_calculated_4 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, NA))
+ENERCKj_calculated_4 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+51.5), c(2.9, 5), c(0, NA))
 
 # Unless other options are selected - such as Stop_If_Missing is turned off
 
-ENERCKj_calculated_5 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE)
+ENERCKj_calculated_5 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE)
 
 ENERCKj_calculated_5
 
 # In this format we can apply Assume_Zero_Alcohol as well
 
-ENERCKj_calculated_6 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE, Assume_Zero_Alcohol = TRUE)
+ENERCKj_calculated_6 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE, Assume_Zero_Alcohol =
+TRUE)
 
 ENERCKj_calculated_6
 }
