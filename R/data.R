@@ -99,15 +99,15 @@
 #'   \item{CHOAVLDFg}{Carbohydrates calculated by difference per 100g food}
 #'   \item{VITB12mcg}{Vitamin B12 in micrograms per 100g of food}
 #' }
-#' @source A modified subset of the Kenya 2018 FCT, available here: https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
+#' @source A modified subset of the Kenya 2018 FCT, available here:
+#'   https://openknowledge.fao.org/items/ece9c958-74f6-4d90-b14e-6b8a16c0dd9d
 'KE18_subset_modified'
 
 
 #' Absence Table
 #'
 #' A data.frame describing which food groups should have 0 values for certain
-#' nutrients, because those nutrients do not occur in that food group. Created
-#' by https://github.com/LuciaSegovia based on FAO INFOODS Guidelines
+#' nutrients, because those nutrients do not occur in that food group.
 #'
 #' @format A data frame with 460 rows and 20 columns:
 #' \describe{
@@ -132,5 +132,6 @@
 #'   \item{F22D6N3g}{Whether F22D6N3g should be absent or not}
 #'   \item{F20D5N3g}{Whether F20D5N3g should be absent or not}
 #' }
-#' @source [Description_Of_Source]
+#' @source Created by https://github.com/LuciaSegovia based on FAO INFOODS
+#'   Guidelines
 'Absence_Table'

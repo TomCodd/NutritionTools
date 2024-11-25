@@ -61,7 +61,7 @@
 #' @param Stop_If_Missing Required - default: \code{TRUE} - Either \code{TRUE}
 #'   or \code{FALSE}. If set to \code{TRUE}, then the function will stop if it
 #'   detects missing values in any of the columns or input values. If set to
-#'   \{FALSE}, then the function will not stop if it detects missing values.
+#'   \code{FALSE}, then the function will not stop if it detects missing values.
 #'   Missing values will lead to NA ENERCKj_calculated values.
 #' @param Assume_Zero_Alcohol Required - default: \code{FALSE} - Either
 #'   \code{TRUE} or \code{FALSE}. If set to \code{TRUE}, and
@@ -69,7 +69,7 @@
 #'   values will be set to 0, and a comment added if running the data.frame
 #'   calculation. if set to \code{FALSE}, then the Alcohol value will not
 #'   change.
-#' @param Show_NA_Outputs Required - default: \code{TRUE} - Either \code{TRUE}
+#' @param Show_NA_outputs Required - default: \code{TRUE} - Either \code{TRUE}
 #'   or \code{FALSE}. If set to \code{TRUE} then if any NA values are generated
 #'   for ENERCKj_calculated, a data.frame of these values will be shown.
 #' @return If using the data.frame input, the return will be a data.frame with a
@@ -207,23 +207,28 @@
 #'
 #' # Or, for multiple values (secondary values are fictional):
 #'
-#' ENERCKj_calculated_3 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1))
+#' ENERCKj_calculated_3 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+#' 51.5), c(2.9, 5), c(0, 1))
 #'
 #' ENERCKj_calculated_3
 #'
 #' # However, if there are blank values, then the function will not work
 #'
-#' ENERCKj_calculated_4 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, NA))
+#' ENERCKj_calculated_4 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+#' 51.5), c(2.9, 5), c(0, NA))
 #'
 #' # Unless other options are selected - such as Stop_If_Missing is turned off
 #'
-#' ENERCKj_calculated_5 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE)
+#' ENERCKj_calculated_5 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+#' 51.5), c(2.9, 5), c(0, NA), Stop_If_Missing = FALSE)
 #'
 #' ENERCKj_calculated_5
 #'
 #' # In this format we can apply Assume_Zero_Alcohol as well
 #'
-#' ENERCKj_calculated_6 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5, 51.5), c(2.9, 5), c(0, 1), Stop_If_Missing = FALSE, Assume_Zero_Alcohol = TRUE)
+#' ENERCKj_calculated_6 <- ENERCKj_calculator(c(7.5, 5), c(1.3, 2), c(50.5,
+#' 51.5), c(2.9, 5), c(0, NA), Stop_If_Missing = FALSE, Assume_Zero_Alcohol =
+#' TRUE)
 #'
 #' ENERCKj_calculated_6
 
@@ -327,7 +332,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
         message("Missing alcohol values detected. Please fill in the missing alcohol values, and try again.")
         message("")
         message("Missing alcohol values returned as df.")
-        View(Alc_missing)
+        print(Alc_missing)
         return(Alc_missing)
       }
 
@@ -339,7 +344,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
         message("Missing Fibre values detected. Please fill in the missing fibre values, and try again.")
         message("")
         message("Missing fibre values returned as df.")
-        View(Fib_missing)
+        print(Fib_missing)
         return(Fib_missing)
       }
 
@@ -349,7 +354,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
         message("Missing Fat values detected. Please fill in the missing fat values, and try again.")
         message("")
         message("Missing Fat values returned as df.")
-        View(Fat_missing)
+        print(Fat_missing)
         return(Fat_missing)
       }
 
@@ -359,7 +364,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
         message("Missing Protein values detected. Please fill in the missing Protein values, and try again.")
         message("")
         message("Missing Protein values returned as df.")
-        View(Prot_missing)
+        print(Prot_missing)
         return(Prot_missing)
       }
 
@@ -369,7 +374,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
         message("Missing Carbohydrate values detected. Please fill in the missing Carbohydrate values, and try again.")
         message("")
         message("Missing Carbohydrate values returned as df.")
-        View(Carbs_missing)
+        print(Carbs_missing)
         return(Carbs_missing)
       }
     } #stop if missing block ends
@@ -413,7 +418,7 @@ ENERCKj_calculator <- function(Protein = "PROCNTg",
     if(isTRUE(Show_NA_outputs)){
       if(nrow(df[is.na(df$ENERCKj_calculated),])>0){
         message("NA output values found. Viewing ENERCKj_calculated values of NA.")
-        View(df[is.na(df$ENERCKj_calculated),])
+        print(df[is.na(df$ENERCKj_calculated),])
       }
     }
 

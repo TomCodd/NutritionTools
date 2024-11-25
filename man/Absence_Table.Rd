@@ -30,14 +30,14 @@ A data frame with 460 rows and 20 columns:
 }
 }
 \source{
-\link{Description_Of_Source}
+Created by https://github.com/LuciaSegovia based on FAO INFOODS
+Guidelines
 }
 \usage{
 Absence_Table
 }
 \description{
 A data.frame describing which food groups should have 0 values for certain
-nutrients, because those nutrients do not occur in that food group. Created
-by https://github.com/LuciaSegovia based on FAO INFOODS Guidelines
+nutrients, because those nutrients do not occur in that food group.
 }
 \keyword{datasets}
