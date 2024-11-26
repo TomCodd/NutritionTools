@@ -23,12 +23,12 @@
 #'   The result of this function will be a new column in df with the
 #'   ENERCKcal_calculated values.
 #'
-#' @param Protein Required - default: \code{"PROTg"} - If using \code{'df'},
-#'   then this should be the name of the column that contains Protein values in grams. If
-#'   NOT using \code{'df'}, this should be the number or list of numbers
-#'   representing Protein values you are looking to calculate an Energy value
-#'   using.
-#' @param Fat Required - default: \code{"FATg_combined"} - If using \code{'df'},
+#' @param Protein Required - default: \code{"PROCNTg"} - If using \code{'df'},
+#'   then this should be the name of the column that contains Protein values in
+#'   grams. If NOT using \code{'df'}, this should be the number or list of
+#'   numbers representing Protein values you are looking to calculate an Energy
+#'   value using.
+#' @param Fat Required - default: \code{"FATg"} - If using \code{'df'},
 #'   then this should be the name of the column that contains Total Fat values
 #'   in grams. If NOT using \code{'df'}, this should be the number or list of
 #'   numbers representing Fat values you are looking to calculate an Energy
@@ -238,15 +238,15 @@
 
 
 ENERCKcal_calculator <- function(Protein = "PROCNTg",
-                                   Fat = "FAT_g_combined",
+                                   Fat = "FATg",
                                    Carbohydrate = "CHOAVLg",
-                                   Fibre = "FIBTGg_combined",
+                                   Fibre = "FIBTGg",
                                    Alcohol = "ALCg",
                                    df,
                                    comment_col = "comments",
                                    Stop_If_Missing = TRUE,
                                    Assume_Zero_Alcohol = FALSE,
-                                   Show_NA_outputs = TRUE) {
+                                   Show_NA_outputs = TRUE){
 
 
 

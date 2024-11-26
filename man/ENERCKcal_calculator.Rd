@@ -7,9 +7,9 @@ A function used to calculate Energy values in kcal}
 \usage{
 ENERCKcal_calculator(
   Protein = "PROCNTg",
-  Fat = "FAT_g_combined",
+  Fat = "FATg",
   Carbohydrate = "CHOAVLg",
-  Fibre = "FIBTGg_combined",
+  Fibre = "FIBTGg",
   Alcohol = "ALCg",
   df,
   comment_col = "comments",
@@ -19,13 +19,13 @@ ENERCKcal_calculator(
 )
 }
 \arguments{
-\item{Protein}{Required - default: \code{"PROTg"} - If using \code{'df'},
-then this should be the name of the column that contains Protein values in grams. If
-NOT using \code{'df'}, this should be the number or list of numbers
-representing Protein values you are looking to calculate an Energy value
-using.}
+\item{Protein}{Required - default: \code{"PROCNTg"} - If using \code{'df'},
+then this should be the name of the column that contains Protein values in
+grams. If NOT using \code{'df'}, this should be the number or list of
+numbers representing Protein values you are looking to calculate an Energy
+value using.}
 
-\item{Fat}{Required - default: \code{"FATg_combined"} - If using \code{'df'},
+\item{Fat}{Required - default: \code{"FATg"} - If using \code{'df'},
 then this should be the name of the column that contains Total Fat values
 in grams. If NOT using \code{'df'}, this should be the number or list of
 numbers representing Fat values you are looking to calculate an Energy

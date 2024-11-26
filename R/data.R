@@ -111,13 +111,13 @@
 #'
 #' @format A data frame with 460 rows and 20 columns:
 #' \describe{
-#'   \item{II}{Column_Description}
+#'   \item{II}{Food Product Code in FAOSTAT Food Balance Sheet}
 #'   \item{product}{Food Product Group}
-#'   \item{III}{Column_Description}
+#'   \item{III}{Item Agregated Code in FAOSTAT Food Balance Sheet}
 #'   \item{category}{Food Category}
 #'   \item{fbs_desc}{Food Balance Sheet description}
 #'   \item{fbs_id}{Food Balance Sheet ID}
-#'   \item{FCL}{Column_Description}
+#'   \item{FCL}{Food Balance Sheet List Number}
 #'   \item{CPC_Code}{CPC ID Code}
 #'   \item{CPC_Description}{CPC Food Description}
 #'   \item{WATERg}{Whether Water should be absent or not}
