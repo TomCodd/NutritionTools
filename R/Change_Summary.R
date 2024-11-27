@@ -2,8 +2,10 @@
 #Title: Change_Summary
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.0.0
+#Version: V1.0.1
 #Changelog:
+#V1.0.1 <- V1.0.0: bug fix. detailed = FALSE was creating a list, that couldn't
+#be rendered by table() correctly. fixed with unlists.
 
 #Github: https://github.com/TomCodd/NutritionTools
 #---
@@ -79,15 +81,18 @@ Change_Summary <- function(df, comment_col = "comments", detailed = FALSE){
     # Need to simplify the unique markers in comments - for the imputer, its everything after the last 'from'
     seperated_comments[grepl(" value imputed using the ", seperated_comments)] <- sapply(seperated_comments[grepl(" value imputed using the ", seperated_comments)], function(x)
       gsub("(?<=from).*", " [specific FCT(ID)]", as.character(x), perl = TRUE))
+    seperated_comments <- unlist(seperated_comments)
 
     # Next is the CHOAVLDFg values. They all have 'CHOAVLDFg_calculated calculated from 100-[constituents]', and the relevant ones will have ' - Original value of ', [value], ' reset to '
     # Removes the negative number (everything after 'Original value of ' and before ' reset to 0' or ' reset to NA'
     seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)] <- sapply(seperated_comments[grepl("CHOAVLDFg_calculated calculated from 100-\\[constituents\\]", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)], function(x)
       gsub("(?<= - Original value of ).*(?= reset to )", "[Negative Value]", as.character(x), perl = TRUE))
+    seperated_comments <- unlist(seperated_comments)
 
-    # SOPg has a similar setup to CHOAVLDF, but without constant reset values (like NA and 0 for CHOAVLDFg)
+        # SOPg has a similar setup to CHOAVLDF, but without constant reset values (like NA and 0 for CHOAVLDFg)
     seperated_comments[grepl("SOPg_calculated calculated from adding constituents", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)] <- sapply(seperated_comments[grepl("SOPg_calculated calculated from adding constituents", seperated_comments) & grepl(" - Original value of ", seperated_comments) & grepl(" reset to ", seperated_comments)], function(x)
       gsub("(?<= - Original value of ).*(?= reset to).*$", "[OoB value] reset to [Set Boundary]", as.character(x), perl = TRUE))
+    seperated_comments <- unlist(seperated_comments)
   }
 
   # Prints output
