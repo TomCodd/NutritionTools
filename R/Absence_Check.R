@@ -4,6 +4,7 @@
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
 #Version: V1.0.1
 #Changelog:
+#V1.0.1 -> V1.0.2: Fixed bug caused by typo
 #V1.0.0 -> V1.0.1: Introduced some checks to allow data.frames that don't have
 #all the nutrients Absence_Table does to be used, if the missing nutrients
 #aren't checked by the function.
@@ -22,7 +23,7 @@
 #' @param assumed_zero_table Optional - default: \code{Absence_Table} - Choose
 #'   whether to use the supplied preset table which contains information on
 #'   which CPC code shouldn't contain certain nutrients.
-#' @param assume_zero_absence_inputs Optional - default: \code{c("a")}
+#' @param assumed_zero_absence_inputs Optional - default: \code{c("a")}
 #'   - If using the default \code{assumed_zero_table}, this allows you to pick
 #'   which options for selection you want. Choosing \code{c("a")} only applies
 #'   corrections that are certain, \code{c("a", "b")} results in corrections
@@ -251,7 +252,7 @@
 
 Absence_Check <- function(df,
                           assumed_zero_table = Absence_Table,
-                          assume_zero_absence_inputs = c("a"),
+                          assumed_zero_absence_inputs = c("a"),
                           method = "check",
                           CPC_Code_Column = "CPC_Code" ,
                           comments = TRUE,
@@ -378,7 +379,7 @@ Absence_Check <- function(df,
       !isFALSE(assumed_zero_table)) {
     #Checks if the assume zero table input is correct or not
     message(
-      "assumed_zero_table is neither a data.frame or FALSE. If using the assume_zero_table, please set the input to the name of the dataframe containing the relevant information (e.g. Absence_Table). If not using this ability, please set to FALSE."
+      "assumed_zero_table is neither a data.frame or FALSE. If using the assumed_zero_table, please set the input to the name of the dataframe containing the relevant information (e.g. Absence_Table). If not using this ability, please set to FALSE."
     )
     return()
   }
@@ -585,7 +586,7 @@ Absence_Check <- function(df,
     # Converts the table into the inputs. Between this and the above block,
     # should ensure all the selected tests have an input.
 
-    # However, if using a modified assume_zero_table, it might not have all the
+    # However, if using a modified assumed_zero_table, it might not have all the
     # columns. So checks are introduced to make sure that they have the columns
     # if the right check is ticked.
 
@@ -593,57 +594,57 @@ Absence_Check <- function(df,
     if (isTRUE(Water_check) && #Checks that the check is going through, and that there's a column name for it
         assumed_zero_water_col %in% colnames(assumed_zero_table)) {
       #Then pulls the data from the table into the No_Water_CPC_Codes variable
-      No_Water_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_water_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_Water_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_water_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(CHOAVL_check) &&
         assumed_zero_CHOAVL_col %in% colnames(assumed_zero_table)) {
-      No_CHOAVL_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVL_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_CHOAVL_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_CHOAVL_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(CHOAVLDF_check) &&
         assumed_zero_CHOAVLDF_col %in% colnames(assumed_zero_table)) {
-      No_CHOAVLDFg_standardised_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CHOAVLDF_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_CHOAVLDFg_standardised_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_CHOAVLDF_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(ALC_check) &&
         assumed_zero_ALC_col %in% colnames(assumed_zero_table)) {
-      No_ALC_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_ALC_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_ALC_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_ALC_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(FIBG_check) &&
         assumed_zero_FIBG_col %in% colnames(assumed_zero_table)) {
-      No_FIBG_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_FIBG_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_FIBG_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_FIBG_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(NIA_check) &&
         assumed_zero_NIA_col %in% colnames(assumed_zero_table)) {
-      No_NIA_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_NIA_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_NIA_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_NIA_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(VITB6_check) &&
         assumed_zero_VITB6_col %in% colnames(assumed_zero_table)) {
-      No_VITB6_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB6_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_VITB6_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_VITB6_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(VITB12_check) &&
         assumed_zero_VITB12_col %in% colnames(assumed_zero_table)) {
-      No_VITB12_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_VITB12_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_VITB12_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_VITB12_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(CU_check) &&
         assumed_zero_CU_col %in% colnames(assumed_zero_table)) {
-      No_CU_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_CU_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_CU_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_CU_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(F22D6N3_check) &&
         assumed_zero_F22D6N3_col %in% colnames(assumed_zero_table)) {
-      No_F22D6N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F22D6N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_F22D6N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_F22D6N3_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
 
     if (isTRUE(F20D5N3_check) &&
         assumed_zero_F20D5N3_col %in% colnames(assumed_zero_table)) {
-      No_F20D5N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assume_zero_F20D5N3_col]] %in% assume_zero_absence_inputs, assume_zero_CPC_column][[assume_zero_CPC_column]] #Extracts the relevant CPC codes
+      No_F20D5N3_CPC_Codes <- assumed_zero_table[assumed_zero_table[[assumed_zero_F20D5N3_col]] %in% assumed_zero_absence_inputs, assumed_zero_CPC_column] #Extracts the relevant CPC codes
     }
   }
 

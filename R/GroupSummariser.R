@@ -2,9 +2,10 @@
 #Title: Group_Summariser
 #Author: Thomas Codd - https://github.com/TomCodd
 #Contributor: Lucia Segovia de la Revilla  - https://github.com/LuciaSegovia
-#Version: V1.3.5
+#Version: V1.3.6
 #Changelog:
 
+#v1.3.5 -> v1.3.6; Fix; single value items did not have the summary row rounded. Fix; made the output be numeric again for numeric input columns.
 #v1.3.4 -> v1.3.5; Feature added - can round summarised values to 2 significant figures
 #v1.3.3 -> v1.3.4; Bug Fix - Fixed issue where a single NA in a column would result in NA in the summary row, by adding na_rm option
 #v1.3.2 -> v1.3.3; Bug Fix - error where all rows had 'SUMMARY ROW - NA'; fixed
@@ -47,6 +48,8 @@
 #' @return A data.frame that mirrors \code{df}, but after each group a summary row is inserted, containing the mean of the data columns.
 #'
 #' @importFrom dplyr select_if
+#' @importFrom dplyr mutate
+#' @importFrom dplyr across
 #' @importFrom stats weighted.mean
 #'
 #' @export
@@ -89,7 +92,7 @@ Group_Summariser <- function(df,
 
   #These checks are run on the inputs to make sure the data frames are data frames, and that the string input is just a string, and the string inputs are a legitimate column name
 
-  numeric_cols <- dplyr::select_if(df, is.numeric) #identifies the numeric columns
+  numeric_cols <- colnames(dplyr::select_if(df, is.numeric)) #identifies the numeric columns
 
   stopifnot("df is not a data frame - please input a data frame" = is.data.frame(df)) #Checks to see if the df item is a data frame
   stopifnot("The group_ID_col is not a character or string - please input a character or string that is a column name in df, e.g. 'column one'" = is.character(group_ID_col)) #checks to see if the group_ID_col is a character string
@@ -149,7 +152,7 @@ Group_Summariser <- function(df,
       message(paste0("Error - weighting values for item ID ", group_ID_list[1], " do not total 1. Weighting cannot be completed."))
       stop()
     }
-  }
+ }
 
   if(!missing(secondary_sort_col)){ #if the secondary_sort_col is present, sorts the result by that (primary sort is the grouping ID)
     sorted_table <- sorted_table[order(sorted_table[, secondary_sort_col]),]
@@ -172,14 +175,14 @@ Group_Summariser <- function(df,
       unique_entries <- unique(sorted_table[[i]]) #checks to see if theres only 1 unique entry; first by finding all unique entries
       if(length(unique_entries) == 1){ #then by seeing if theres only 1. If there is, then
         if(!is.na(unique_entries)){ #If its not NA, then
-          if(!missing(input_weighting_column)){
+         if(!missing(input_weighting_column)){
             if(colnames(sorted_table)[i] == input_weighting_column){ #and this column in the loop is the input weighting column
               new_row_entry <- 1 #then the total value is set to 1, which will be the total value of the weights, after the checks in the previous section
             } else {
-              new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+              new_row_entry <- unique_entries #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
             }
           } else {
-            new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+            new_row_entry <- unique_entries #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
           }
         }
       } else { #If there is more than one unique value the 'else' statement gets used, and the following happens
@@ -236,7 +239,7 @@ Group_Summariser <- function(df,
 
     secondary_table <- df[df[[group_ID_col]] == group_ID_list[i],] #subsets the main dataframe to a subtable for only that group
 
-    if(!missing(input_weighting_column)){ #Checks if the input_weighting_column value is missing or not - if it is present then carries out the following actions
+   if(!missing(input_weighting_column)){ #Checks if the input_weighting_column value is missing or not - if it is present then carries out the following actions
       weightings_column <- secondary_table[[input_weighting_column]] #identifies the weightings_column and creates a character list item from it
       weightings_column[weightings_column == ""] <- NA #replaces blank items in that list with NA
       sorted_weights <- sum(as.numeric(weightings_column), na.rm = TRUE) #adds up all the weights in that weightings column for this first group
@@ -253,7 +256,7 @@ Group_Summariser <- function(df,
         message(paste0("Error - weighting values for item ID ", group_ID_list[i], " do not total 1. Weighting cannot be completed."))
         stop()
       }
-    }
+   }
 
     if(!missing(secondary_sort_col)){ #if the secondary_sort_col is present, sorts the result by that (primary sort is the grouping ID)
       secondary_table <- secondary_table[order(secondary_table[secondary_sort_col]),]
@@ -276,10 +279,10 @@ Group_Summariser <- function(df,
               if(colnames(secondary_table)[j] == input_weighting_column){ #and this column in the loop is the input weighting column
                 new_row_entry <- 1 #then the total value is set to 1, which will be the total value of the weights, after the checks in the previous section
               } else {
-                new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+                new_row_entry <- unique_entries #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
               }
             } else {
-              new_row_entry <- paste(unique_entries) #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
+              new_row_entry <- unique_entries #the unique entry is applied. If it is NA, then the stopgap NA value is used by virtue of not being replaced as its the default.
             }
           }
         } else { #If there is more than one unique value the 'else' statement gets used, and the following happens
@@ -332,6 +335,10 @@ Group_Summariser <- function(df,
     }
 
   }
+
+  # Convert numeric columns back to numeric
+
+  sorted_table |> dplyr::mutate(dplyr::across(numeric_cols, as.numeric))
 
   return(sorted_table) #Once the loop is finished, the sorted table contains all the subtables and average rows for every group ID, and is returned as the dataframe output
 

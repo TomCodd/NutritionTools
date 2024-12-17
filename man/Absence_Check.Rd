@@ -7,7 +7,7 @@
 Absence_Check(
   df,
   assumed_zero_table = Absence_Table,
-  assume_zero_absence_inputs = c("a"),
+  assumed_zero_absence_inputs = c("a"),
   method = "check",
   CPC_Code_Column = "CPC_Code",
   comments = TRUE,
@@ -67,7 +67,7 @@ looking to check.}
 whether to use the supplied preset table which contains information on
 which CPC code shouldn't contain certain nutrients.}
 
-\item{assume_zero_absence_inputs}{Optional - default: \code{c("a")}
+\item{assumed_zero_absence_inputs}{Optional - default: \code{c("a")}
 \itemize{
 \item If using the default \code{assumed_zero_table}, this allows you to pick
 which options for selection you want. Choosing \code{c("a")} only applies
