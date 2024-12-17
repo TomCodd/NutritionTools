@@ -56,7 +56,7 @@ values, depending on the user input.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Absence_Check</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
 <span>  assumed_zero_table <span class="op">=</span> <span class="va">Absence_Table</span>,</span>
-<span>  assume_zero_absence_inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span><span class="op">)</span>,</span>
+<span>  assumed_zero_absence_inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"check"</span>,</span>
 <span>  CPC_Code_Column <span class="op">=</span> <span class="st">"CPC_Code"</span>,</span>
 <span>  comments <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -124,7 +124,7 @@ whether to use the supplied preset table which contains information on
 which CPC code shouldn't contain certain nutrients.</p></dd>
 
 
-<dt id="arg-assume-zero-absence-inputs">assume_zero_absence_inputs<a class="anchor" aria-label="anchor" href="#arg-assume-zero-absence-inputs"></a></dt>
+<dt id="arg-assumed-zero-absence-inputs">assumed_zero_absence_inputs<a class="anchor" aria-label="anchor" href="#arg-assumed-zero-absence-inputs"></a></dt>
 <dd><p>Optional - default: <code>c("a")</code></p><ul><li><p>If using the default <code>assumed_zero_table</code>, this allows you to pick
 which options for selection you want. Choosing <code>c("a")</code> only applies
 corrections that are certain, <code>c("a", "b")</code> results in corrections
