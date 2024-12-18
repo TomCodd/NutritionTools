@@ -448,15 +448,13 @@ Data_Imputer <- function(df,
             }
           }
         }
-
-
-      } #Loop ends here
+      } #Repeat Loop ends here
 
       if(TRUE %in% (Selection_chosen == "ESCAPE")){
         next
       } # Skips if the input is to escape the current item.
 
-      Chosen_IDs <- potential_matches[Selection_chosen, donor_id_column]
+      Chosen_IDs <- potential_matches[Selection_chosen, donor_id_column][[1]]
 
       Selected_Imputations <- donor_df[donor_df[[donor_id_column]] %in% Chosen_IDs, c(donor_id_column, donor_search_column, missing_nutrient_column, water_column, donor_fct_column)]
 
@@ -469,9 +467,9 @@ Data_Imputer <- function(df,
 
         Recipient <- missing_data[i,]
 
-        Selected_Imputations$WB_nutrient <- Selected_Imputations[[missing_nutrient_column]]*(100-as.numeric(Recipient[[water_column]]))/(100-Selected_Imputations[[water_column]])
+        Selected_Imputations$WB_nutrient <- as.numeric(Selected_Imputations[[missing_nutrient_column]])*(100-as.numeric(Recipient[[water_column]]))/(100-as.numeric(Selected_Imputations[[water_column]]))
         message("")
-        message("Imputated values water balanced:")
+        message("Imputed values water balanced:")
 
         print(Selected_Imputations)
         message("")
@@ -481,9 +479,9 @@ Data_Imputer <- function(df,
 
       if(nrow(Selected_Imputations) > 0){ #This includes single items, but it doesn't matter, as mean(x) = x
         if(isTRUE(water_balance)){
-          imputed_value <- mean(Selected_Imputations$WB_nutrient)
+          imputed_value <- mean(as.numeric(Selected_Imputations$WB_nutrient))
         } else {
-          imputed_value <- mean(Selected_Imputations[[missing_nutrient_column]])
+          imputed_value <- mean(as.numeric(Selected_Imputations[[missing_nutrient_column]]))
         }
       }
 
